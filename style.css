@@ -87,12 +87,15 @@ button:hover {
 }
 
 /*Imagem da Previa*/
+/* Estilo para imagem de prévia no formato 3x4 */
 #resumePreview img {
-    max-width: 150px;
-    border-radius: 50%;
+    width: 1250px;  
+    height: 190px; 
+    object-fit: cover; 
     float: right;
-    margin-right: 50px; 
-    margin-top: -180px; 
+    margin-right: 50px;
+    margin-top: -160px;
+    border-radius: 0; 
 }
 
 #resumePreview h2 {
