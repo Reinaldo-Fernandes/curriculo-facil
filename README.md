@@ -11,7 +11,7 @@ Este é um projeto de Criador de Currículos, que permite aos usuários criar, v
 - **Adição Dinâmica**: Adicione várias experiências, educações, projetos e certificações.
 
 ## Leyout.lua
- Mostra como vai ficar o modelo do Currículo
+arquivo leyout.lua
 
 ## Como Usar
 
