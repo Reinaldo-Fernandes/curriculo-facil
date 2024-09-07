@@ -2,53 +2,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const resumeForm = document.getElementById('resumeForm');
     const photoInput = document.getElementById('photo');
     const resumePreview = document.getElementById('resumePreview');
-    let photoURL = '';
+    let photoURL = ''; // Guardar o URL da imagem aqui
 
-    // Função para formatar o telefone
-    function formatPhone(event) {
-        let input = event.target;
-        let value = input.value.replace(/\D/g, '');  // Remove todos os caracteres não numéricos
-
-        if (value.length > 10) {
-            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-        } else if (value.length > 5) {
-            value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-        } else if (value.length > 2) {
-            value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
-        } else {
-            value = value.replace(/(\d{0,2})/, '($1');
-        }
-
-        input.value = value;
-    }
-
-    // Aplica a formatação ao campo de telefone
-    document.getElementById('phone').addEventListener('input', formatPhone);
-
-    // Pré-visualizar imagem de perfil ao selecionar
+    // Captura da imagem selecionada sem exibir ainda
     photoInput.addEventListener('change', function(event) {
         if (photoInput.files && photoInput.files[0]) {
             const photo = photoInput.files[0];
-            photoURL = URL.createObjectURL(photo);
-            const imagePreview = document.createElement('img');
-            imagePreview.src = photoURL;
-            imagePreview.alt = "Foto do Currículo";
-            imagePreview.style.maxWidth = '150px';
-            imagePreview.style.borderRadius = '50%';
-
-            // Verifica se o container existe
-            let photoContainer = document.querySelector('.photo-container');
-            if (!photoContainer) {
-                // Cria o container se ele não existir
-                photoContainer = document.createElement('div');
-                photoContainer.classList.add('photo-container');
-                resumePreview.appendChild(photoContainer);
-            }
-
-            // Limpa qualquer imagem anterior
-            photoContainer.innerHTML = '';
-            // Adiciona a nova imagem
-            photoContainer.appendChild(imagePreview);
+            photoURL = URL.createObjectURL(photo); // Armazena a URL da imagem
         }
     });
 
@@ -58,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const name = document.getElementById('name').value.trim();
         const address = document.getElementById('address').value.trim();
-        const phone = document.getElementById('phone').value.trim();
+        const phone1 = document.getElementById('phone1').value.trim(); // Corrigido: phone1
+        const phone2 = document.getElementById('phone2').value.trim(); // Segundo telefone
         const email = document.getElementById('email').value.trim();
         const linkedin = document.getElementById('linkedin').value.trim();
         const summary = document.getElementById('summary') ? document.getElementById('summary').value.trim() : '';
@@ -86,16 +47,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>`;
         }).join('');
 
-        // Renderiza o currículo na visualização
+        // Renderiza o currículo na visualização e inclui a imagem se ela estiver presente
         resumePreview.innerHTML = `
             <div class="resume-container">
                 <div class="header">
                     <div class="personal-info">
                         <h2>${name}</h2>
-                        <p>Rua: ${address}</p>
-                        <p>Telefone: ${phone}</p>
+                        ${address ? `<p>Endereço: ${address}</p>` : ''}
+                        <p>Telefone: ${phone1}</p>
+                        ${phone2 ? `<p>Telefone 2: ${phone2}</p>` : ''} <!-- Exibe o segundo telefone apenas se preenchido -->
                         <p>Email: ${email}</p>
-                        <p>LinkedIn: ${linkedin}</p>
+                        ${linkedin ? `<p>LinkedIn: ${linkedin}</p>` : ''} <!-- Exibe o LinkedIn apenas se preenchido -->
                     </div>
                     <div class="photo-container">
                         ${photoURL ? `<img src="${photoURL}" alt="Foto do Currículo" style="max-width: 150px; border-radius: 50%;">` : ''}
@@ -109,9 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
-        // Revoga o URL da foto para evitar vazamento de memória
+        // Revoga o URL da foto após a exibição
         if (photoURL) {
-            URL.revokeObjectURL(photoURL);
+            URL.createObjectURL(photo);
         }
     });
 
@@ -159,6 +121,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // Função para formatar o telefone no formato (00) 0000-0000
+    function formatPhoneNumber(event) {
+        let input = event.target;
+        let phoneNumbers = input.value.split(','); // Suporta múltiplos números separados por vírgula
+        let formattedNumbers = phoneNumbers.map(phone => {
+            let value = phone.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+
+            // Formatar o número como (00) 0000-0000
+            if (value.length > 10) {
+                value = value.slice(0, 10); // Limita o tamanho a 10 dígitos
+            }
+
+            if (value.length > 6) {
+                value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                value = value.replace(/(\d{2})(\d{0,4})/, '($1) $2');
+            } else {
+                value = value.replace(/(\d{0,2})/, '($1');
+            }
+
+            return value;
+        });
+
+        // Une os números formatados por vírgula
+        input.value = formattedNumbers.join(', ');
+    }
+
+    // Aplica a formatação ao campo de telefone
+    document.getElementById('phone1').addEventListener('input', formatPhoneNumber); // Corrigido: phone1
 
     // Download do currículo em PDF
     document.getElementById('downloadPdf').addEventListener('click', function() {
