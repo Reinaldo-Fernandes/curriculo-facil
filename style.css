@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+PE:wght@100..400&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #2a3eb1;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-family: "Playwrite PE", cursive;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+form section {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.remove-button {
+    background-color: #FF4B4B;
+    margin-top: 10px;
+}
+
+.remove-button:hover {
+    background-color: #CC0000;
+}
+
+.buttons-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/**/
+#resumePreview {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/*Imagem da Previa*/
+#resumePreview img {
+    max-width: 150px;
+    border-radius: 50%;
+    float: right;
+    margin-right: 50px; 
+    margin-top: -180px; 
+}
+
+#resumePreview h2 {
+    margin-top: 0;
+}
+
+/* Estilo para informações de contato */
+.contact-info p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Estilo para os títulos das seções */
+#resumePreview h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+/* Estilo para as divisões entre seções */
+.section-divider {
+    border-top: 1px solid #000;
+    margin: 20px 0;
+}
+
+/* Geral para o conteúdo das seções */
+.section-content p {
+    margin: 5px 0;
+}
+
+/*Footer*/
+footer {
+    background-color: #2a3eb1;
+    color: white;
+    text-align: center;
+    padding: 3px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    font-family: "Playwrite PE", cursive;
+  }
+
+  footer p {
+    margin: 0;
+  }
+
+@media (max-width: 768px) {
+    main {
+        width: 100%;
+        padding: 15px;
+    }
+
+    input#phone {
+        width: calc(100% - 10px);
+    }
+}
