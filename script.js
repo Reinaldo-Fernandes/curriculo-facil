@@ -151,6 +151,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Aplica a formatação ao campo de telefone
     document.getElementById('phone1').addEventListener('input', formatPhoneNumber); // Corrigido: phone1
+    
+    document.getElementById('phone2').addEventListener('input', formatPhoneNumber); // Corrigido: phone2
 
     // Download do currículo em PDF
     document.getElementById('downloadPdf').addEventListener('click', function() {
