@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Função para formatar o telefone no formato (00) 0000-0000
+    // Função para formatar o telefone no formato (00) 00000-0000
     function formatPhoneNumber(event) {
         let input = event.target;
         let phoneNumbers = input.value.split(','); // Suporta múltiplos números separados por vírgula
@@ -130,12 +130,12 @@ document.addEventListener('DOMContentLoaded', function() {
             let value = phone.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
 
             // Formatar o número como (00) 0000-0000
-            if (value.length > 10) {
-                value = value.slice(0, 10); // Limita o tamanho a 10 dígitos
+            if (value.length > 11) {
+                value = value.slice(0, 11); // Limita o tamanho a 10 dígitos
             }
 
             if (value.length > 6) {
-                value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                value = value.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
             } else if (value.length > 2) {
                 value = value.replace(/(\d{2})(\d{0,4})/, '($1) $2');
             } else {
