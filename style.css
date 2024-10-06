@@ -106,4 +106,5 @@ footer {
     bottom: 0;
     width: 100%;
     font-family: "Playwrite PE", cursive;
+    z-index: 1;
 }
