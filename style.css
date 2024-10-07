@@ -87,12 +87,28 @@ button:hover {
 }
 
 /*Imagem da Previa*/
+#resumePreview {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    position: relative; /* Para que o filho posicionado seja relativo a este contêiner */
+}
+
 #resumePreview img {
-    max-width: 150px;
-    border-radius: 50%;
-    float: right;
-    margin-right: 50px; 
-    margin-top: -180px; 
+    width: 150px; /* Define a largura da imagem */
+    height: 200px; /* Define a altura da imagem para criar o efeito 3x4 */
+    object-fit: cover; /* Garante que a imagem cubra o espaço definido */
+    position: absolute; /* Posiciona a imagem de forma absoluta */
+    top: 20px; /* Distância do topo do contêiner */
+    right: 20px; /* Distância do lado direito do contêiner */
+    border: 1px solid #ddd; /* Opcional: borda ao redor da imagem */
+}
+
+
+#resumePreview h2 {
+    margin-top: 0;
 }
 
 #resumePreview h2 {
@@ -151,4 +167,12 @@ footer {
     input#phone {
         width: calc(100% - 10px);
     }
+}
+
+/*Mensagem de Erro*/
+
+.error-message {
+    font-size: 0.9rem;
+    margin-top: 5px;
+    color: red;
 }
