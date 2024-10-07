@@ -39,7 +39,30 @@
                 <label for="photo">Foto</label>
                 <input type="file" id="photo" accept="image/*">
             </section>
-            
+
+            <section id="professionalSummary">
+                <h2>Resumo <i class="fa-regular fa-address-card"></i></h2>
+                <textarea class="professional-summary" placeholder="Breve resumo das suas habilidades e experiências mais relevantes."></textarea>
+            </section>
+
+                    <h2>Educação <i class="fa-solid fa-book"></i></h2>
+                    <div id="educationContainer">
+                        <div class="education-entry">
+                            <input type="text" class="degree" placeholder="Nome do Curso">
+                            <input type="text" class="institution" placeholder="Instituição | Local">
+                            <input type="text" class="education-dates" placeholder="Mês/Ano de Início – Mês/Ano de Término">
+                            <textarea class="education-highlights" placeholder="Destaque 1: Exemplo de um projeto, trabalho acadêmico ou conquista importante."></textarea>
+                            <textarea class="education-highlights" placeholder="Destaque 2: Qualquer outra atividade relevante, como participação em clubes, pesquisas, etc."></textarea>
+                            <button type="button" class="remove-button">Remover <i class="fa-solid fa-user-xmark"></i></button>
+                        </div>
+                    </div>
+                    <button type="button" id="addEducation">Adicionar Educação <i class="fa-solid fa-user-plus"></i></button>
+                </section>
+
+                <div id="professionalSummary">
+                    <textarea class="professional-summary" placeholder="Escreva aqui um resumo breve das suas habilidades, experiência e qualificações. Destaque suas principais áreas de especialização e conquistas mais relevantes para o cargo que você está buscando."></textarea>
+                </div>
+        
                 <h2>Experiência Profissional <i class="fa-solid fa-briefcase"></i></h2>
                 <div id="experienceContainer">
                     <div class="experience-entry">
@@ -55,25 +78,13 @@
                 <button type="button" id="addExperience">Adicionar Experiência <i class="fa-solid fa-user-plus"></i></button>
             </section>
             <section>
-                <h2>Educação <i class="fa-solid fa-book"></i></h2>
-                <div id="educationContainer">
-                    <div class="education-entry">
-                        <input type="text" class="degree" placeholder="Nome do Curso">
-                        <input type="text" class="institution" placeholder="Instituição | Local">
-                        <input type="text" class="education-dates" placeholder="Mês/Ano de Início – Mês/Ano de Término">
-                        <textarea class="education-highlights" placeholder="Destaque 1: Exemplo de um projeto, trabalho acadêmico ou conquista importante."></textarea>
-                        <textarea class="education-highlights" placeholder="Destaque 2: Qualquer outra atividade relevante, como participação em clubes, pesquisas, etc."></textarea>
-                        <button type="button" class="remove-button">Remover <i class="fa-solid fa-user-xmark"></i></button>
-                    </div>
-                </div>
-                <button type="button" id="addEducation">Adicionar Educação <i class="fa-solid fa-user-plus"></i></button>
-            </section>
+               
             <section>
                 <h2>Habilidades <i class="fa-regular fa-user"></i></h2>
                 <textarea id="skills" placeholder="Técnicas e Interpessoais"></textarea>
             </section>
             <section>
-                <h2>Projetos <i class="fa-solid fa-user-plus"></i></h2>
+                <h2>Projetos <i class="fa-solid fa-code"></i></h2>
                 <div id="projectsContainer">
                     <div class="project-entry">
                         <input type="text" class="project-name" placeholder="Nome do Projeto">
@@ -84,7 +95,7 @@
                 <button type="button" id="addProject">Adicionar Projeto <i class="fa-solid fa-user-plus"></i></button>
             </section>
             <section>
-                <h2>Certificações</h2>
+                <h2>Certificações <i class="fa-solid fa-award"></i></h2>
                 <div id="certificationsContainer">
                     <div class="certification-entry">
                         <input type="text" class="certification-name" placeholder="Nome da Certificação">
