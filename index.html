@@ -22,16 +22,14 @@
                 <label for="address">Endereço</label>
                 <input type="text" id="address" placeholder="Endereço">
             
-                <!-- Primeiro telefone -->
                 <label for="phone1">Telefone 1</label>
                 <input type="tel" id="phone1" placeholder="(00) 00000-0000" required>
             
-                <!-- Segundo telefone -->
                 <label for="phone2">Telefone 2</label>
                 <input type="tel" id="phone2" placeholder="(00) 00000-0000">
             
                 <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Email" required>       
+                <input type="email" id="email" placeholder="Email" required>
             
                 <label for="linkedin">LinkedIn</label>
                 <input type="text" id="linkedin" placeholder="LinkedIn">
@@ -40,80 +38,50 @@
                 <input type="file" id="photo" accept="image/*">
             </section>
 
-            <section id="professionalSummary">
+            <section>
                 <h2>Resumo <i class="fa-regular fa-address-card"></i></h2>
-                <textarea class="professional-summary" placeholder="Breve resumo das suas habilidades e experiências mais relevantes."></textarea>
+                <textarea id="summary" class="professional-summary" placeholder="Breve resumo das suas habilidades e experiências mais relevantes."></textarea>
             </section>
 
-                    <h2>Educação <i class="fa-solid fa-book"></i></h2>
-                    <div id="educationContainer">
-                        <div class="education-entry">
-                            <input type="text" class="degree" placeholder="Nome do Curso">
-                            <input type="text" class="institution" placeholder="Instituição | Local">
-                            <input type="text" class="education-dates" placeholder="Mês/Ano de Início – Mês/Ano de Término">
-                            <textarea class="education-highlights" placeholder="Destaque 1: Exemplo de um projeto, trabalho acadêmico ou conquista importante."></textarea>
-                            <textarea class="education-highlights" placeholder="Destaque 2: Qualquer outra atividade relevante, como participação em clubes, pesquisas, etc."></textarea>
-                            <button type="button" class="remove-button">Remover <i class="fa-solid fa-user-xmark"></i></button>
-                        </div>
-                    </div>
-                    <button type="button" id="addEducation">Adicionar Educação <i class="fa-solid fa-user-plus"></i></button>
-                </section>
+            <section id="educationSection">
+                <h2>Educação <i class="fa-solid fa-book"></i></h2>
+                <div id="educationContainer"></div>
+                <button type="button" id="addEducation">Adicionar Educação <i class="fa-solid fa-user-plus"></i></button>
+            </section>
 
-                <div id="professionalSummary">
-                    <textarea class="professional-summary" placeholder="Escreva aqui um resumo breve das suas habilidades, experiência e qualificações. Destaque suas principais áreas de especialização e conquistas mais relevantes para o cargo que você está buscando."></textarea>
-                </div>
-        
+            <section id="experienceSection">
                 <h2>Experiência Profissional <i class="fa-solid fa-briefcase"></i></h2>
-                <div id="experienceContainer">
-                    <div class="experience-entry">
-                        <input type="text" class="job-title" placeholder="Cargo">
-                        <input type="text" class="company-name" placeholder="Nome da Empresa | Local">
-                        <input type="text" class="job-dates" placeholder="Mês/Ano de Início – Mês/Ano de Término">
-                        <textarea class="job-responsibilities" placeholder="Responsabilidade 1: Descrição breve do que você fez, focando nos resultados alcançados."></textarea>
-                        <textarea class="job-responsibilities" placeholder="Responsabilidade 2: Descrição breve do que você fez, focando nas suas habilidades técnicas e interpessoais."></textarea>
-                        <textarea class="job-responsibilities" placeholder="Responsabilidade 3: Se aplicável, destaque algum projeto ou iniciativa específica."></textarea>
-                        <button type="button" class="remove-button">Remover <i class="fa-solid fa-user-xmark"></i></button>
-                    </div>
-                </div>
+                <div id="experienceContainer"></div>
                 <button type="button" id="addExperience">Adicionar Experiência <i class="fa-solid fa-user-plus"></i></button>
             </section>
+
             <section>
-               
-            <section>
-                <h2>Habilidades <i class="fa-regular fa-user"></i></h2>
-                <textarea id="skills" placeholder="Técnicas e Interpessoais"></textarea>
+                <h2>Habilidades <i class="fa-solid fa-cogs"></i></h2>
+                <textarea id="skills" placeholder="Exemplo: Comunicação, Liderança, Programação..."></textarea>
             </section>
-            <section>
+
+            <section id="projectSection">
                 <h2>Projetos <i class="fa-solid fa-code"></i></h2>
-                <div id="projectsContainer">
-                    <div class="project-entry">
-                        <input type="text" class="project-name" placeholder="Nome do Projeto">
-                        <textarea class="project-description" placeholder="Breve descrição do projeto, tecnologias usadas e o resultado final."></textarea>
-                        <button type="button" class="remove-button">Remover <i class="fa-solid fa-user-xmark"></i></button>
-                    </div>
-                </div>
+                <div id="projectsContainer"></div>
                 <button type="button" id="addProject">Adicionar Projeto <i class="fa-solid fa-user-plus"></i></button>
             </section>
+
             <section>
                 <h2>Certificações <i class="fa-solid fa-award"></i></h2>
-                <div id="certificationsContainer">
-                    <div class="certification-entry">
-                        <input type="text" class="certification-name" placeholder="Nome da Certificação">
-                        <input type="text" class="certification-institution" placeholder="Instituição | Data de Conclusão">
-                        <textarea class="certification-description" placeholder="Descrição breve, se necessário."></textarea>
-                        <button type="button" class="remove-button">Remover <i class="fa-solid fa-user-xmark"></i></button>
-                    </div>
-                </div>
+                <div id="certificationsContainer"></div>
                 <button type="button" id="addCertification">Adicionar Certificação <i class="fa-solid fa-user-plus"></i></button>
             </section>
+
             <section>
                 <h2>Idiomas <i class="fa-solid fa-language"></i></h2>
                 <textarea id="languages" placeholder="Idioma 1: Nível de fluência, Idioma 2: Nível de fluência"></textarea>
             </section>
+
             <section>
                 <h2>Atividades Extracurriculares <i class="fa-solid fa-school-circle-exclamation"></i></h2>
-                <textarea id="activities" placeholder="Breve descrição de atividades voluntárias, grupos de estudo, ou hobbies que demonstrem suas habilidades ou interesses."></textarea>
+                <textarea id="activities" placeholder="Exemplo: Voluntariado, Hobbies, Grupos de Estudos..."></textarea>
             </section>
+
             <div class="buttons-container">
                 <button type="submit">Gerar Currículo</button>
                 <button type="button" id="downloadPdf">Baixar em PDF</button>
@@ -125,6 +93,6 @@
     <script src="script.js"></script>
     <footer>
         <p>&copy; Currículo Fácil - 2024 Reinaldo Fernandes. Todos os direitos reservados.</p>
-      </footer>
+    </footer>
 </body>
 </html>
