@@ -1,10 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Playwrite+PE:wght@100..400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
 
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #ffffff;
+    
 }
 
 header {
@@ -17,10 +18,8 @@ header {
 h1 {
     margin: 0;
     font-size: 2rem;
-    font-family: "Playwrite PE", cursive;
-    font-optical-sizing: auto;
+    font-family: 'Playfair Display', cursive;
     font-weight: 400;
-    font-style: normal;
 }
 
 main {
@@ -42,7 +41,7 @@ label {
     font-weight: bold;
 }
 
-input, textarea {
+input, textarea, select {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -73,76 +72,203 @@ button:hover {
 }
 
 .buttons-container {
-    text-align: center;
+    display: flex;
+    gap: 10px;
     margin-top: 20px;
+    justify-content: center;
 }
 
-/**/
+.custom-bg-color {
+    background-color: var(--selected-bg-color, #e8f0fe); /* Azul claro padrão */
+    color: var(--text-color, #000); /* Garante contraste com o fundo */
+}
+
+
 #resumePreview {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #f9f9f9;
+    width: 210mm;  /* Largura A4 */
+    height: 297mm; /* Altura A4 */
+    padding: 2mm; /* Mesma margem usada no PDF */
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px auto 0 auto;  /* Reduz a margem superior para 10px e centraliza o layout */
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    box-sizing: border-box; /* Garante que padding seja incluído no tamanho total */
+    overflow-y:auto ;
 }
 
-/*Imagem da Previa*/
-#resumePreview {
-    margin-top: 20px;
+/* Coluna Esquerda */
+.resume-left {
+    flex: 0 0 200px; /* Define uma largura fixa de 200px */
+    max-width: 200px; /* Limita a largura máxima da coluna esquerda */
     padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    position: relative; /* Para que o filho posicionado seja relativo a este contêiner */
+    background-color: #e8f0fe;
+    border-right: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    overflow: hidden; /* Impede que o conteúdo da coluna esquerda transborde */
 }
 
-#resumePreview img {
-    width: 150px; /* Define a largura da imagem */
-    height: 200px; /* Define a altura da imagem para criar o efeito 3x4 */
-    object-fit: cover; /* Garante que a imagem cubra o espaço definido */
-    position: absolute; /* Posiciona a imagem de forma absoluta */
-    top: 20px; /* Distância do topo do contêiner */
-    right: 20px; /* Distância do lado direito do contêiner */
-    border: 1px solid #ddd; /* Opcional: borda ao redor da imagem */
+.resume-left img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 20px;
 }
 
-
-#resumePreview h2 {
+.resume-left h2 {
     margin-top: 0;
+    color: #2a3eb1;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-#resumePreview h2 {
-    margin-top: 0;
+.resume-left h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ffffff;
+    padding-bottom: 5px;
+    color: #2a3eb1;
 }
+
+.resume-left ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.resume-left ul li {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+/* Estilo para o resumo na coluna esquerda */
+.resume-left .summary {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    font-size: 1rem;
+    max-height: 150px; /* Limita a altura máxima do resumo */
+    text-overflow: ellipsis; /* Adiciona reticências se o texto for muito longo */
+    white-space: normal; /* Permite que o texto quebre em múltiplas linhas */
+    word-wrap: break-word; /* Garante que palavras longas quebrem para se ajustar à largura */
+}
+
+.invalid-summary {
+    border: 1px solid red; /* Altera a borda para vermelho se o resumo for inválido */
+}
+
+#summaryCounter {
+    margin-top: 5px; /* Espaço entre o resumo e o contador */
+    font-size: 0.9rem; /* Tamanho da fonte do contador */
+    color: #666; /* Cor do texto */
+}
+
+/* Coluna Direita */
+.resume-right {
+    flex: 1; /* Permite que a coluna direita se ajuste ao espaço restante */
+    padding: 20px;
+    border-radius: 0 25px 25px 0;
+    overflow-y: auto; /* Adiciona rolagem caso o conteúdo seja muito longo */
+}
+
+.resume-right h2, .resume-right h3 {
+    color: #2a3eb1;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.resume-right h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.resume-right ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.resume-right ul li {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.resume-right, .resume-left {
+    word-wrap: break-word;
+    white-space: normal;
+}
+
 
 /* Estilo para informações de contato */
 .contact-info p {
     margin: 0;
     font-size: 1rem;
     line-height: 1.5;
+    color: #000;
+}
+/* Estilo para os cards de informação e tooltips */
+.info-card {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    
 }
 
-/* Estilo para os títulos das seções */
-#resumePreview h3 {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #000;
-    padding-bottom: 5px;
-    margin-top: 20px;
+/* Tooltip corretamente estilizado */
+.tooltip {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    width: auto;
+    max-width: 300px;
+    min-width: 250px;
+    min-height: 50px;
+    text-align: center;
+    font-size: 1rem;
+    z-index: 2000; /* Aumente o z-index */
+    white-space: normal;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.3s ease-in-out;
 }
 
-/* Estilo para as divisões entre seções */
-.section-divider {
-    border-top: 1px solid #000;
-    margin: 20px 0;
+/* Exibir o tooltip ao passar o mouse sobre o ícone */
+.info-card:hover .tooltip {
+    display: block;
+    opacity: 1;
 }
 
-/* Geral para o conteúdo das seções */
-.section-content p {
-    margin: 5px 0;
+
+.info-card i {
+    color: #030303;
+    margin-left: 5px;
 }
 
-/*Footer*/
+.tooltip::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+}
+
+.info-card:hover .tooltip {
+    z-index: 9999;
+    display: block;
+    opacity: 1;
+}
+
+
 footer {
     background-color: #2a3eb1;
     color: white;
@@ -151,28 +277,87 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    font-family: "Playwrite PE", cursive;
-  }
+    font-family: 'Playfair Display', cursive;
+}
 
-  footer p {
+footer p {
     margin: 0;
-  }
+}
 
-@media (max-width: 768px) {
+/* Responsividade para mobile */
+@media (max-width: 480px) {
     main {
         width: 100%;
-        padding: 15px;
+        padding: 10px;
     }
 
-    input#phone {
-        width: calc(100% - 10px);
+    #resumePreview {
+        width: 100%;
+        padding: 5px;
+    }
+
+    .resume-left, .resume-right {
+        padding: 10px;
+    }
+
+    /* Ajustar o tamanho das tooltips para telas menores */
+    .tooltip {
+        max-width: 90%;
+    }
+}
+@media (max-width: 600px) {
+    .tooltip {
+        max-width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 
-/*Mensagem de Erro*/
 
-.error-message {
-    font-size: 0.9rem;
-    margin-top: 5px;
-    color: red;
+/* Esconde elementos sem valor */
+.resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
+    display: none;
+}
+
+/* Cor personalizada para a coluna de dados pessoais */
+.custom-bg-color {
+    background-color: var(--selected-bg-color, #e8f0fe); /* Cor padrão é azul claro */
+}
+/* Layout do currículo para formato A4 ao baixar */
+#resumePreview.a4 {
+    width: 210mm;  /* Largura A4 */
+    height: 297mm; /* Altura A4 */
+    padding: 2mm;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px auto;  /* Reduz a margem superior */
+}
+
+
+
+#colorPickerSection {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#colorPickerLabel {
+    font-size: 12pt;
+    margin-right: 10px;
+}
+
+#colorPicker {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .tooltip {
+        max-width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
