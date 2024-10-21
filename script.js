@@ -121,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         displayResumePreview(resumeData);
+        resumePreview.style.display = 'flex'; // Exibe o preview
     }
 
     // Função para exibir o preview do currículo
