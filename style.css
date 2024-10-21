@@ -92,7 +92,7 @@ button:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 10px auto 0 auto;  /* Reduz a margem superior para 10px e centraliza o layout */
     overflow: auto;
-    display: flex;
+    display:none;
     flex-direction: row;
     gap: 20px;
     border: 1px solid #ddd;
