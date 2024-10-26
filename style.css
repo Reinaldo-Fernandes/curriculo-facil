@@ -78,6 +78,29 @@ button:hover {
     justify-content: center;
 }
 
+.skills-display, .languages-display {
+    margin-top: 10px;
+}
+
+.skills-display ul, .languages-display ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.skills-display li, .languages-display li {
+    display: block; /* Garante que cada item ocupe uma linha completa */
+    width: 100%; /* Expande o item para 100% da largura do container */
+    background-color: #e8f0fe;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #2a3eb1;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+}
+
+
 .custom-bg-color {
     background-color: var(--selected-bg-color, #e8f0fe); /* Azul claro padrão */
     color: var(--text-color, #000); /* Garante contraste com o fundo */
@@ -102,8 +125,8 @@ button:hover {
 
 /* Coluna Esquerda */
 .resume-left {
-    flex: 0 0 200px; /* Define uma largura fixa de 200px */
-    max-width: 200px; /* Limita a largura máxima da coluna esquerda */
+    flex: 0 0 250px; /* Define uma largura fixa de 200px */
+    max-width: 250px; /* Limita a largura máxima da coluna esquerda */
     padding: 20px;
     background-color: #e8f0fe;
     border-right: 1px solid #ddd;
@@ -112,8 +135,8 @@ button:hover {
 }
 
 .resume-left img {
-    width: 150px;
-    height: 150px;
+    width: 175px;
+    height: 175px;
     object-fit: cover;
     border-radius: 50%;
     margin-bottom: 20px;
