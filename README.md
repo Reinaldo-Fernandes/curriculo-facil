@@ -1,35 +1,26 @@
-# Criador de Currículo
+## Criador de Currículos Profissionais 🌟
 
-Este é um projeto de Criador de Currículos, que permite aos usuários criar, visualizar e baixar currículos personalizados em formato PDF ou Word. O projeto é construído usando HTML, CSS e JavaScript, e oferece um layout responsivo com a opção de uma ou duas colunas.
+#Bem-vindo ao **Criador de Currículos** - uma página projetada para simplificar a criação de currículos profissionais e personalizados! Com uma interface intuitiva e funcionalidades práticas, nossa ferramenta permite que você desenvolva currículos impressionantes em minutos.
 
-## Funcionalidades
+## 🌐 [Acesse a ferramenta online](https://curriculo-facil.vercel.app/)
 
-- **Criação de Currículo**: O usuário pode preencher informações pessoais, resumo profissional, experiência, educação, habilidades, projetos, certificações, idiomas e atividades extracurriculares.
-- **Layout Customizável**: Escolha entre um layout de uma ou duas colunas.
-- **Visualização ao Vivo**: Visualize o currículo enquanto ele é preenchido.
-- **Download**: Baixe o currículo gerado em PDF ou Word.
-- **Adição Dinâmica**: Adicione várias experiências, educações, projetos e certificações.
+### 📝 Funcionalidades Principais:
+- **Edição Completa**: Adicione e organize informações como experiência profissional, formação acadêmica, habilidades, certificações e muito mais.
+- **Upload de Foto**: Customize ainda mais seu currículo com uma foto profissional.
+- **Pré-visualização em Tempo Real**: Veja como seu currículo está ficando antes de fazer o download.
+- **Download em PDF**: Baixe seu currículo prontinho para impressão em PDF, com formato de página A4.
 
-## Leyout.lua
-arquivo leyout.lua
+### ⚙️ Tecnologias Utilizadas
+- **Frontend**: HTML, CSS, JavaScript
+- **Backend e Hospedagem**: GitHub, Vercel
+- **Funcionalidade Extra**: Gerador de PDF para um currículo digital acessível e profissional.
 
-## Como Usar
+### 💻 Como Usar:
+1. **Acesse a página** e comece a preencher as informações básicas.
+2. **Adicione detalhes** das suas experiências, habilidades e certificações.
+3. **Pré-visualize** o seu currículo e faça ajustes em tempo real.
+4. **Baixe** o arquivo em PDF pronto para ser compartilhado e usado em entrevistas!
 
-1. **Preencha as Informações**: Insira os dados nas seções disponíveis.
-2. **Escolha o Layout**: Selecione o layout de uma ou duas colunas.
-3. **Visualize o Currículo**: O currículo será gerado automaticamente na seção de visualização.
-4. **Baixe o Currículo**: Use os botões "Baixar em PDF" ou "Baixar em Word" para salvar o currículo.
+Experimente agora mesmo e deixe seu currículo com uma apresentação profissional e personalizada!
 
-## Tecnologias Utilizadas
-
-- **HTML**: Estrutura da página.
-- **CSS**: Estilização da página, incluindo responsividade.
-- **JavaScript**: Interatividade, manipulação do DOM e geração de arquivos para download.
-
-## Como Contribuir
-
-Sinta-se à vontade para fazer um fork do projeto, abrir issues para reportar bugs ou sugerir melhorias, e enviar pull requests com novas funcionalidades ou correções.
-
-## Licença
-
-Este projeto é licenciado sob a licença MIT.
+🔗 **Compartilhe com amigos e colegas que estão em busca de oportunidades!**
