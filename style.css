@@ -1,11 +1,14 @@
+/* Importação de fontes */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
 
+/* Estilos globais */
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #ffffff;
-    
+    word-wrap: break-word; 
+    box-sizing: border-box; /* Garante que padding e borda sejam incluídos no tamanho total do elemento */
 }
 
 header {
@@ -28,9 +31,10 @@ main {
     margin: 20px auto;
     background-color: #fff;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilos de formulário */
 form section {
     margin-bottom: 20px;
 }
@@ -49,6 +53,25 @@ input, textarea, select {
     border-radius: 5px;
 }
 
+/* Barra de progresso */
+#progressBarContainer {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#progressBar {
+    width: 100%;
+    height: 20px;
+}
+
+#progressText {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Botões */
 button {
     padding: 10px 20px;
     background-color: #007BFF;
@@ -56,6 +79,7 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
@@ -78,19 +102,14 @@ button:hover {
     justify-content: center;
 }
 
-.skills-display, .languages-display {
-    margin-top: 10px;
-}
-
-.skills-display ul, .languages-display ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+/* Listas de habilidades e idiomas */
+ul {
+    list-style-type: disc;
+    margin: 10px 0;
+    padding-left: 20px;
 }
 
 .skills-display li, .languages-display li {
-    display: block; /* Garante que cada item ocupe uma linha completa */
-    width: 100%; /* Expande o item para 100% da largura do container */
     background-color: #e8f0fe;
     padding: 5px 10px;
     border-radius: 5px;
@@ -100,38 +119,52 @@ button:hover {
     margin-bottom: 5px;
 }
 
-
-.custom-bg-color {
-    background-color: var(--selected-bg-color, #e8f0fe); /* Azul claro padrão */
-    color: var(--text-color, #000); /* Garante contraste com o fundo */
-}
-
-
+/* Estilo do preview do currículo */
 #resumePreview {
-    width: 210mm;  /* Largura A4 */
+    width: 210mm; /* Largura A4 */
     height: 297mm; /* Altura A4 */
-    padding: 2mm; /* Mesma margem usada no PDF */
+    max-width: 100%; /* Garante que não exceda o tamanho do contêiner pai */
+    padding: 2mm;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px auto 0 auto;  /* Reduz a margem superior para 10px e centraliza o layout */
-    overflow: auto;
-    display:none;
+    margin: 10px auto;
+    display: none;
     flex-direction: row;
     gap: 20px;
     border: 1px solid #ddd;
-    box-sizing: border-box; /* Garante que padding seja incluído no tamanho total */
-    overflow-y:auto ;
+    overflow-y: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
 }
 
-/* Coluna Esquerda */
+@media print {
+    #resumePreview {
+        transform: scale(0.95); /* Ajuste o valor conforme necessário */
+        transform-origin: top left; /* Garante o alinhamento */
+    }
+}
+
+
+/* Coluna esquerda do currículo */
 .resume-left {
-    flex: 0 0 250px; /* Define uma largura fixa de 200px */
+    flex: 0 0 250px; /* Define uma largura fixa para a coluna esquerda */
     max-width: 250px; /* Limita a largura máxima da coluna esquerda */
     padding: 20px;
     background-color: #e8f0fe;
     border-right: 1px solid #ddd;
     border-radius: 5px 0 0 5px;
-    overflow: hidden; /* Impede que o conteúdo da coluna esquerda transborde */
+    word-wrap: break-word; /* Garante que o texto não ultrapasse os limites da coluna */
+    overflow-wrap: break-word;
+    overflow-x: hidden; /* Impede que o conteúdo transborde horizontalmente */
+    box-sizing: border-box;
+}
+
+.resume-right {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .resume-left img {
@@ -142,104 +175,61 @@ button:hover {
     margin-bottom: 20px;
 }
 
-.resume-left h2 {
-    margin-top: 0;
+/* Títulos */
+.resume-left h2, .resume-right h2, .resume-left h3, .resume-right h3 {
     color: #2a3eb1;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.resume-left h3 {
+.resume-left h3, .resume-right h3 {
     font-size: 1.2rem;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #ffffff;
-    padding-bottom: 5px;
-    color: #2a3eb1;
-}
-
-.resume-left ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.resume-left ul li {
     margin-bottom: 10px;
-    font-size: 0.95rem;
-}
-
-/* Estilo para o resumo na coluna esquerda */
-.resume-left .summary {
-    margin-top: 20px;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-    font-size: 1rem;
-    max-height: 150px; /* Limita a altura máxima do resumo */
-    text-overflow: ellipsis; /* Adiciona reticências se o texto for muito longo */
-    white-space: normal; /* Permite que o texto quebre em múltiplas linhas */
-    word-wrap: break-word; /* Garante que palavras longas quebrem para se ajustar à largura */
-}
-
-.invalid-summary {
-    border: 1px solid red; /* Altera a borda para vermelho se o resumo for inválido */
-}
-
-#summaryCounter {
-    margin-top: 5px; /* Espaço entre o resumo e o contador */
-    font-size: 0.9rem; /* Tamanho da fonte do contador */
-    color: #666; /* Cor do texto */
-}
-
-/* Coluna Direita */
-.resume-right {
-    flex: 1; /* Permite que a coluna direita se ajuste ao espaço restante */
-    padding: 20px;
-    border-radius: 0 25px 25px 0;
-    overflow-y: auto; /* Adiciona rolagem caso o conteúdo seja muito longo */
-}
-
-.resume-right h2, .resume-right h3 {
-    color: #2a3eb1;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.resume-right h3 {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
     border-bottom: 1px solid #ccc;
     padding-bottom: 5px;
 }
 
-.resume-right ul {
-    list-style-type: none;
+/* Listas no currículo */
+.resume-left ul, .resume-right ul {
+    margin: 0;
     padding: 0;
+    list-style-position: inside;
+    word-wrap: break-word; /* Garante que os itens da lista não ultrapassem */
+    overflow-wrap: break-word;
+    box-sizing: border-box;
 }
 
-.resume-right ul li {
-    margin-bottom: 10px;
-    font-size: 0.95rem;
+.resume-left ul li, .resume-right ul li {
+    margin-bottom: 5px;
+    line-height: 1.5;
 }
 
-.resume-right, .resume-left {
-    word-wrap: break-word;
-    white-space: normal;
-}
-
-
-/* Estilo para informações de contato */
+/* Informações de contato */
 .contact-info p {
     margin: 0;
     font-size: 1rem;
     line-height: 1.5;
     color: #000;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
-/* Estilo para os cards de informação e tooltips */
+
+/* Resumo na coluna esquerda */
+.resume-left .summary {
+    max-height: 150px; /* Limita a altura máxima do resumo */
+    overflow-y: auto; /* Adiciona barra de rolagem para textos longos */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+        overflow: hidden; /* Impede que o conteúdo da coluna esquerda transborde */
+
+}
+
+/* Tooltip */
 .info-card {
     position: relative;
     display: inline-block;
     cursor: pointer;
-    
 }
 
-/* Tooltip corretamente estilizado */
 .tooltip {
     display: none;
     position: absolute;
@@ -247,31 +237,15 @@ button:hover {
     color: #fff;
     padding: 10px;
     border-radius: 5px;
-    width: auto;
-    max-width: 300px;
-    min-width: 250px;
-    min-height: 50px;
+    width: 250px; /* Define uma largura maior */
+    max-width: 450px; /* Permite que o tooltip se expanda até um limite maior */
     text-align: center;
-    font-size: 1rem;
-    z-index: 2000; /* Aumente o z-index */
-    white-space: normal;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    font-size: 1.1rem;
+    z-index: 9999;
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    transition: opacity 0.3s ease-in-out;
-}
-
-/* Exibir o tooltip ao passar o mouse sobre o ícone */
-.info-card:hover .tooltip {
-    display: block;
-    opacity: 1;
-}
-
-
-.info-card i {
-    color: #030303;
-    margin-left: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .tooltip::before {
@@ -286,12 +260,10 @@ button:hover {
 }
 
 .info-card:hover .tooltip {
-    z-index: 9999;
     display: block;
-    opacity: 1;
 }
 
-
+/* Footer */
 footer {
     background-color: #2a3eb1;
     color: white;
@@ -307,80 +279,13 @@ footer p {
     margin: 0;
 }
 
-/* Responsividade para mobile */
-@media (max-width: 480px) {
-    main {
-        width: 100%;
-        padding: 10px;
-    }
-
-    #resumePreview {
-        width: 100%;
-        padding: 5px;
-    }
-
-    .resume-left, .resume-right {
-        padding: 10px;
-    }
-
-    /* Ajustar o tamanho das tooltips para telas menores */
-    .tooltip {
-        max-width: 90%;
-    }
-}
-@media (max-width: 600px) {
-    .tooltip {
-        max-width: 90%;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-}
-
-
-/* Esconde elementos sem valor */
+/* Esconde elementos vazios */
 .resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
     display: none;
 }
 
-/* Cor personalizada para a coluna de dados pessoais */
+/* Paleta de cores customizável */
 .custom-bg-color {
-    background-color: var(--selected-bg-color, #e8f0fe); /* Cor padrão é azul claro */
-}
-/* Layout do currículo para formato A4 ao baixar */
-#resumePreview.a4 {
-    width: 210mm;  /* Largura A4 */
-    height: 297mm; /* Altura A4 */
-    padding: 2mm;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px auto;  /* Reduz a margem superior */
-}
-
-
-
-#colorPickerSection {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#colorPickerLabel {
-    font-size: 12pt;
-    margin-right: 10px;
-}
-
-#colorPicker {
-    width: 100%;
-    height: auto;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-@media (max-width: 600px) {
-    .tooltip {
-        max-width: 90%;
-        left: 50%;
-        transform: translateX(-50%);
-    }
+    background-color: var(--selected-bg-color, #e8f0fe);
+    color: var(--text-color, #000);
 }
