@@ -7,12 +7,12 @@ body {
     margin: 0;
     padding: 0;
     background-color: #ffffff;
-    word-wrap: break-word; 
-    box-sizing: border-box; /* Garante que padding e borda sejam incluídos no tamanho total do elemento */
+    word-wrap: break-word;
+    box-sizing: border-box;
 }
 
 header {
-    background-color: #2a3eb1;
+    background-color: #1f2e8a;
     color: #fff;
     padding: 10px 0;
     text-align: center;
@@ -36,7 +36,9 @@ main {
 
 /* Estilos de formulário */
 form section {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ddd;
 }
 
 label {
@@ -73,22 +75,36 @@ input, textarea, select {
 
 /* Botões */
 button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
+/* Diferenciando botões */
+#generateResumeButton {
+    background-color: #007BFF;
+}
+
+#downloadPdf {
+    background-color: #28a745;
+}
+
+#downloadWord {
+    background-color: #f39c12;
+}
+
+/* Efeito ao passar o mouse */
 button:hover {
-    background-color: #0056b3;
+    transform: scale(1.05);
 }
 
+/* Botões de remoção */
 .remove-button {
     background-color: #FF4B4B;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .remove-button:hover {
@@ -102,28 +118,18 @@ button:hover {
     justify-content: center;
 }
 
-/* Listas de habilidades e idiomas */
+/* Listas */
 ul {
     list-style-type: disc;
     margin: 10px 0;
     padding-left: 20px;
 }
 
-.skills-display li, .languages-display li {
-    background-color: #e8f0fe;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    color: #2a3eb1;
-    border: 1px solid #ccc;
-    margin-bottom: 5px;
-}
-
 /* Estilo do preview do currículo */
 #resumePreview {
-    width: 210mm; /* Largura A4 */
-    height: 297mm; /* Altura A4 */
-    max-width: 100%; /* Garante que não exceda o tamanho do contêiner pai */
+    width: 210mm;
+    height: 297mm;
+    max-width: 100%;
     padding: 2mm;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -138,25 +144,100 @@ ul {
     box-sizing: border-box;
 }
 
+/* Impressão */
 @media print {
+    body {
+        margin: 2.5cm;
+        font-size: 12px;
+    }
+
     #resumePreview {
-        transform: scale(0.95); /* Ajuste o valor conforme necessário */
-        transform-origin: top left; /* Garante o alinhamento */
+        width: 210mm;
+        min-height: 297mm;
+        page-break-after: always;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 }
 
+/* Ajustes para telas menores */
+@media (max-width: 768px) {
+    main {
+        width: calc(100% - 2cm);
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2, h3 {
+        font-size: 14pt;
+        margin-bottom: 15px;
+    }
+
+    p, li, input, textarea {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    #resumePreview {
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        width: 100%;
+    }
+
+    .resume-left {
+        max-width: 100%;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+    .resume-left img {
+        width: 120px;
+        height: 120px;
+    }
+
+    /* Botões */
+    button {
+        background-color: inherit !important;
+        color: inherit !important;
+    }
+
+    #generateResumeButton {
+        background-color: #007BFF !important;
+    }
+
+    #downloadPdf {
+        background-color: #28a745 !important;
+    }
+
+    #downloadWord {
+        background-color: #f39c12 !important;
+    }
+
+    .remove-button {
+        background-color: #FF4B4B !important;
+    }
+
+    .remove-button:hover {
+        background-color: #CC0000 !important;
+    }
+    
+}
 
 /* Coluna esquerda do currículo */
 .resume-left {
-    flex: 0 0 250px; /* Define uma largura fixa para a coluna esquerda */
-    max-width: 250px; /* Limita a largura máxima da coluna esquerda */
+    flex: 0 0 250px;
+    max-width: 250px;
     padding: 20px;
     background-color: #e8f0fe;
     border-right: 1px solid #ddd;
     border-radius: 5px 0 0 5px;
-    word-wrap: break-word; /* Garante que o texto não ultrapasse os limites da coluna */
+    word-wrap: break-word;
     overflow-wrap: break-word;
-    overflow-x: hidden; /* Impede que o conteúdo transborde horizontalmente */
+    overflow-x: hidden;
     box-sizing: border-box;
 }
 
@@ -190,17 +271,20 @@ ul {
 
 /* Listas no currículo */
 .resume-left ul, .resume-right ul {
-    margin: 0;
+    list-style-type: none; /* Remove os marcadores padrão */
     padding: 0;
-    list-style-position: inside;
-    word-wrap: break-word; /* Garante que os itens da lista não ultrapassem */
-    overflow-wrap: break-word;
-    box-sizing: border-box;
+    margin: 0;
 }
 
 .resume-left ul li, .resume-right ul li {
+    background-color: #e8f0fe;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #2a3eb1;
+    border: 1px solid #ccc;
     margin-bottom: 5px;
-    line-height: 1.5;
+    text-align: left;
 }
 
 /* Informações de contato */
@@ -215,12 +299,10 @@ ul {
 
 /* Resumo na coluna esquerda */
 .resume-left .summary {
-    max-height: 150px; /* Limita a altura máxima do resumo */
-    overflow-y: auto; /* Adiciona barra de rolagem para textos longos */
+    max-height: 150px;
+    overflow-y: auto;
     word-wrap: break-word;
     overflow-wrap: break-word;
-        overflow: hidden; /* Impede que o conteúdo da coluna esquerda transborde */
-
 }
 
 /* Tooltip */
@@ -237,8 +319,8 @@ ul {
     color: #fff;
     padding: 10px;
     border-radius: 5px;
-    width: 250px; /* Define uma largura maior */
-    max-width: 450px; /* Permite que o tooltip se expanda até um limite maior */
+    width: 250px;
+    max-width: 450px;
     text-align: center;
     font-size: 1.1rem;
     z-index: 9999;
