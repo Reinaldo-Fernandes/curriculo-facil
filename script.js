@@ -3,17 +3,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const resumeForm = document.getElementById('resumeForm');
     const photoInput = document.getElementById('photo');
     const resumePreview = document.getElementById('resumePreview');
-    const progressBar = document.getElementById('progressBar'); // Barra de progresso
-    const progressText = document.getElementById('progressText'); // Texto do progresso
-    const fields = Array.from(resumeForm.querySelectorAll('input, textarea')); // Seleciona todos os inputs e textareas
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const fields = Array.from(resumeForm.querySelectorAll('input, textarea'));
     const downloadPdfBtn = document.getElementById('downloadPdf');
     const downloadWordBtn = document.getElementById('downloadWord');
 
-    // 2. FUNÇÕES AUXILIARES
+    // Evento para adicionar experiência
+    document.getElementById('addExperience').addEventListener('click', addExperienceEntry);
+
+    // Atualiza a barra de progresso
     function updateProgress() {
         const totalFields = fields.length;
         let filledFields = 0;
-
         fields.forEach(field => {
             if (field.type === 'file' && field.files && field.files.length > 0) {
                 filledFields++;
@@ -21,17 +23,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 filledFields++;
             }
         });
-
         const progress = Math.min(100, Math.round((filledFields / totalFields) * 100));
         progressBar.value = progress;
         progressText.textContent = `${progress}%`;
     }
 
+    // Função de formatação de telefone
     function formatPhone(phoneInput) {
         phoneInput.addEventListener('input', () => {
             let phoneValue = phoneInput.value.replace(/\D/g, '');
             if (phoneValue.length > 11) phoneValue = phoneValue.slice(0, 11);
-
             if (phoneValue.length === 11) {
                 phoneInput.value = `(${phoneValue.slice(0, 2)}) ${phoneValue.slice(2, 7)}-${phoneValue.slice(7, 11)}`;
             } else if (phoneValue.length > 6) {
@@ -42,20 +43,37 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Inicializa formatação de telefones
+    // Inicializa a formatação de telefones
     formatPhone(document.getElementById('phone1'));
     formatPhone(document.getElementById('phone2'));
 
+    // Função para adicionar experiência dinamicamente
+    function addExperienceEntry() {
+        const experienceContainer = document.getElementById('experienceContainer');
+        const newEntry = document.createElement('div');
+        newEntry.classList.add('experience-entry');
+        newEntry.innerHTML = `
+            <input type="text" class="experience-title" placeholder="Cargo">
+            <input type="text" class="experience-company" placeholder="Empresa">
+            <input type="text" class="experience-duration" placeholder="Data de Início - Data de Término">
+            <textarea class="experience-description" placeholder="Descrição breve"></textarea>
+            <button type="button" class="remove-button">Remover</button>
+        `;
+        experienceContainer.appendChild(newEntry);
+        newEntry.querySelector('.remove-button').addEventListener('click', function () {
+            experienceContainer.removeChild(newEntry);
+        });
+    }
+
+    // Função para gerar o currículo
     function generateResume() {
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const phone1 = document.getElementById('phone1').value;
-
         if (!name || !email || !phone1) {
             alert("Por favor, preencha os campos obrigatórios.");
             return;
         }
-
         const resumeData = {
             name: name,
             address: document.getElementById('address').value,
@@ -64,12 +82,13 @@ document.addEventListener('DOMContentLoaded', function () {
             email: email,
             linkedin: document.getElementById('linkedin').value,
             summary: document.getElementById('summary').value,
+            skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
+            languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(l => l),
             photo: photoInput.files.length > 0 ? URL.createObjectURL(photoInput.files[0]) : '',
         };
 
         resumePreview.style.opacity = "0";
         resumePreview.style.display = "flex";
-
         setTimeout(() => {
             displayResumePreview(resumeData);
             resumePreview.style.opacity = "1";
@@ -77,31 +96,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 100);
     }
 
+    // Função para exibir a pré-visualização
     function displayResumePreview(data) {
-        const skillsHTML = data.skills && data.skills.length 
+        const skillsHTML = data.skills.length 
             ? `<h3>Habilidades</h3><ul>${data.skills.map(skill => `<li>${skill}</li>`).join('')}</ul>` 
             : '';
-    
-        const languagesHTML = data.languages && data.languages.length 
+        const languagesHTML = data.languages.length 
             ? `<h3>Idiomas</h3><ul>${data.languages.map(lang => `<li>${lang}</li>`).join('')}</ul>` 
             : '';
-    
-        const educationHTML = data.education && data.education.length
-            ? `<h3>Educação</h3><ul>${data.education.map(edu => `<li>${edu.title} - ${edu.institution} (${edu.duration})</li>`).join('')}</ul>` 
-            : '';
-    
-        const experienceHTML = data.experience && data.experience.length
-            ? `<h3>Experiência Profissional</h3><ul>${data.experience.map(exp => `<li><strong>${exp.title}</strong> - ${exp.company} (${exp.duration})<br>${exp.description}</li>`).join('')}</ul>` 
-            : '';
-    
-        const certificationsHTML = data.certifications && data.certifications.length
-            ? `<h3>Certificações</h3><ul>${data.certifications.map(cert => `<li><strong>${cert.name}</strong> - ${cert.institution}<br>${cert.description}</li>`).join('')}</ul>` 
-            : '';
-    
-        const activitiesHTML = data.activities 
-            ? `<h3>Atividades Extracurriculares</h3><p>${data.activities}</p>` 
-            : '';
-    
+        // Se houver outras seções (Educação, Experiência, etc.) adicione da mesma forma
         resumePreview.innerHTML = `
             <div class="resume-left custom-bg-color">
                 ${data.photo ? `<img src="${data.photo}" alt="Foto">` : ''}
@@ -118,15 +121,13 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             <div class="resume-right">
                 ${data.summary ? `<div class="summary"><h3>Resumo</h3><p>${data.summary}</p></div>` : ''}
-                ${educationHTML}
-                ${experienceHTML}
-                ${certificationsHTML}
-                ${activitiesHTML}
+                <!-- Outras seções podem ser adicionadas aqui -->
             </div>
         `;
-    }    
-    
-    // Evento para exibir prévia da foto antes de gerar o currículo
+        console.log("Preview gerada:", resumePreview.innerHTML);
+    }
+
+    // Evento para exibir a pré-visualização da foto
     photoInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
@@ -139,7 +140,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Função para baixar como PDF
+    // Eventos para os botões
+    document.getElementById('generateResumeButton').addEventListener('click', function (event) {
+        event.preventDefault();
+        generateResume();
+    });
+
     downloadPdfBtn.addEventListener('click', function () {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
@@ -148,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function () {
             format: 'a4',
             compress: true,
         });
-
         html2canvas(resumePreview, {
             scale: 2,
             useCORS: true,
@@ -160,21 +165,17 @@ document.addEventListener('DOMContentLoaded', function () {
             const imgData = canvas.toDataURL('image/png');
             const imgWidth = 170;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
             doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
             doc.save('curriculo.pdf');
         });
     });
 
-    // Função para baixar como Word
-    document.getElementById('downloadWord').addEventListener('click', function () {
-        const resumeContent = document.getElementById('resumePreview').innerHTML;
-    
+    downloadWordBtn.addEventListener('click', function () {
+        const resumeContent = resumePreview.innerHTML;
         if (!resumeContent.trim()) {
             alert("Gere o currículo antes de baixar!");
             return;
         }
-    
         let documentContent = `
             <!DOCTYPE html>
             <html>
@@ -189,17 +190,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     li { margin-bottom: 5px; }
                 </style>
             </head>
-            <body>${resumeContent}</body>
+            <body>
+                <div id="resumePreview">${resumeContent}</div>
+            </body>
             </html>`;
-    
         const blob = new Blob(['\ufeff', documentContent], { type: 'application/msword' });
-    
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = 'curriculo.doc';
-    
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    });    
+    });
 });
