@@ -1,130 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currículo Fácil</title>
-    <link rel="stylesheet" href="style.css">
-    <script defer src="script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-</head>
-<body>
-    <header>
-        <h1>Currículo Fácil <i class="fa-solid fa-sheet-plastic"></i></h1>
-    </header>
-    <main>
-        <form id="resumeForm">
-            <section>
-                <h2>Informações Pessoais <i class="fa-regular fa-user"></i></h2>
-                <label for="name">Nome Completo</label>
-                <input type="text" id="name" placeholder="Nome Completo" required>
-                <label for="address">Endereço: Logradouro, Número, CEP, Complementos</label>
-                <input type="text" id="address" placeholder="Endereço: Logradouro, Número, CEP, Complementos">
-                <label for="phone1">Telefone</label>
-                <input type="tel" id="phone1" placeholder="(00) 00000-0000" required>
-                <label for="phone2">Telefone</label>
-                <input type="tel" id="phone2" placeholder="(00) 00000-0000">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Email" required>
-                <label for="linkedin">LinkedIn</label>
-                <input type="text" id="linkedin" placeholder="LinkedIn">
-                <label for="photo">Foto</label>
-                <input type="file" id="photo" accept="image/*" aria-label="Carregar foto">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Currículo Fácil</title>
 
-                <div class="summary-container">
-                    <h2>Resumo <i class="fa-regular fa-address-card"></i>
-                        <span class="info-card" data-text="Uma breve apresentação de suas qualificações mais relevantes, destacando seus objetivos profissionais e experiência principal.">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span class="tooltip"></span>
-                        </span>
-                    </h2>
-                    <textarea id="summary" class="professional-summary" placeholder="Breve resumo das suas habilidades e experiências mais relevantes."></textarea>
-                    <div id="summaryCounter" style="font-size: 0.9rem; color: #666;">0 caracteres</div>
+        <!-- CSS Local -->
+        <link rel="stylesheet" href="./style.css">
+
+        <!-- Font Awesome CDN -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+        <!-- Scripts JS Locais -->
+        <script defer src="./script.js"></script>
+
+        <!-- Bibliotecas Externas -->
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+        <!-- Favicon -->
+        <link rel="icon" href="./favicon.ico">
+    </head>
+    <body>
+        <header>
+            <h1>Currículo Fácil <i class="fa-solid fa-sheet-plastic"></i></h1>
+        </header>
+        <main>
+            <form id="resumeForm">
+                <section>
+                    <h2>Informações Pessoais <i class="fa-regular fa-user"></i></h2>
+                    <label for="name">Nome Completo</label>
+                    <input type="text" id="name" placeholder="Nome Completo" required>
+
+                    <label for="address">Endereço</label>
+                    <input type="text" id="address" placeholder="Endereço: Logradouro, Número, CEP, Complementos">
+
+                    <label for="phone1">Telefone</label>
+                    <input type="tel" id="phone1" placeholder="(00) 00000-0000" required>
+
+                    <label for="phone2">Telefone Alternativo</label>
+                    <input type="tel" id="phone2" placeholder="(00) 00000-0000">
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Email" required>
+
+                    <label for="linkedin">LinkedIn</label>
+                    <input type="url" id="linkedin" placeholder="https://linkedin.com/in/usuario">
+
+                    <label for="photo">Foto</label>
+                    <img id="photoPreview" src="" alt="Prévia da Foto" style="display:none; width: 150px; height: 150px; border-radius: 50%; margin-top: 10px;">
+                    <input type="file" id="photo" accept="image/*" aria-label="Carregar foto">
+
+                    <div class="summary-container">
+                        <h2>Resumo <i class="fa-regular fa-address-card"></i>
+                            <span class="info-card" data-text="Uma breve apresentação de suas qualificações mais relevantes.">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                                <span class="tooltip"></span>
+                            </span>
+                        </h2>
+                        <textarea id="summary" class="professional-summary" placeholder="Breve resumo das suas habilidades e experiências mais relevantes."></textarea>
+                        <div id="summaryCounter">0 caracteres</div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Educação <i class="fa-solid fa-book"></i></h2>
+                    <div id="educationContainer"></div>
+                    <button type="button" id="addEducation">Adicionar Educação</button>
+                </section>
+
+                <section>
+                    <h2>Experiência Profissional <i class="fa-solid fa-briefcase"></i></h2>
+                    <div id="experienceContainer"></div>
+                    <button type="button" id="addExperience">Adicionar Experiência</button>
+                </section>
+
+                <section>
+                    <h2>Habilidades <i class="fa-solid fa-cogs"></i></h2>
+                    <textarea id="skills" placeholder="Exemplo: Comunicação, Liderança, Programação..."></textarea>
+                </section>
+
+                <section>
+                    <h2>Idiomas <i class="fa-solid fa-language"></i></h2>
+                    <textarea id="languages" placeholder="Exemplo: Inglês: Avançado, Espanhol: Intermediário"></textarea>
+                </section>
+
+                <section>
+                    <h2>Certificações <i class="fa-solid fa-award"></i></h2>
+                    <div id="certificationsContainer"></div>
+                    <button type="button" id="addCertification">Adicionar Certificação</button>
+                </section>
+
+                <section>
+                    <h2>Atividades Extracurriculares <i class="fa-solid fa-school-circle-exclamation"></i></h2>
+                    <textarea id="activities" placeholder="Exemplo: Voluntariado, Hobbies..."></textarea>
+                </section>
+
+                <div id="progressBarContainer">
+                    <progress id="progressBar" value="0" max="100"></progress>
+                    <span id="progressText">0%</span>
                 </div>
-            </section>
 
-            <section>
-                <h2>Educação <i class="fa-solid fa-book"></i>
-                    <span class="info-card" data-text="Sua formação acadêmica, incluindo cursos, instituições, datas de conclusão e títulos obtidos.">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                        <span class="tooltip"></span>
-                    </span>
-                </h2>
-                <div id="educationContainer"></div>
-                <button type="button" id="addEducation">Adicionar Educação</button>
-            </section>
+                <div class="buttons-container">
+                    <button type="button" id="generateResumeButton">Gerar Currículo</button>
+                    <button id="downloadPdf" type="button">Baixar em PDF</button>
+                    <button id="downloadWord" type="button">Baixar em Word</button>
+                </div>
+            </form>
 
-            <section>
-                <h2>Experiência Profissional <i class="fa-solid fa-briefcase"></i>
-                    <span class="info-card" data-text="Seus empregos anteriores, listando as empresas, cargos, datas de início e término, e principais responsabilidades e conquistas.">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                        <span class="tooltip"></span>
-                    </span>
-                </h2>
-                <div id="experienceContainer"></div>
-                <button type="button" id="addExperience">Adicionar Experiência</button>
-            </section>
+            <div id="resumePreview"></div>
+            <div id="colorPickerSection"></div>
+        </main>
 
-            <section>
-                <h2>Habilidades <i class="fa-solid fa-cogs"></i></h2>
-                <textarea id="skills" placeholder="Exemplo: Comunicação, Liderança, Programação..."></textarea>
-                <div id="skillsDisplay" class="skills-display"></div>
-            </section>
-            
-            <section>
-                <h2>Idiomas <i class="fa-solid fa-language"></i>
-                    <span class="info-card" data-text="Os idiomas que você domina, com seus respectivos níveis de proficiência (básico, intermediário, avançado).">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                        <span class="tooltip"></span>
-                    </span>
-                </h2>
-                <textarea id="languages" placeholder="Idioma 1: Nível de fluência, Idioma 2: Nível de fluência"></textarea>
-                <div id="languages-Display" class="languages-display"></div>
-            </section>
+        <footer>
+            <p>&copy; Currículo Fácil - 2024 Reinaldo Fernandes. Todos os direitos reservados.</p>
+        </footer>
 
-            <section>
-                <h2>Certificações <i class="fa-solid fa-award"></i>
-                    <span class="info-card" data-text="Cursos e treinamentos que você concluiu e que comprovam suas qualificações em determinadas áreas.">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                        <span class="tooltip"></span>
-                    </span>
-                </h2>
-                <div id="certificationsContainer"></div>
-                <button type="button" id="addCertification">Adicionar Certificação</button>
-            </section>
-
-            <section>
-                <h2>Atividades Extracurriculares <i class="fa-solid fa-school-circle-exclamation"></i>
-                    <span class="info-card" data-text="Outras atividades que você participa ou participou, como voluntariado, grupos de estudo, esportes, que demonstram seus interesses e habilidades além da área profissional.">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                        <span class="tooltip"></span>
-                    </span>
-                </h2>
-                <textarea id="activities" placeholder="Exemplo: Voluntariado, Hobbies, Grupos de Estudos..."></textarea>
-            </section>
-
-            <div id="progressBarContainer">
-                <progress id="progressBar" value="0" max="100"></progress>
-                <span id="progressText">0%</span>                
-            </div>            
-
-            <div class="buttons-container">
-                <button type="button" id="generateResumeButton">Gerar Currículo</button>
-                <button id="downloadPdf">Baixar em PDF</button>
-                <button type="button" id="downloadWord">Baixar em Word</button>
-            </div>
-        </form>
-        <div id="resumePreview"></div>
-        <div class="loading-container" id="spinner" style="display:none;">
-            <div class="loading"></div>
-        </div>
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(() => console.log('Service Worker registrado com sucesso.'))
+                    .catch(err => console.error('Falha ao registrar o Service Worker:', err));
+            }
+        </script>
         
-        <div id="colorPickerSection"></div>
-    </main>
-    <footer>
-        <p>&copy; Currículo Fácil - 2024 Reinaldo Fernandes. Todos os direitos reservados.</p>
-    </footer>
-</body>
+    </body>
 </html>
