@@ -1,346 +1,194 @@
-/* Importação de fontes */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. VARIÁVEIS GLOBAIS
+    const resumeForm = document.getElementById('resumeForm');
+    const photoInput = document.getElementById('photo');
+    const resumePreview = document.getElementById('resumePreview');
+    const progressBar = document.getElementById('progressBar'); // Barra de progresso
+    const progressText = document.getElementById('progressText'); // Texto do progresso
+    const fields = Array.from(resumeForm.querySelectorAll('input, textarea')); // Seleciona todos os inputs e textareas
+    const downloadPdfBtn = document.getElementById('downloadPdf');
+    const downloadWordBtn = document.getElementById('downloadWord');
 
-/* Estilos globais */
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #ffffff;
-    word-wrap: break-word;
-    box-sizing: border-box;
-}
+    // 2. FUNÇÕES AUXILIARES
+    function updateProgress() {
+        const totalFields = fields.length;
+        let filledFields = 0;
 
-header {
-    background-color: #1f2e8a;
-    color: #fff;
-    padding: 10px 0;
-    text-align: center;
-}
+        fields.forEach(field => {
+            if (field.type === 'file' && field.files && field.files.length > 0) {
+                filledFields++;
+            } else if (field.value.trim() !== '') {
+                filledFields++;
+            }
+        });
 
-h1 {
-    margin: 0;
-    font-size: 2rem;
-    font-family: 'Playfair Display', cursive;
-    font-weight: 400;
-}
-
-main {
-    width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Estilos de formulário */
-form section {
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #ddd;
-}
-
-label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-input, textarea, select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-/* Barra de progresso */
-#progressBarContainer {
-    margin: 20px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#progressBar {
-    width: 100%;
-    height: 20px;
-}
-
-#progressText {
-    font-size: 1rem;
-    color: #666;
-}
-
-/* Botões */
-button {
-    padding: 12px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.3s, transform 0.2s;
-    cursor: pointer;
-}
-
-/* Diferenciando botões */
-#generateResumeButton {
-    background-color: #007BFF;
-}
-
-#downloadPdf {
-    background-color: #28a745;
-}
-
-#downloadWord {
-    background-color: #f39c12;
-}
-
-/* Efeito ao passar o mouse */
-button:hover {
-    transform: scale(1.05);
-}
-
-/* Botões de remoção */
-.remove-button {
-    background-color: #FF4B4B;
-    margin-top: 10px;
-    cursor: pointer;
-}
-
-.remove-button:hover {
-    background-color: #CC0000;
-}
-
-.buttons-container {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    justify-content: center;
-}
-
-/* Listas */
-ul {
-    list-style-type: disc;
-    margin: 10px 0;
-    padding-left: 20px;
-}
-
-/* Estilo do preview do currículo */
-#resumePreview {
-    width: 210mm;
-    height: 297mm;
-    max-width: 100%;
-    padding: 2mm;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px auto;
-    display: none;
-    flex-direction: row;
-    gap: 20px;
-    border: 1px solid #ddd;
-    overflow-y: auto;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    box-sizing: border-box;
-}
-
-/* Impressão */
-@media print {
-    body {
-        margin: 2.5cm;
-        font-size: 12px;
+        const progress = Math.min(100, Math.round((filledFields / totalFields) * 100));
+        progressBar.value = progress;
+        progressText.textContent = `${progress}%`;
     }
 
-    #resumePreview {
-        width: 210mm;
-        min-height: 297mm;
-        page-break-after: always;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-}
+    function formatPhone(phoneInput) {
+        phoneInput.addEventListener('input', () => {
+            let phoneValue = phoneInput.value.replace(/\D/g, '');
+            if (phoneValue.length > 11) phoneValue = phoneValue.slice(0, 11);
 
-/* Ajustes para telas menores */
-@media (max-width: 768px) {
-    main {
-        width: calc(100% - 2cm);
-        padding: 15px;
-    }
-
-    h1 {
-        font-size: 1.8rem;
+            if (phoneValue.length === 11) {
+                phoneInput.value = `(${phoneValue.slice(0, 2)}) ${phoneValue.slice(2, 7)}-${phoneValue.slice(7, 11)}`;
+            } else if (phoneValue.length > 6) {
+                phoneInput.value = `(${phoneValue.slice(0, 2)}) ${phoneValue.slice(2, 6)}-${phoneValue.slice(6)}`;
+            } else if (phoneValue.length > 2) {
+                phoneInput.value = `(${phoneValue.slice(0, 2)}) ${phoneValue.slice(2)}`;
+            }
+        });
     }
 
-    h2, h3 {
-        font-size: 14pt;
-        margin-bottom: 15px;
+    // Inicializa formatação de telefones
+    formatPhone(document.getElementById('phone1'));
+    formatPhone(document.getElementById('phone2'));
+
+    function generateResume() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone1 = document.getElementById('phone1').value;
+
+        if (!name || !email || !phone1) {
+            alert("Por favor, preencha os campos obrigatórios.");
+            return;
+        }
+
+        const resumeData = {
+            name: name,
+            address: document.getElementById('address').value,
+            phone1: phone1,
+            phone2: document.getElementById('phone2').value,
+            email: email,
+            linkedin: document.getElementById('linkedin').value,
+            summary: document.getElementById('summary').value,
+            photo: photoInput.files.length > 0 ? URL.createObjectURL(photoInput.files[0]) : '',
+        };
+
+        resumePreview.style.opacity = "0";
+        resumePreview.style.display = "flex";
+
+        setTimeout(() => {
+            displayResumePreview(resumeData);
+            resumePreview.style.opacity = "1";
+            resumePreview.style.transition = "opacity 0.5s ease-in-out";
+        }, 100);
     }
 
-    p, li, input, textarea {
-        font-size: 0.9rem;
-        line-height: 1.4;
+    function displayResumePreview(data) {
+        const skillsHTML = data.skills && data.skills.length 
+            ? `<h3>Habilidades</h3><ul>${data.skills.map(skill => `<li>${skill}</li>`).join('')}</ul>` 
+            : '';
+    
+        const languagesHTML = data.languages && data.languages.length 
+            ? `<h3>Idiomas</h3><ul>${data.languages.map(lang => `<li>${lang}</li>`).join('')}</ul>` 
+            : '';
+    
+        resumePreview.innerHTML = `
+            <div class="resume-left custom-bg-color">
+                ${data.photo ? `<img src="${data.photo}" alt="Foto">` : ''}
+                <h2>${data.name}</h2>
+                <div class="contact-info">
+                    ${data.address ? `<p><strong>Endereço:</strong> ${data.address}</p>` : ''}
+                    <p><strong>Telefone 1:</strong> ${data.phone1}</p>
+                    ${data.phone2 ? `<p><strong>Telefone 2:</strong> ${data.phone2}</p>` : ''}
+                    <p><strong>Email:</strong> ${data.email}</p>
+                    ${data.linkedin ? `<p><strong>LinkedIn:</strong> ${data.linkedin}</p>` : ''}
+                    ${languagesHTML}
+                    ${skillsHTML}
+                </div>
+            </div>
+            <div class="resume-right">
+                ${data.summary ? `<div class="summary"><h3>Resumo</h3><p>${data.summary}</p></div>` : ''}
+                ${educationHTML}
+                ${experienceHTML}
+                ${certificationsHTML}
+                ${activitiesHTML}
+            </div>
+        `;
     }
+    
+    // Evento para exibir prévia da foto antes de gerar o currículo
+    photoInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('photoPreview').src = e.target.result;
+                document.getElementById('photoPreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
-    #resumePreview {
-        flex-direction: column;
-        align-items: center;
-        padding: 15px;
-        width: 100%;
-    }
+    // Função para baixar como PDF
+    downloadPdfBtn.addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+            compress: true,
+        });
 
-    .resume-left {
-        max-width: 100%;
-        text-align: center;
-        border-radius: 5px;
-    }
+        html2canvas(resumePreview, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            scrollX: 0,
+            scrollY: 0
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 170;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    .resume-left img {
-        width: 120px;
-        height: 120px;
-    }
-}
+            doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+            doc.save('curriculo.pdf');
+        });
+    });
 
-/* Coluna esquerda do currículo */
-.resume-left {
-    flex: 0 0 250px;
-    max-width: 250px;
-    padding: 20px;
-    background-color: #e8f0fe;
-    border-right: 1px solid #ddd;
-    border-radius: 5px 0 0 5px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    overflow-x: hidden;
-    box-sizing: border-box;
-}
-
-.resume-right {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    overflow-x: hidden;
-    box-sizing: border-box;
-}
-
-.resume-left img {
-    width: 175px;
-    height: 175px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-bottom: 20px;
-}
-
-/* Títulos */
-.resume-left h2, .resume-right h2, .resume-left h3, .resume-right h3 {
-    color: #2a3eb1;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.resume-left h3, .resume-right h3 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
-}
-
-/* Listas no currículo */
-.resume-left ul, .resume-right ul {
-    list-style-type: none; /* Remove os marcadores padrão */
-    padding: 0;
-    margin: 0;
-}
-
-.resume-left ul li, .resume-right ul li {
-    background-color: #e8f0fe;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 1rem;
-    color: #2a3eb1;
-    border: 1px solid #ccc;
-    margin-bottom: 5px;
-    text-align: left;
-}
-
-/* Informações de contato */
-.contact-info p {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #000;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-/* Resumo na coluna esquerda */
-.resume-left .summary {
-    max-height: 150px;
-    overflow-y: auto;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-/* Tooltip */
-.info-card {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-}
-
-.tooltip {
-    display: none;
-    position: absolute;
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    width: 250px;
-    max-width: 450px;
-    text-align: center;
-    font-size: 1.1rem;
-    z-index: 9999;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-}
-
-.tooltip::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #333 transparent;
-}
-
-.info-card:hover .tooltip {
-    display: block;
-}
-
-/* Footer */
-footer {
-    background-color: #2a3eb1;
-    color: white;
-    text-align: center;
-    padding: 3px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    font-family: 'Playfair Display', cursive;
-}
-
-footer p {
-    margin: 0;
-}
-
-/* Esconde elementos vazios */
-.resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
-    display: none;
-}
-
-/* Paleta de cores customizável */
-.custom-bg-color {
-    background-color: var(--selected-bg-color, #e8f0fe);
-    color: var(--text-color, #000);
-}
+    // Função para baixar como Word
+    document.getElementById('downloadWord').addEventListener('click', function () {
+        const resumeContent = document.getElementById('resumePreview').innerHTML;
+    
+        if (!resumeContent.trim()) {
+            alert("Gere o currículo antes de baixar!");
+            return;
+        }
+    
+        let documentContent = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset='UTF-8'>
+                <title>Currículo</title>
+                <link rel="stylesheet" href="./style.css">
+            </head>
+            <body>
+                <div id="resumePreview">
+                    ${resumeContent}
+                </div>
+            </body>
+            </html>`;
+    
+        const blob = new Blob(['\ufeff', documentContent], { type: 'application/msword' });
+    
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'curriculo.doc';
+    
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+    
+    
+    // Evento para gerar currículo
+    document.getElementById('generateResumeButton').addEventListener('click', function (event) {
+        event.preventDefault();
+        generateResume();
+    });
+});
