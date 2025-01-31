@@ -1,264 +1,346 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // 1. VARIÁVEIS GLOBAIS
-    const resumeForm = document.getElementById('resumeForm');
-    const photoInput = document.getElementById('photo');
-    const resumePreview = document.getElementById('resumePreview');
-    const progressBar = document.getElementById('progressBar'); // Barra de progresso
-    const progressText = document.getElementById('progressText'); // Texto do progresso
-    const fields = Array.from(resumeForm.querySelectorAll('input, textarea')); // Seleciona todos os inputs e textareas
+/* Importação de fontes */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
 
-    // 2. FUNÇÕES AUXILIARES
-    function updateProgress() {
-        const totalFields = fields.length;
-        let filledFields = 0;
+/* Estilos globais */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    word-wrap: break-word;
+    box-sizing: border-box;
+}
 
-        fields.forEach(field => {
-            if (field.type === 'file' && field.files && field.files.length > 0) {
-                filledFields++;
-            } else if (field.value.trim() !== '') {
-                filledFields++;
-            }
-        });
+header {
+    background-color: #1f2e8a;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
 
-        const progress = Math.min(100, Math.round((filledFields / totalFields) * 100));
-        progressBar.value = progress;
-        progressText.textContent = `${progress}%`;
+h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-family: 'Playfair Display', cursive;
+    font-weight: 400;
+}
+
+main {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de formulário */
+form section {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ddd;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Barra de progresso */
+#progressBarContainer {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#progressBar {
+    width: 100%;
+    height: 20px;
+}
+
+#progressText {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Botões */
+button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+    cursor: pointer;
+}
+
+/* Diferenciando botões */
+#generateResumeButton {
+    background-color: #007BFF;
+}
+
+#downloadPdf {
+    background-color: #28a745;
+}
+
+#downloadWord {
+    background-color: #f39c12;
+}
+
+/* Efeito ao passar o mouse */
+button:hover {
+    transform: scale(1.05);
+}
+
+/* Botões de remoção */
+.remove-button {
+    background-color: #FF4B4B;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.remove-button:hover {
+    background-color: #CC0000;
+}
+
+.buttons-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+/* Listas */
+ul {
+    list-style-type: disc;
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+/* Estilo do preview do currículo */
+#resumePreview {
+    width: 210mm;
+    height: 297mm;
+    max-width: 100%;
+    padding: 2mm;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px auto;
+    display: none;
+    flex-direction: row;
+    gap: 20px;
+    border: 1px solid #ddd;
+    overflow-y: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+}
+
+/* Impressão */
+@media print {
+    body {
+        margin: 2.5cm;
+        font-size: 12px;
     }
 
-    function addSection(buttonId, containerId, entryHTML) {
-        document.getElementById(buttonId).addEventListener('click', function () {
-            const container = document.getElementById(containerId);
-            const newEntry = document.createElement('div');
-            newEntry.classList.add('entry');
-            newEntry.innerHTML = entryHTML;
-            container.appendChild(newEntry);
+    #resumePreview {
+        width: 210mm;
+        min-height: 297mm;
+        page-break-after: always;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
 
-            // Atualiza progresso ao adicionar/remover
-            newEntry.querySelector('.remove-button').addEventListener('click', function () {
-                container.removeChild(newEntry);
-                updateProgress();
-            });
-
-            updateProgress();
-        });
+/* Ajustes para telas menores */
+@media (max-width: 768px) {
+    main {
+        width: calc(100% - 2cm);
+        padding: 15px;
     }
 
-    function formatPhone(phoneInput) {
-        phoneInput.addEventListener('input', () => {
-            let phoneValue = phoneInput.value.replace(/\D/g, '');
-            if (phoneValue.length > 10) {
-                phoneInput.value = `(${phoneValue.slice(0, 2)}) ${phoneValue.slice(2, 7)}-${phoneValue.slice(7, 11)}`;
-            } else if (phoneValue.length > 6) {
-                phoneInput.value = `(${phoneValue.slice(0, 2)}) ${phoneValue.slice(2, 6)}-${phoneValue.slice(6)}`;
-            } else if (phoneValue.length > 2) {
-                phoneInput.value = `(${phoneValue.slice(0, 2)}) ${phoneValue.slice(2)}`;
-            }
-        });
+    h1 {
+        font-size: 1.8rem;
     }
 
-       // Contador para o campo "Resumo"
-       document.getElementById('summary').addEventListener('input', function () {
-        const summary = document.getElementById('summary');
-        const counter = document.getElementById('summaryCounter');
-        const maxLength = 500;
-        const currentLength = summary.value.length;
-
-        if (currentLength > maxLength) {
-            summary.value = summary.value.substring(0, maxLength);
-        }
-        counter.textContent = `${summary.value.length} / ${maxLength} caracteres`;
-    });
-
-    // 3. INICIALIZAÇÃO E EVENTOS
-     // Exibe o texto do tooltip dinamicamente
-     document.querySelectorAll('.info-card').forEach(card => {
-        const tooltip = card.querySelector('.tooltip');
-        const text = card.getAttribute('data-text');
-        if (tooltip && text) {
-            tooltip.textContent = text;
-        }
-    });
-    // Atualiza progresso nos campos
-    fields.forEach(field => {
-        field.addEventListener('input', updateProgress);
-        if (field.type === 'file') field.addEventListener('change', updateProgress);
-    });
-
-    // Inicializa formatação de telefones
-    formatPhone(document.getElementById('phone1'));
-    formatPhone(document.getElementById('phone2'));
-
-   
-    // Função para adicionar entrada dinâmica de seções
-    function addSection(buttonId, containerId, entryHTML) {
-        document.getElementById(buttonId).addEventListener('click', function () {
-            const container = document.getElementById(containerId);
-            const newEntry = document.createElement('div');
-            newEntry.classList.add('entry');
-            newEntry.innerHTML = entryHTML;
-            container.appendChild(newEntry);
-
-            // Adiciona evento de remoção para o novo elemento
-            newEntry.querySelector('.remove-button').addEventListener('click', function () {
-                container.removeChild(newEntry);
-            });
-        });
+    h2, h3 {
+        font-size: 14pt;
+        margin-bottom: 15px;
     }
 
-    // Adiciona seções dinâmicas
-    addSection('addEducation', 'educationContainer', `
-        <div class="education-entry">
-            <input type="text" class="education-title" placeholder="Nome do Curso">
-            <input type="text" class="education-institution" placeholder="Instituição">
-            <input type="text" class="education-duration" placeholder="Data de Início - Data de Conclusão">
-            <button type="button" class="remove-button">Remover</button>
-        </div>
-    `);
-
-    addSection('addExperience', 'experienceContainer', `
-        <div class="experience-entry">
-            <input type="text" class="experience-title" placeholder="Cargo">
-            <input type="text" class="experience-company" placeholder="Empresa">
-            <input type="text" class="experience-duration" placeholder="Data de Início - Data de Término">
-            <textarea class="experience-description" placeholder="Descrição breve"></textarea>
-            <button type="button" class="remove-button">Remover</button>
-        </div>
-    `);
-
-    addSection('addCertification', 'certificationsContainer', `
-        <div class="certification-entry">
-            <input type="text" class="certification-name" placeholder="Nome da Certificação">
-            <input type="text" class="certification-institution" placeholder="Instituição">
-            <textarea class="certification-description" placeholder="Descrição breve"></textarea>
-            <button type="button" class="remove-button">Remover</button>
-        </div>
-    `);
-
-    // Inicializa progresso
-    updateProgress();
-
-    // Geração do currículo
-    document.getElementById('generateResumeButton').addEventListener('click', function (event) {
-        event.preventDefault();
-        generateResume();
-    });
-
-    function generateResume() {
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone1 = document.getElementById('phone1').value;
-    
-        if (!name || !email || !phone1) {
-            alert("Por favor, preencha os campos obrigatórios.");
-            return;
-        }
-    
-        const resumeData = {
-            name: name,
-            address: document.getElementById('address').value,
-            phone1: phone1,
-            phone2: document.getElementById('phone2').value,
-            email: email,
-            linkedin: document.getElementById('linkedin').value,
-            summary: document.getElementById('summary').value,
-            education: Array.from(document.querySelectorAll('.education-entry')).map(entry => ({
-                title: entry.querySelector('.education-title').value,
-                institution: entry.querySelector('.education-institution').value,
-                duration: entry.querySelector('.education-duration').value,
-            })),
-            experience: Array.from(document.querySelectorAll('.experience-entry')).map(entry => ({
-                title: entry.querySelector('.experience-title').value,
-                company: entry.querySelector('.experience-company').value,
-                duration: entry.querySelector('.experience-duration').value,
-                description: entry.querySelector('.experience-description').value,
-            })),
-            certifications: Array.from(document.querySelectorAll('.certification-entry')).map(entry => ({
-                name: entry.querySelector('.certification-name').value,
-                institution: entry.querySelector('.certification-institution').value,
-                description: entry.querySelector('.certification-description').value,
-            })),
-            activities: document.getElementById('activities').value,
-            skills: document.getElementById('skills').value.split(',').map(skill => skill.trim()).filter(skill => skill),
-            languages: document.getElementById('languages').value.split(',').map(lang => lang.trim()).filter(lang => lang),
-            photo: photoInput.files.length > 0 ? URL.createObjectURL(photoInput.files[0]) : '',
-        };
-    
-        displayResumePreview(resumeData);
-        resumePreview.style.display = 'flex';
+    p, li, input, textarea {
+        font-size: 0.9rem;
+        line-height: 1.4;
     }
-    
-    function displayResumePreview(data) {
-        const skillsHTML = data.skills && data.skills.length 
-            ? `<h3>Habilidades</h3><ul>${data.skills.map(skill => `<li>${skill}</li>`).join('')}</ul>` 
-            : '';
-        
-        const languagesHTML = data.languages && data.languages.length 
-            ? `<h3>Idiomas</h3><ul>${data.languages.map(lang => `<li>${lang}</li>`).join('')}</ul>` 
-            : '';
-        
-        const educationHTML = data.education && data.education.length
-            ? `<h3>Educação</h3><ul>${data.education.map(edu => `<li>${edu.title} - ${edu.institution} (${edu.duration})</li>`).join('')}</ul>` 
-            : '';
-        
-        const experienceHTML = data.experience && data.experience.length
-            ? `<h3>Experiência Profissional</h3><ul>${data.experience.map(exp => `<li><strong>${exp.title}</strong> - ${exp.company} (${exp.duration})<br>${exp.description}</li>`).join('')}</ul>` 
-            : '';
-        
-        const certificationsHTML = data.certifications && data.certifications.length
-            ? `<h3>Certificações</h3><ul>${data.certifications.map(cert => `<li><strong>${cert.name}</strong> - ${cert.institution}<br>${cert.description}</li>`).join('')}</ul>` 
-            : '';
-        
-        const activitiesHTML = data.activities 
-            ? `<h3>Atividades Extracurriculares</h3><p>${data.activities}</p>` 
-            : '';
-    
-        resumePreview.innerHTML = `
-            <div class="resume-left custom-bg-color">
-                ${data.photo ? `<img src="${data.photo}" alt="Foto">` : ''}
-                <h2>${data.name}</h2>
-                <div class="contact-info">
-                    ${data.address ? `<p><strong>Endereço:</strong> ${data.address}</p>` : ''}
-                    <p><strong>Telefone 1:</strong> ${data.phone1}</p>
-                    ${data.phone2 ? `<p><strong>Telefone 2:</strong> ${data.phone2}</p>` : ''}
-                    <p><strong>Email:</strong> ${data.email}</p>
-                    ${data.linkedin ? `<p><strong>LinkedIn:</strong> ${data.linkedin}</p>` : ''}
-                    ${languagesHTML}
-                    ${skillsHTML}
-                </div>
-            </div>
-            <div class="resume-right">
-                ${data.summary ? `<div class="summary"><h3>Resumo</h3><p>${data.summary}</p></div>` : ''}
-                ${educationHTML}
-                ${experienceHTML}
-                ${certificationsHTML}
-                ${activitiesHTML}
-            </div>
-        `;
-    }    
-    
-      // Função para baixar currículo como PDF
-      document.getElementById('downloadPdf').addEventListener('click', function (event) {
-        event.preventDefault();
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4'
-        });
 
-        const resumePreview = document.getElementById('resumePreview');
-        html2canvas(resumePreview, { scale: 3, useCORS: true }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const imgWidth = 210;
-            const imgHeight = canvas.height * imgWidth / canvas.width;
-            doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            doc.save('curriculo.pdf');
-        });
-    });
+    #resumePreview {
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        width: 100%;
+    }
 
-    // Listener para o botão "Gerar Currículo"
-    document.getElementById('generateResumeButton').addEventListener('click', function (event) {
-        event.preventDefault();
-        generateResume();
-    });
-});
+    .resume-left {
+        max-width: 100%;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+    .resume-left img {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+/* Coluna esquerda do currículo */
+.resume-left {
+    flex: 0 0 250px;
+    max-width: 250px;
+    padding: 20px;
+    background-color: #e8f0fe;
+    border-right: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.resume-right {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.resume-left img {
+    width: 175px;
+    height: 175px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+/* Títulos */
+.resume-left h2, .resume-right h2, .resume-left h3, .resume-right h3 {
+    color: #2a3eb1;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.resume-left h3, .resume-right h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+/* Listas no currículo */
+.resume-left ul, .resume-right ul {
+    list-style-type: none; /* Remove os marcadores padrão */
+    padding: 0;
+    margin: 0;
+}
+
+.resume-left ul li, .resume-right ul li {
+    background-color: #e8f0fe;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #2a3eb1;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+/* Informações de contato */
+.contact-info p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #000;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Resumo na coluna esquerda */
+.resume-left .summary {
+    max-height: 150px;
+    overflow-y: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Tooltip */
+.info-card {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 250px;
+    max-width: 450px;
+    text-align: center;
+    font-size: 1.1rem;
+    z-index: 9999;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+}
+
+.info-card:hover .tooltip {
+    display: block;
+}
+
+/* Footer */
+footer {
+    background-color: #2a3eb1;
+    color: white;
+    text-align: center;
+    padding: 3px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    font-family: 'Playfair Display', cursive;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* Esconde elementos vazios */
+.resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
+    display: none;
+}
+
+/* Paleta de cores customizável */
+.custom-bg-color {
+    background-color: var(--selected-bg-color, #e8f0fe);
+    color: var(--text-color, #000);
+}
