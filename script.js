@@ -86,6 +86,22 @@ document.addEventListener('DOMContentLoaded', function () {
             ? `<h3>Idiomas</h3><ul>${data.languages.map(lang => `<li>${lang}</li>`).join('')}</ul>` 
             : '';
     
+        const educationHTML = data.education && data.education.length
+            ? `<h3>Educação</h3><ul>${data.education.map(edu => `<li>${edu.title} - ${edu.institution} (${edu.duration})</li>`).join('')}</ul>` 
+            : '';
+    
+        const experienceHTML = data.experience && data.experience.length
+            ? `<h3>Experiência Profissional</h3><ul>${data.experience.map(exp => `<li><strong>${exp.title}</strong> - ${exp.company} (${exp.duration})<br>${exp.description}</li>`).join('')}</ul>` 
+            : '';
+    
+        const certificationsHTML = data.certifications && data.certifications.length
+            ? `<h3>Certificações</h3><ul>${data.certifications.map(cert => `<li><strong>${cert.name}</strong> - ${cert.institution}<br>${cert.description}</li>`).join('')}</ul>` 
+            : '';
+    
+        const activitiesHTML = data.activities 
+            ? `<h3>Atividades Extracurriculares</h3><p>${data.activities}</p>` 
+            : '';
+    
         resumePreview.innerHTML = `
             <div class="resume-left custom-bg-color">
                 ${data.photo ? `<img src="${data.photo}" alt="Foto">` : ''}
@@ -108,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ${activitiesHTML}
             </div>
         `;
-    }
+    }    
     
     // Evento para exibir prévia da foto antes de gerar o currículo
     photoInput.addEventListener('change', function (event) {
@@ -165,13 +181,15 @@ document.addEventListener('DOMContentLoaded', function () {
             <head>
                 <meta charset='UTF-8'>
                 <title>Currículo</title>
-                <link rel="stylesheet" href="./style.css">
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    #resumePreview { width: 100%; max-width: 800px; margin: auto; padding: 20px; }
+                    h2 { color: #2a3eb1; }
+                    ul { padding-left: 20px; }
+                    li { margin-bottom: 5px; }
+                </style>
             </head>
-            <body>
-                <div id="resumePreview">
-                    ${resumeContent}
-                </div>
-            </body>
+            <body>${resumeContent}</body>
             </html>`;
     
         const blob = new Blob(['\ufeff', documentContent], { type: 'application/msword' });
@@ -183,12 +201,5 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    });
-    
-    
-    // Evento para gerar currículo
-    document.getElementById('generateResumeButton').addEventListener('click', function (event) {
-        event.preventDefault();
-        generateResume();
-    });
+    });    
 });
