@@ -9,6 +9,7 @@ body {
     background-color: #ffffff;
     word-wrap: break-word;
     box-sizing: border-box;
+    padding-bottom: 50px;
 }
 
 header {
@@ -125,7 +126,7 @@ ul {
     padding-left: 20px;
 }
 
-/* Estilo do preview do currículo */
+/* Estilo do preview do currículo (layout A4, duas colunas) */
 #resumePreview {
     width: 210mm;
     height: 297mm;
@@ -134,7 +135,7 @@ ul {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 10px auto;
-    display: none;
+    display: flex;
     flex-direction: row;
     gap: 20px;
     border: 1px solid #ddd;
@@ -150,7 +151,6 @@ ul {
         margin: 2.5cm;
         font-size: 12px;
     }
-
     #resumePreview {
         width: 210mm;
         min-height: 297mm;
@@ -160,71 +160,70 @@ ul {
     }
 }
 
-/* Ajustes para telas menores */
+/* Ajustes para telas menores - forçando o layout web (duas colunas) mesmo em mobile */
 @media (max-width: 768px) {
     main {
         width: calc(100% - 2cm);
         padding: 15px;
     }
-
     h1 {
         font-size: 1.8rem;
     }
-
     h2, h3 {
         font-size: 14pt;
         margin-bottom: 15px;
     }
-
     p, li, input, textarea {
         font-size: 0.9rem;
         line-height: 1.4;
     }
-
+    /* Mantém o layout A4 e a organização em duas colunas no preview */
     #resumePreview {
-        flex-direction: column;
-        align-items: center;
-        padding: 15px;
-        width: 100%;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        padding: 2mm !important;
+        width: 210mm !important;
+        height: 297mm !important;
     }
-
     .resume-left {
-        max-width: 100%;
-        text-align: center;
+        flex: 0 0 250px;
+        max-width: 250px;
+        text-align: left; /* Mantém a formatação de desktop */
         border-radius: 5px;
     }
-
     .resume-left img {
-        width: 120px;
-        height: 120px;
+        width: 175px;
+        height: 175px;
     }
-
-    /* Botões */
+    /* Os botões ficam organizados, mas não afetam o layout do preview */
+    .buttons-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
     button {
-        background-color: inherit !important;
-        color: inherit !important;
+        width: 100%;
+        font-size: 1rem;
+        padding: 12px;
+        margin-bottom: 10px;
     }
-
+    /* Mantém as cores dos botões */
     #generateResumeButton {
         background-color: #007BFF !important;
     }
-
     #downloadPdf {
         background-color: #28a745 !important;
     }
-
     #downloadWord {
         background-color: #f39c12 !important;
     }
-
     .remove-button {
         background-color: #FF4B4B !important;
     }
-
     .remove-button:hover {
         background-color: #CC0000 !important;
     }
-    
 }
 
 /* Coluna esquerda do currículo */
@@ -241,13 +240,16 @@ ul {
     box-sizing: border-box;
 }
 
+/* Coluna direita do currículo */
 .resume-right {
+    flex: 1;
     overflow-wrap: break-word;
     word-wrap: break-word;
     overflow-x: hidden;
     box-sizing: border-box;
 }
 
+/* Imagem na coluna esquerda */
 .resume-left img {
     width: 175px;
     height: 175px;
@@ -261,7 +263,6 @@ ul {
     color: #2a3eb1;
     font-family: Arial, Helvetica, sans-serif;
 }
-
 .resume-left h3, .resume-right h3 {
     font-size: 1.2rem;
     margin-bottom: 10px;
@@ -275,7 +276,6 @@ ul {
     padding: 0;
     margin: 0;
 }
-
 .resume-left ul li, .resume-right ul li {
     background-color: #e8f0fe;
     padding: 5px 10px;
@@ -311,7 +311,6 @@ ul {
     display: inline-block;
     cursor: pointer;
 }
-
 .tooltip {
     display: none;
     position: absolute;
@@ -329,7 +328,6 @@ ul {
     transform: translateX(-50%);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
-
 .tooltip::before {
     content: '';
     position: absolute;
@@ -340,7 +338,6 @@ ul {
     border-style: solid;
     border-color: transparent transparent #333 transparent;
 }
-
 .info-card:hover .tooltip {
     display: block;
 }
@@ -355,8 +352,8 @@ footer {
     bottom: 0;
     width: 100%;
     font-family: 'Playfair Display', cursive;
+    padding-bottom: 10px;
 }
-
 footer p {
     margin: 0;
 }
