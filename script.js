@@ -162,6 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
             photo: photoInput.files.length > 0 ? URL.createObjectURL(photoInput.files[0]) : ''
         };
 
+        // Exibe o preview (mantendo o layout A4 fixo)
         resumePreview.style.opacity = "0";
         resumePreview.style.display = "flex";
         setTimeout(() => {
@@ -197,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ? `<h3>Atividades Extracurriculares</h3><p>${data.activities}</p>` 
             : '';
 
-        // Layout em duas colunas para a versão web
+        // Layout em duas colunas (fixo, A4) para o documento final
         resumePreview.innerHTML = `
             <div class="resume-left custom-bg-color">
                 ${data.photo ? `<img src="${data.photo}" alt="Foto">` : ''}
@@ -242,37 +243,59 @@ document.addEventListener('DOMContentLoaded', function () {
         generateResume();
     });
 
+    // PDF Download – Usando clone para capturar todo o conteúdo
     downloadPdfBtn.addEventListener('click', function () {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4',
-            compress: true,
-        });
-        html2canvas(resumePreview, {
+        // Clonar o elemento de preview
+        const clone = resumePreview.cloneNode(true);
+        // Remover altura fixa e overflow para capturar todo o conteúdo
+        clone.style.height = 'auto';
+        clone.style.overflow = 'visible';
+        // Posiciona o clone fora da tela
+        clone.style.position = 'absolute';
+        clone.style.top = '-9999px';
+        document.body.appendChild(clone);
+
+        html2canvas(clone, {
             scale: 2,
             useCORS: true,
             allowTaint: true,
             logging: false,
-            scrollX: 0,
-            scrollY: 0
         }).then(canvas => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+                compress: true,
+            });
+            // Ajusta a imagem para caber na página, considerando margens
             const imgData = canvas.toDataURL('image/png');
-            const imgWidth = 170;
+            const margin = 10;
+            const imgWidth = 210 - (margin * 2);
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+            doc.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
             doc.save('curriculo.pdf');
+            // Remove o clone
+            document.body.removeChild(clone);
         });
     });
 
+    // Word Download – Usando clone também (opcionalmente) para garantir o conteúdo completo
     downloadWordBtn.addEventListener('click', function () {
         const resumeContent = resumePreview.innerHTML;
         if (!resumeContent.trim()) {
             alert("Gere o currículo antes de baixar!");
             return;
         }
-        // Cria um documento com uma folha de estilo fixa para o currículo
+        // Clona o preview para garantir que todo o conteúdo seja capturado
+        const clone = resumePreview.cloneNode(true);
+        clone.style.height = 'auto';
+        clone.style.overflow = 'visible';
+        clone.style.position = 'absolute';
+        clone.style.top = '-9999px';
+        document.body.appendChild(clone);
+
+        // Cria um documento HTML fixo para o Word
         let documentContent = `
             <!DOCTYPE html>
             <html>
@@ -283,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     /* Estilo fixo para o documento final, igual à versão web */
                     #resumePreview {
                         width: 210mm;
-                        height: 297mm;
+                        min-height: 297mm;
                         padding: 2mm;
                         display: flex;
                         flex-direction: row;
@@ -307,11 +330,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         padding: 20px;
                         box-sizing: border-box;
                     }
-                    /* Outros estilos conforme necessário */
                 </style>
             </head>
             <body>
-                <div id="resumePreview">${resumeContent}</div>
+                <div id="resumePreview">${clone.innerHTML}</div>
             </body>
             </html>`;
         
@@ -322,7 +344,9 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    });    
+        // Remove o clone
+        document.body.removeChild(clone);
+    });
 
     // Atualiza a barra de progresso sempre que houver alterações
     fields.forEach(field => {
