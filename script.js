@@ -3,14 +3,67 @@ document.addEventListener('DOMContentLoaded', function () {
     const resumeForm = document.getElementById('resumeForm');
     const photoInput = document.getElementById('photo');
     const resumePreview = document.getElementById('resumePreview');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const fields = Array.from(resumeForm.querySelectorAll('input, textarea'));
+    const progressBar = document.getElementById('progressBar'); // Barra de progresso
+    const progressText = document.getElementById('progressText'); // Texto do progresso
+    const fields = Array.from(resumeForm.querySelectorAll('input, textarea, select'));
     const downloadPdfBtn = document.getElementById('downloadPdf');
     const downloadWordBtn = document.getElementById('downloadWord');
 
-    // Evento para adicionar experiência
-    document.getElementById('addExperience').addEventListener('click', addExperienceEntry);
+    // 2. EVENTOS DINÂMICOS PARA ADIÇÃO DE CAMPOS
+
+    // Adicionar Experiência
+    document.getElementById('addExperience').addEventListener('click', function () {
+        const experienceContainer = document.getElementById('experienceContainer');
+        const newEntry = document.createElement('div');
+        newEntry.classList.add('experience-entry');
+        newEntry.innerHTML = `
+            <input type="text" class="experience-title" placeholder="Cargo">
+            <input type="text" class="experience-company" placeholder="Empresa">
+            <input type="text" class="experience-duration" placeholder="Data de Início - Data de Término">
+            <textarea class="experience-description" placeholder="Descrição breve"></textarea>
+            <button type="button" class="remove-button">Remover</button>
+        `;
+        experienceContainer.appendChild(newEntry);
+        newEntry.querySelector('.remove-button').addEventListener('click', function () {
+            experienceContainer.removeChild(newEntry);
+        });
+    });
+
+    // Adicionar Educação
+    document.getElementById('addEducation').addEventListener('click', function () {
+        const educationContainer = document.getElementById('educationContainer');
+        const newEntry = document.createElement('div');
+        newEntry.classList.add('education-entry');
+        newEntry.innerHTML = `
+            <input type="text" class="education-title" placeholder="Nome do Curso">
+            <input type="text" class="education-institution" placeholder="Instituição">
+            <input type="text" class="education-duration" placeholder="Data de Início - Data de Conclusão">
+            <button type="button" class="remove-button">Remover</button>
+        `;
+        educationContainer.appendChild(newEntry);
+        newEntry.querySelector('.remove-button').addEventListener('click', function () {
+            educationContainer.removeChild(newEntry);
+        });
+    });
+
+    // Adicionar Certificação
+    document.getElementById('addCertification').addEventListener('click', function () {
+        const certificationsContainer = document.getElementById('certificationsContainer');
+        const newEntry = document.createElement('div');
+        newEntry.classList.add('certification-entry');
+        newEntry.innerHTML = `
+            <input type="text" class="certification-name" placeholder="Nome da Certificação">
+            <input type="text" class="certification-institution" placeholder="Instituição">
+            <textarea class="certification-description" placeholder="Descrição breve"></textarea>
+            <button type="button" class="remove-button">Remover</button>
+        `;
+        certificationsContainer.appendChild(newEntry);
+        newEntry.querySelector('.remove-button').addEventListener('click', function () {
+            certificationsContainer.removeChild(newEntry);
+        });
+    });
+
+    // 3. FUNÇÕES AUXILIARES
 
     // Atualiza a barra de progresso
     function updateProgress() {
@@ -28,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
         progressText.textContent = `${progress}%`;
     }
 
-    // Função de formatação de telefone
+    // Formatação de telefone
     function formatPhone(phoneInput) {
         phoneInput.addEventListener('input', () => {
             let phoneValue = phoneInput.value.replace(/\D/g, '');
@@ -42,30 +95,21 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
-    // Inicializa a formatação de telefones
     formatPhone(document.getElementById('phone1'));
     formatPhone(document.getElementById('phone2'));
 
-    // Função para adicionar experiência dinamicamente
-    function addExperienceEntry() {
-        const experienceContainer = document.getElementById('experienceContainer');
-        const newEntry = document.createElement('div');
-        newEntry.classList.add('experience-entry');
-        newEntry.innerHTML = `
-            <input type="text" class="experience-title" placeholder="Cargo">
-            <input type="text" class="experience-company" placeholder="Empresa">
-            <input type="text" class="experience-duration" placeholder="Data de Início - Data de Término">
-            <textarea class="experience-description" placeholder="Descrição breve"></textarea>
-            <button type="button" class="remove-button">Remover</button>
-        `;
-        experienceContainer.appendChild(newEntry);
-        newEntry.querySelector('.remove-button').addEventListener('click', function () {
-            experienceContainer.removeChild(newEntry);
-        });
-    }
+    // Contador do resumo
+    const summaryField = document.getElementById('summary');
+    const summaryCounter = document.getElementById('summaryCounter');
+    summaryField.addEventListener('input', function () {
+        const maxLength = 500;
+        if (this.value.length > maxLength) {
+            this.value = this.value.substring(0, maxLength);
+        }
+        summaryCounter.textContent = `${this.value.length} / ${maxLength} caracteres`;
+    });
 
-    // Função para gerar o currículo
+    // 4. FUNÇÃO PARA GERAR O CURRÍCULO
     function generateResume() {
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
@@ -74,6 +118,33 @@ document.addEventListener('DOMContentLoaded', function () {
             alert("Por favor, preencha os campos obrigatórios.");
             return;
         }
+        // Coleta de dados de habilidades e idiomas
+        const skills = document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s);
+        const languages = document.getElementById('languages').value.split(',').map(l => l.trim()).filter(l => l);
+
+        // Coleta de entradas dinâmicas (Educação, Experiência e Certificações)
+        const educationEntries = document.querySelectorAll('.education-entry');
+        const educationData = Array.from(educationEntries).map(entry => ({
+            title: entry.querySelector('.education-title') ? entry.querySelector('.education-title').value : '',
+            institution: entry.querySelector('.education-institution') ? entry.querySelector('.education-institution').value : '',
+            duration: entry.querySelector('.education-duration') ? entry.querySelector('.education-duration').value : ''
+        }));
+
+        const experienceEntries = document.querySelectorAll('.experience-entry');
+        const experienceData = Array.from(experienceEntries).map(entry => ({
+            title: entry.querySelector('.experience-title') ? entry.querySelector('.experience-title').value : '',
+            company: entry.querySelector('.experience-company') ? entry.querySelector('.experience-company').value : '',
+            duration: entry.querySelector('.experience-duration') ? entry.querySelector('.experience-duration').value : '',
+            description: entry.querySelector('.experience-description') ? entry.querySelector('.experience-description').value : ''
+        }));
+
+        const certificationEntries = document.querySelectorAll('.certification-entry');
+        const certificationData = Array.from(certificationEntries).map(entry => ({
+            name: entry.querySelector('.certification-name') ? entry.querySelector('.certification-name').value : '',
+            institution: entry.querySelector('.certification-institution') ? entry.querySelector('.certification-institution').value : '',
+            description: entry.querySelector('.certification-description') ? entry.querySelector('.certification-description').value : ''
+        }));
+
         const resumeData = {
             name: name,
             address: document.getElementById('address').value,
@@ -81,10 +152,14 @@ document.addEventListener('DOMContentLoaded', function () {
             phone2: document.getElementById('phone2').value,
             email: email,
             linkedin: document.getElementById('linkedin').value,
-            summary: document.getElementById('summary').value,
-            skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
-            languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(l => l),
-            photo: photoInput.files.length > 0 ? URL.createObjectURL(photoInput.files[0]) : '',
+            summary: summaryField.value,
+            skills: skills,
+            languages: languages,
+            education: educationData,
+            experience: experienceData,
+            certifications: certificationData,
+            activities: document.getElementById('activities').value,
+            photo: photoInput.files.length > 0 ? URL.createObjectURL(photoInput.files[0]) : ''
         };
 
         resumePreview.style.opacity = "0";
@@ -96,15 +171,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 100);
     }
 
-    // Função para exibir a pré-visualização
+    // 5. FUNÇÃO PARA EXIBIR A PRÉ-VISUALIZAÇÃO
     function displayResumePreview(data) {
         const skillsHTML = data.skills.length 
             ? `<h3>Habilidades</h3><ul>${data.skills.map(skill => `<li>${skill}</li>`).join('')}</ul>` 
             : '';
+
         const languagesHTML = data.languages.length 
             ? `<h3>Idiomas</h3><ul>${data.languages.map(lang => `<li>${lang}</li>`).join('')}</ul>` 
             : '';
-        // Se houver outras seções (Educação, Experiência, etc.) adicione da mesma forma
+
+        const educationHTML = data.education.length
+            ? `<h3>Educação</h3><ul>${data.education.map(edu => `<li>${edu.title} - ${edu.institution} (${edu.duration})</li>`).join('')}</ul>` 
+            : '';
+
+        const experienceHTML = data.experience.length
+            ? `<h3>Experiência Profissional</h3><ul>${data.experience.map(exp => `<li><strong>${exp.title}</strong> - ${exp.company} (${exp.duration})<br>${exp.description}</li>`).join('')}</ul>` 
+            : '';
+
+        const certificationsHTML = data.certifications.length
+            ? `<h3>Certificações</h3><ul>${data.certifications.map(cert => `<li><strong>${cert.name}</strong> - ${cert.institution}<br>${cert.description}</li>`).join('')}</ul>` 
+            : '';
+
+        const activitiesHTML = data.activities 
+            ? `<h3>Atividades Extracurriculares</h3><p>${data.activities}</p>` 
+            : '';
+
+        // Layout em duas colunas para a versão web
         resumePreview.innerHTML = `
             <div class="resume-left custom-bg-color">
                 ${data.photo ? `<img src="${data.photo}" alt="Foto">` : ''}
@@ -121,13 +214,16 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             <div class="resume-right">
                 ${data.summary ? `<div class="summary"><h3>Resumo</h3><p>${data.summary}</p></div>` : ''}
-                <!-- Outras seções podem ser adicionadas aqui -->
+                ${educationHTML}
+                ${experienceHTML}
+                ${certificationsHTML}
+                ${activitiesHTML}
             </div>
         `;
         console.log("Preview gerada:", resumePreview.innerHTML);
     }
 
-    // Evento para exibir a pré-visualização da foto
+    // 6. EVENTO PARA EXIBIR A PRÉ-VISUALIZAÇÃO DA FOTO
     photoInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
@@ -140,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Eventos para os botões
+    // 7. EVENTOS DOS BOTÕES
     document.getElementById('generateResumeButton').addEventListener('click', function (event) {
         event.preventDefault();
         generateResume();
@@ -201,5 +297,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    });
+
+    // Atualiza a barra de progresso sempre que houver alterações
+    fields.forEach(field => {
+        field.addEventListener('input', updateProgress);
+        if (field.type === 'file') {
+            field.addEventListener('change', updateProgress);
+        }
     });
 });
