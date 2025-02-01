@@ -160,80 +160,30 @@ ul {
     }
 }
 
-/* Ajustes para telas menores - forçando o layout web (duas colunas) mesmo em mobile */
+/* Ajustes para telas menores */
 @media (max-width: 768px) {
     main {
-        width: calc(100% - 2cm);
-        padding: 15px;
-    }
-    h1 {
-        font-size: 1.8rem;
-    }
-    h2, h3 {
-        font-size: 14pt;
-        margin-bottom: 15px;
-    }
-    p, li, input, textarea {
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-    /* Mantém o layout A4 e a organização em duas colunas no preview */
-    #resumePreview {
         width: 100%;
-        height: auto;
-        padding: 10px;
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        overflow-x: auto; /* Se necessário, permite scroll horizontal */
-    }
-    .resume-left {
-        flex: 0 0 30%;
-        max-width: 30%;
-        text-align: left;
         padding: 10px;
     }
-
-    .resume-right {
-        flex: 1;
-        padding: 10px;
+    /* Deixa o preview com as dimensões fixas A4 para que o layout final seja o mesmo */
+    #resumePreview {
+        width: 210mm;
+        height: 297mm;
+        flex-direction: row !important;
+        overflow-x: auto;
     }
-
-    .resume-left img {
-        width: 75px;
-        height: 75px;
-    }
-
-    /* Os botões ficam organizados, mas não afetam o layout do preview */
+    /* Os botões de controle adaptam-se à largura do dispositivo */
     .buttons-container {
-        display: flex;
         flex-direction: column;
         align-items: center;
         gap: 10px;
-        margin-top: 20px;
     }
-    
     button {
         width: 100%;
         font-size: 1rem;
         padding: 12px;
         margin-bottom: 10px;
-    }
-    /* Mantém as cores dos botões */
-    #generateResumeButton {
-        background-color: #007BFF !important;
-    }
-    #downloadPdf {
-        background-color: #28a745 !important;
-    }
-    #downloadWord {
-        background-color: #f39c12 !important;
-    }
-    .remove-button {
-        background-color: #FF4B4B !important;
-    }
-    .remove-button:hover {
-        background-color: #CC0000 !important;
     }
 }
 
@@ -283,7 +233,7 @@ ul {
 
 /* Listas no currículo */
 .resume-left ul, .resume-right ul {
-    list-style-type: none; /* Remove os marcadores padrão */
+    list-style-type: none;
     padding: 0;
     margin: 0;
 }
