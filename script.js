@@ -276,68 +276,43 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Word Download – Usando clone para garantir o conteúdo completo
-    downloadWordBtn.addEventListener('click', function () {
-        const resumeContent = resumePreview.innerHTML;
-        if (!resumeContent.trim()) {
-            alert("Gere o currículo antes de baixar!");
-            return;
-        }
-        // Clona o preview para capturar todo o conteúdo
+    downloadPdfBtn.addEventListener('click', function () {
+        // Clonar o elemento de preview
         const clone = resumePreview.cloneNode(true);
+        // Remover restrições para capturar todo o conteúdo
         clone.style.height = 'auto';
         clone.style.padding = '0';
         clone.style.overflow = 'visible';
+        // Posiciona o clone fora da tela
         clone.style.position = 'absolute';
         clone.style.top = '-9999px';
         document.body.appendChild(clone);
-
-        // Cria um documento HTML fixo para o Word com estilos inline otimizados
-        let documentContent = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset='UTF-8'>
-                <title>Currículo</title>
-                <style>
-                    /* Layout fixo para o documento final */
-                    #resumePreview {
-                        width: 210mm;
-                        min-height: 297mm;
-                        padding: 0;
-                        display: flex;
-                        flex-direction: row;
-                        border: none;
-                        box-sizing: border-box;
-                    }
-                    .resume-left {
-                        flex: 0 0 70mm; /* Coluna esquerda menor (ajuste conforme necessário) */
-                        max-width: 70mm;
-                        padding: 5mm;
-                        background-color: #e8f0fe;
-                        border-right: 1px solid #ddd;
-                        box-sizing: border-box;
-                    }
-                    .resume-right {
-                        flex: 1;
-                        padding: 5mm;
-                        box-sizing: border-box;
-                    }
-                </style>
-            </head>
-            <body>
-                <div id="resumePreview">${clone.innerHTML}</div>
-            </body>
-            </html>`;
-        
-        const blob = new Blob(['\ufeff', documentContent], { type: 'application/msword' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'curriculo.doc';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        document.body.removeChild(clone);
-    });
+    
+        html2canvas(clone, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            height: clone.scrollHeight, // Captura a altura total do conteúdo
+            logging: false,
+        }).then(canvas => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+                compress: true,
+            });
+            // Margem de 5mm
+            const margin = 5;
+            // Ajusta a imagem para caber na página A4 sem cortar
+            const imgWidth = 210 - (margin * 2);
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            doc.addImage(canvas.toDataURL('image/png'), 'PNG', margin, margin, imgWidth, imgHeight);
+            doc.save('curriculo.pdf');
+            // Remove o clone
+            document.body.removeChild(clone);
+        });
+    });    
 
     // Atualiza a barra de progresso sempre que houver alterações
     fields.forEach(field => {
