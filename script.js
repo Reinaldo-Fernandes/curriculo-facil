@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
             photo: photoInput.files.length > 0 ? URL.createObjectURL(photoInput.files[0]) : ''
         };
 
-        // Exibe o preview (mantendo o layout A4 fixo)
+        // Exibe o preview com layout fixo (A4)
         resumePreview.style.opacity = "0";
         resumePreview.style.display = "flex";
         setTimeout(() => {
@@ -172,33 +172,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 100);
     }
 
-    // 5. FUNÇÃO PARA EXIBIR A PRÉ-VISUALIZAÇÃO
+    // 5. FUNÇÃO PARA EXIBIR A PRÉ-VISUALIZAÇÃO (Layout A4: 210 x 297 mm)
     function displayResumePreview(data) {
         const skillsHTML = data.skills.length 
             ? `<h3>Habilidades</h3><ul>${data.skills.map(skill => `<li>${skill}</li>`).join('')}</ul>` 
             : '';
-
         const languagesHTML = data.languages.length 
             ? `<h3>Idiomas</h3><ul>${data.languages.map(lang => `<li>${lang}</li>`).join('')}</ul>` 
             : '';
-
         const educationHTML = data.education.length
             ? `<h3>Educação</h3><ul>${data.education.map(edu => `<li>${edu.title} - ${edu.institution} (${edu.duration})</li>`).join('')}</ul>` 
             : '';
-
         const experienceHTML = data.experience.length
             ? `<h3>Experiência Profissional</h3><ul>${data.experience.map(exp => `<li><strong>${exp.title}</strong> - ${exp.company} (${exp.duration})<br>${exp.description}</li>`).join('')}</ul>` 
             : '';
-
         const certificationsHTML = data.certifications.length
             ? `<h3>Certificações</h3><ul>${data.certifications.map(cert => `<li><strong>${cert.name}</strong> - ${cert.institution}<br>${cert.description}</li>`).join('')}</ul>` 
             : '';
-
         const activitiesHTML = data.activities 
             ? `<h3>Atividades Extracurriculares</h3><p>${data.activities}</p>` 
             : '';
 
-        // Layout em duas colunas (fixo, A4) para o documento final
+        // Layout final fixo (A4) para o documento
         resumePreview.innerHTML = `
             <div class="resume-left custom-bg-color">
                 ${data.photo ? `<img src="${data.photo}" alt="Foto">` : ''}
@@ -247,8 +242,9 @@ document.addEventListener('DOMContentLoaded', function () {
     downloadPdfBtn.addEventListener('click', function () {
         // Clonar o elemento de preview
         const clone = resumePreview.cloneNode(true);
-        // Remover altura fixa e overflow para capturar todo o conteúdo
+        // Remover altura fixa, padding e overflow para capturar todo o conteúdo
         clone.style.height = 'auto';
+        clone.style.padding = '0';
         clone.style.overflow = 'visible';
         // Posiciona o clone fora da tela
         clone.style.position = 'absolute';
@@ -268,34 +264,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 format: 'a4',
                 compress: true,
             });
-            // Ajusta a imagem para caber na página, considerando margens
-            const imgData = canvas.toDataURL('image/png');
-            const margin = 10;
+            // Definindo margens menores para usar melhor a página
+            const margin = 5; // 5 mm de margem
             const imgWidth = 210 - (margin * 2);
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            doc.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+            doc.addImage(canvas.toDataURL('image/png'), 'PNG', margin, margin, imgWidth, imgHeight);
             doc.save('curriculo.pdf');
             // Remove o clone
             document.body.removeChild(clone);
         });
     });
 
-    // Word Download – Usando clone também (opcionalmente) para garantir o conteúdo completo
+    // Word Download – Usando clone para garantir o conteúdo completo
     downloadWordBtn.addEventListener('click', function () {
         const resumeContent = resumePreview.innerHTML;
         if (!resumeContent.trim()) {
             alert("Gere o currículo antes de baixar!");
             return;
         }
-        // Clona o preview para garantir que todo o conteúdo seja capturado
+        // Clona o preview para capturar todo o conteúdo
         const clone = resumePreview.cloneNode(true);
         clone.style.height = 'auto';
+        clone.style.padding = '0';
         clone.style.overflow = 'visible';
         clone.style.position = 'absolute';
         clone.style.top = '-9999px';
         document.body.appendChild(clone);
 
-        // Cria um documento HTML fixo para o Word
+        // Cria um documento HTML fixo para o Word com estilos inline otimizados
         let documentContent = `
             <!DOCTYPE html>
             <html>
@@ -303,31 +299,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 <meta charset='UTF-8'>
                 <title>Currículo</title>
                 <style>
-                    /* Estilo fixo para o documento final, igual à versão web */
+                    /* Layout fixo para o documento final */
                     #resumePreview {
                         width: 210mm;
                         min-height: 297mm;
-                        padding: 2mm;
+                        padding: 0;
                         display: flex;
                         flex-direction: row;
-                        gap: 20px;
-                        background-color: #fff;
-                        border: 1px solid #ddd;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        border: none;
                         box-sizing: border-box;
                     }
                     .resume-left {
-                        flex: 0 0 250px;
-                        max-width: 250px;
-                        padding: 20px;
+                        flex: 0 0 70mm; /* Coluna esquerda menor (ajuste conforme necessário) */
+                        max-width: 70mm;
+                        padding: 5mm;
                         background-color: #e8f0fe;
                         border-right: 1px solid #ddd;
-                        border-radius: 5px 0 0 5px;
                         box-sizing: border-box;
                     }
                     .resume-right {
                         flex: 1;
-                        padding: 20px;
+                        padding: 5mm;
                         box-sizing: border-box;
                     }
                 </style>
@@ -344,7 +336,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        // Remove o clone
         document.body.removeChild(clone);
     });
 
