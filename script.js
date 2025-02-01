@@ -272,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
             alert("Gere o currículo antes de baixar!");
             return;
         }
+        // Cria um documento com uma folha de estilo fixa para o currículo
         let documentContent = `
             <!DOCTYPE html>
             <html>
@@ -279,17 +280,41 @@ document.addEventListener('DOMContentLoaded', function () {
                 <meta charset='UTF-8'>
                 <title>Currículo</title>
                 <style>
-                    body { font-family: Arial, sans-serif; }
-                    #resumePreview { width: 100%; max-width: 800px; margin: auto; padding: 20px; }
-                    h2 { color: #2a3eb1; }
-                    ul { padding-left: 20px; }
-                    li { margin-bottom: 5px; }
+                    /* Estilo fixo para o documento final, igual à versão web */
+                    #resumePreview {
+                        width: 210mm;
+                        height: 297mm;
+                        padding: 2mm;
+                        display: flex;
+                        flex-direction: row;
+                        gap: 20px;
+                        background-color: #fff;
+                        border: 1px solid #ddd;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        box-sizing: border-box;
+                    }
+                    .resume-left {
+                        flex: 0 0 250px;
+                        max-width: 250px;
+                        padding: 20px;
+                        background-color: #e8f0fe;
+                        border-right: 1px solid #ddd;
+                        border-radius: 5px 0 0 5px;
+                        box-sizing: border-box;
+                    }
+                    .resume-right {
+                        flex: 1;
+                        padding: 20px;
+                        box-sizing: border-box;
+                    }
+                    /* Outros estilos conforme necessário */
                 </style>
             </head>
             <body>
                 <div id="resumePreview">${resumeContent}</div>
             </body>
             </html>`;
+        
         const blob = new Blob(['\ufeff', documentContent], { type: 'application/msword' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
@@ -297,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    });
+    });    
 
     // Atualiza a barra de progresso sempre que houver alterações
     fields.forEach(field => {
