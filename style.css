@@ -179,29 +179,40 @@ ul {
     }
     /* Mantém o layout A4 e a organização em duas colunas no preview */
     #resumePreview {
-        flex-direction: row !important;
-        align-items: flex-start !important;
-        padding: 2mm !important;
-        width: 210mm !important;
-        height: 297mm !important;
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        overflow-x: auto; /* Se necessário, permite scroll horizontal */
     }
     .resume-left {
-        flex: 0 0 250px;
-        max-width: 250px;
-        text-align: left; /* Mantém a formatação de desktop */
-        border-radius: 5px;
+        flex: 0 0 30%;
+        max-width: 30%;
+        text-align: left;
+        padding: 10px;
     }
+
+    .resume-right {
+        flex: 1;
+        padding: 10px;
+    }
+
     .resume-left img {
         width: 175px;
         height: 175px;
     }
+
     /* Os botões ficam organizados, mas não afetam o layout do preview */
     .buttons-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 10px;
+        margin-top: 20px;
     }
+    
     button {
         width: 100%;
         font-size: 1rem;
