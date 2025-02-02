@@ -253,38 +253,25 @@ document.addEventListener('DOMContentLoaded', function () {
     // Word Download – Usando clone para garantir o conteúdo completo
     downloadPdfBtn.addEventListener('click', function () {
         const clone = resumePreview.cloneNode(true);
-        clone.style.height = 'auto';
-        clone.style.overflow = 'visible';
-        clone.style.position = 'absolute';
-        clone.style.top = '-9999px';
         clone.style.width = '210mm';
         clone.style.minHeight = '297mm';
+        clone.style.margin = '0';
+        clone.style.padding = '10mm';
+        clone.style.boxSizing = 'border-box';
+        clone.style.fontSize = '12px';
     
-        document.body.appendChild(clone);
-    
-        html2canvas(clone, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            height: clone.scrollHeight,
-            logging: false,
-        }).then(canvas => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4',
-                compress: true,
-            });
-    
-            const margin = 5;
-            const imgWidth = 210 - (margin * 2);
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            doc.addImage(canvas.toDataURL('image/png'), 'PNG', margin, margin, imgWidth, imgHeight);
-            doc.save('curriculo.pdf');
-            document.body.removeChild(clone);
-        });
-    });       
+        html2pdf()
+            .set({
+                margin: [10, 10, 10, 10], // Margem de 10mm em todas as direções
+                filename: 'curriculo.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: false, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            })
+            .from(clone)
+            .save();
+    });
+        
 
     // Atualiza a barra de progresso sempre que houver alterações
     function updateProgress() {
