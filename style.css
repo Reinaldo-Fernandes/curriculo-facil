@@ -161,6 +161,7 @@ ul {
 }
 
 /* Ajustes para telas menores */
+
 @media (max-width: 768px) {
     main {
         width: 100%;
@@ -168,10 +169,12 @@ ul {
     }
     /* Deixa o preview com as dimensões fixas A4 para que o layout final seja o mesmo */
     #resumePreview {
-        width: 210mm;
-        height: 297mm;
-        flex-direction: row !important;
-        overflow-x: auto;
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height: 500px;
     }
     /* Os botões de controle adaptam-se à largura do dispositivo */
     .buttons-container {
@@ -212,11 +215,13 @@ ul {
 
 /* Imagem na coluna esquerda */
 .resume-left img {
-    width: 175px;
-    height: 175px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     border-radius: 50%;
-    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    display: block;
+    margin: 0 auto;
 }
 
 /* Títulos */
