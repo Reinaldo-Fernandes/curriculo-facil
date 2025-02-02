@@ -219,18 +219,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Preview gerada:", resumePreview.innerHTML);
     }
 
-            function debounce(func, delay) {
-            let timer;
-            return function (...args) {
-                clearTimeout(timer);
-                timer = setTimeout(() => func.apply(this, args), delay);
-            };
-        }
-        const debouncedUpdateProgress = debounce(updateProgress, 300);
-        fields.forEach(field => {
-            field.addEventListener('input', debouncedUpdateProgress);
-        });
-
     // 6. EVENTO PARA EXIBIR A PRÉ-VISUALIZAÇÃO DA FOTO
     photoInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
@@ -249,39 +237,52 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         generateResume();
     });
+
     
     // Word Download – Usando clone para garantir o conteúdo completo
     downloadPdfBtn.addEventListener('click', function () {
+        // Clonar o elemento de preview
         const clone = resumePreview.cloneNode(true);
-        clone.style.width = '210mm';
-        clone.style.minHeight = '297mm';
-        clone.style.margin = '0';
-        clone.style.padding = '10mm';
-        clone.style.boxSizing = 'border-box';
-        clone.style.fontSize = '12px';
+        // Remover restrições para capturar todo o conteúdo
+        clone.style.height = 'auto';
+        clone.style.padding = '0';
+        clone.style.overflow = 'visible';
+        // Posiciona o clone fora da tela
+        clone.style.position = 'absolute';
+        clone.style.top = '-9999px';
+        document.body.appendChild(clone);
     
-        html2pdf()
-            .set({
-                margin: [10, 10, 10, 10], // Margem de 10mm em todas as direções
-                filename: 'curriculo.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, logging: false, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            })
-            .from(clone)
-            .save();
-    });
-        
+        html2canvas(clone, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            height: clone.scrollHeight, // Captura a altura total do conteúdo
+            logging: false,
+        }).then(canvas => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+                compress: true,
+            });
+            // Margem de 5mm
+            const margin = 5;
+            // Ajusta a imagem para caber na página A4 sem cortar
+            const imgWidth = 210 - (margin * 2);
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            doc.addImage(canvas.toDataURL('image/png'), 'PNG', margin, margin, imgWidth, imgHeight);
+            doc.save('curriculo.pdf');
+            // Remove o clone
+            document.body.removeChild(clone);
+        });
+    });    
 
     // Atualiza a barra de progresso sempre que houver alterações
-    function updateProgress() {
-        const totalFields = fields.filter(field => field.offsetParent !== null).length;
-        let filledFields = fields.filter(field => field.value.trim() !== '').length;
-    
-        const progress = Math.min(100, Math.round((filledFields / totalFields) * 100));
-        progressBar.value = progress;
-        progressText.textContent = `${progress}%`;
-    }
-    
-    
+    fields.forEach(field => {
+        field.addEventListener('input', updateProgress);
+        if (field.type === 'file') {
+            field.addEventListener('change', updateProgress);
+        }
+    });
 });
