@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const downloadWordBtn = document.getElementById('downloadWord');
     const generateResumeButton = document.getElementById('generateResumeButton');
 
-    // 2. EVENTOS DINÂMICOS PARA ADIÇÃO DE CAMPOS
-
+    // 2. FUNÇÕES PARA ADICIONAR CAMPOS DINÂMICOS
     function addField(containerId, html) {
         const container = document.getElementById(containerId);
         const newEntry = document.createElement('div');
@@ -25,34 +24,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('addExperience').addEventListener('click', function () {
         addField('experienceContainer', `
-            <input type="text" class="experience-title" placeholder="Cargo">
-            <input type="text" class="experience-company" placeholder="Empresa">
-            <input type="text" class="experience-duration" placeholder="Data de Início - Data de Término">
-            <textarea class="experience-description" placeholder="Descrição breve"></textarea>
-            <button type="button" class="remove-button">Remover</button>
+            <div class="experience-entry">
+                <input type="text" class="experience-title" placeholder="Cargo">
+                <input type="text" class="experience-company" placeholder="Empresa">
+                <input type="text" class="experience-duration" placeholder="Data de Início - Data de Término">
+                <textarea class="experience-description" placeholder="Descrição breve"></textarea>
+                <button type="button" class="remove-button">Remover</button>
+            </div>
         `);
     });
 
     document.getElementById('addEducation').addEventListener('click', function () {
         addField('educationContainer', `
-            <input type="text" class="education-title" placeholder="Nome do Curso">
-            <input type="text" class="education-institution" placeholder="Instituição">
-            <input type="text" class="education-duration" placeholder="Data de Início - Data de Conclusão">
-            <button type="button" class="remove-button">Remover</button>
+            <div class="education-entry">
+                <input type="text" class="education-title" placeholder="Nome do Curso">
+                <input type="text" class="education-institution" placeholder="Instituição">
+                <input type="text" class="education-duration" placeholder="Data de Início - Data de Conclusão">
+                <button type="button" class="remove-button">Remover</button>
+            </div>
         `);
     });
 
     document.getElementById('addCertification').addEventListener('click', function () {
         addField('certificationsContainer', `
-            <input type="text" class="certification-name" placeholder="Nome da Certificação">
-            <input type="text" class="certification-institution" placeholder="Instituição">
-            <textarea class="certification-description" placeholder="Descrição breve"></textarea>
-            <button type="button" class="remove-button">Remover</button>
+            <div class="certification-entry">
+                <input type="text" class="certification-name" placeholder="Nome da Certificação">
+                <input type="text" class="certification-institution" placeholder="Instituição">
+                <textarea class="certification-description" placeholder="Descrição breve"></textarea>
+                <button type="button" class="remove-button">Remover</button>
+            </div>
         `);
     });
 
     // 3. FUNÇÕES AUXILIARES
-
     function updateProgress() {
         const totalFields = fields.length;
         let filledFields = fields.filter(field => field.value.trim() !== '').length;
@@ -61,23 +65,16 @@ document.addEventListener('DOMContentLoaded', function () {
         progressText.textContent = `${progress}%`;
     }
 
-    function formatPhone(phoneInput) {
-        phoneInput.addEventListener('input', () => {
-            let phoneValue = phoneInput.value.replace(/\D/g, '').slice(0, 11);
-            phoneInput.value = phoneValue.replace(/^(\d{2})(\d{5})?(\d{4})$/, '($1) $2-$3');
-        });
+    function getDynamicEntries(selector, fields) {
+        return Array.from(document.querySelectorAll(selector)).map(entry => {
+            let data = {};
+            fields.forEach(field => {
+                let element = entry.querySelector(field.selector);
+                data[field.name] = element ? element.value.trim() : '';
+            });
+            return data;
+        }).filter(entry => Object.values(entry).some(value => value));
     }
-
-    formatPhone(document.getElementById('phone1'));
-    formatPhone(document.getElementById('phone2'));
-
-    const summaryField = document.getElementById('summary');
-    summaryField.addEventListener('input', function () {
-        this.value = this.value.substring(0, 500);
-        document.getElementById('summaryCounter').textContent = `${this.value.length} / 500 caracteres`;
-    });
-
-    // 4. FUNÇÃO PARA GERAR O CURRÍCULO
 
     function generateResume() {
         const name = document.getElementById('name').value.trim();
@@ -99,62 +96,51 @@ document.addEventListener('DOMContentLoaded', function () {
             phone2: document.getElementById('phone2').value,
             email,
             linkedin: document.getElementById('linkedin').value,
-            summary: summaryField.value,
-            skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
-            languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(l => l),
-            photo: photoInput.files.length > 0 ? URL.createObjectURL(photoInput.files[0]) : ''
+            summary: document.getElementById('summary').value.trim(),
+            skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(Boolean),
+            languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(Boolean),
+            education: getDynamicEntries('.education-entry', [
+                { selector: '.education-title', name: 'title' },
+                { selector: '.education-institution', name: 'institution' },
+                { selector: '.education-duration', name: 'duration' }
+            ]),
+            experience: getDynamicEntries('.experience-entry', [
+                { selector: '.experience-title', name: 'title' },
+                { selector: '.experience-company', name: 'company' },
+                { selector: '.experience-duration', name: 'duration' },
+                { selector: '.experience-description', name: 'description' }
+            ]),
+            certifications: getDynamicEntries('.certification-entry', [
+                { selector: '.certification-name', name: 'name' },
+                { selector: '.certification-institution', name: 'institution' },
+                { selector: '.certification-description', name: 'description' }
+            ]),
+            activities: document.getElementById('activities').value.trim()
         };
 
         resumePreview.innerHTML = `
             <div class="resume-left">
-                ${resumeData.photo ? `<img src="${resumeData.photo}" alt="Foto">` : ''}
                 <h2>${resumeData.name}</h2>
                 <p><strong>Email:</strong> ${resumeData.email}</p>
                 <p><strong>Telefone:</strong> ${resumeData.phone1}</p>
                 ${resumeData.phone2 ? `<p><strong>Telefone 2:</strong> ${resumeData.phone2}</p>` : ''}
                 ${resumeData.linkedin ? `<p><strong>LinkedIn:</strong> ${resumeData.linkedin}</p>` : ''}
+                ${resumeData.skills.length ? `<h3>Habilidades</h3><ul>${resumeData.skills.map(s => `<li>${s}</li>`).join('')}</ul>` : ''}
+                ${resumeData.languages.length ? `<h3>Idiomas</h3><ul>${resumeData.languages.map(l => `<li>${l}</li>`).join('')}</ul>` : ''}
             </div>
             <div class="resume-right">
                 ${resumeData.summary ? `<h3>Resumo</h3><p>${resumeData.summary}</p>` : ''}
+                ${resumeData.education.length ? `<h3>Educação</h3><ul>${resumeData.education.map(e => `<li>${e.title} - ${e.institution} (${e.duration})</li>`).join('')}</ul>` : ''}
+                ${resumeData.experience.length ? `<h3>Experiência Profissional</h3><ul>${resumeData.experience.map(exp => `<li>${exp.title} - ${exp.company} (${exp.duration})<br>${exp.description}</li>`).join('')}</ul>` : ''}
+                ${resumeData.certifications.length ? `<h3>Certificações</h3><ul>${resumeData.certifications.map(cert => `<li>${cert.name} - ${cert.institution}<br>${cert.description}</li>`).join('')}</ul>` : ''}
+                ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
             </div>
         `;
     }
 
-    // 5. EVENTOS DOS BOTÕES
-
     generateResumeButton.addEventListener('click', function (event) {
         event.preventDefault();
         generateResume();
-    });
-
-    downloadPdfBtn.addEventListener('click', function () {
-        if (resumePreview.style.display === "none") {
-            alert("Gere o currículo antes de baixar o PDF.");
-            return;
-        }
-
-        html2pdf().set({
-            margin: 10,
-            filename: 'curriculo.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2, logging: false, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(resumePreview).save();
-    });
-
-    downloadWordBtn.addEventListener('click', function () {
-        const content = `
-            <html><head><meta charset='UTF-8'></head><body>
-            ${resumePreview.innerHTML}
-            </body></html>`;
-
-        const blob = new Blob(['\ufeff' + content], { type: 'application/msword' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'curriculo.doc';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
     });
 
     fields.forEach(field => field.addEventListener('input', updateProgress));
