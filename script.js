@@ -111,13 +111,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 4. FUNÇÃO PARA GERAR O CURRÍCULO
     function generateResume() {
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone1 = document.getElementById('phone1').value;
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone1 = document.getElementById('phone1').value.trim();
+    
         if (!name || !email || !phone1) {
             alert("Por favor, preencha os campos obrigatórios.");
+            resumePreview.style.display = "none"; // Oculta o preview se não houver dados
             return;
         }
+
+           // Mostrar o preview ao gerar o currículo
+    resumePreview.style.display = "flex";
+
         // Coleta de dados de habilidades e idiomas
         const skills = document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s);
         const languages = document.getElementById('languages').value.split(',').map(l => l.trim()).filter(l => l);
@@ -241,41 +247,28 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Word Download – Usando clone para garantir o conteúdo completo
     downloadPdfBtn.addEventListener('click', function () {
-        // Clonar o elemento de preview
-        const clone = resumePreview.cloneNode(true);
-        // Remover restrições para capturar todo o conteúdo
-        clone.style.height = 'auto';
-        clone.style.padding = '0';
-        clone.style.overflow = 'visible';
-        // Posiciona o clone fora da tela
-        clone.style.position = 'absolute';
-        clone.style.top = '-9999px';
-        document.body.appendChild(clone);
+        if (resumePreview.style.display === "none") {
+            alert("Gere o currículo antes de baixar o PDF.");
+            return;
+        }
     
-        html2canvas(clone, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            height: clone.scrollHeight, // Captura a altura total do conteúdo
-            logging: false,
-        }).then(canvas => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4',
-                compress: true,
-            });
-            // Margem de 5mm
-            const margin = 5;
-            // Ajusta a imagem para caber na página A4 sem cortar
-            const imgWidth = 210 - (margin * 2);
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            doc.addImage(canvas.toDataURL('image/png'), 'PNG', margin, margin, imgWidth, imgHeight);
-            doc.save('curriculo.pdf');
-            // Remove o clone
-            document.body.removeChild(clone);
-        });
+        const clone = resumePreview.cloneNode(true);
+        clone.style.width = '210mm';
+        clone.style.minHeight = '297mm';
+        clone.style.padding = '20px';
+        clone.style.fontSize = '12px';
+        clone.style.display = 'block';
+    
+        html2pdf()
+            .set({
+                margin: 10,
+                filename: 'curriculo.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: false, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            })
+            .from(clone)
+            .save();
     });    
 
     // Atualiza a barra de progresso sempre que houver alterações
