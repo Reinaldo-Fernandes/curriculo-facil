@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const resumePreview = document.getElementById('resumePreview');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
-    const fields = Array.from(resumeForm.querySelectorAll('input, textarea, select'));
     const downloadPdfBtn = document.getElementById('downloadPdf');
     const downloadWordBtn = document.getElementById('downloadWord');
     const generateResumeButton = document.getElementById('generateResumeButton');
@@ -61,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 3. FUNÇÃO PARA ATUALIZAR A BARRA DE PROGRESSO
     function updateProgress() {
+        const fields = Array.from(resumeForm.querySelectorAll('input, textarea, select'));
         const totalFields = fields.length;
         let filledFields = fields.filter(field => field.value.trim() !== '').length;
         const progress = Math.round((filledFields / totalFields) * 100);
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 📥 DOWNLOAD PDF
     downloadPdfBtn.addEventListener('click', function () {
-        if (resumePreview.style.display === "none") {
+        if (resumePreview.style.display === "none" || resumePreview.innerHTML.trim() === '') {
             alert("Gere o currículo antes de baixar o PDF.");
             return;
         }
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 📥 DOWNLOAD WORD
     downloadWordBtn.addEventListener('click', function () {
-        if (resumePreview.style.display === "none") {
+        if (resumePreview.style.display === "none" || resumePreview.innerHTML.trim() === '') {
             alert("Gere o currículo antes de baixar o Word.");
             return;
         }
