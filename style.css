@@ -135,7 +135,7 @@ ul {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 10px auto;
-    display: none;
+    display: none !important;
     flex-direction: row;
     gap: 20px;
     border: 1px solid #ddd;
@@ -143,6 +143,7 @@ ul {
     word-wrap: break-word;
     overflow-wrap: break-word;
     box-sizing: border-box;
+    transition: opacity 0.3s ease-in-out;
 }
 
 /* Impressão */
@@ -171,6 +172,8 @@ ul {
         overflow-y: auto;
         max-height: none;
         padding: 10px;
+        max-height: 500px;
+        display: none;
     }
 
     .resume-left {
