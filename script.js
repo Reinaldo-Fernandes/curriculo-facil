@@ -119,21 +119,12 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         resumePreview.innerHTML = `
-            <div class="resume-left">
+            <div id="resumeContent">
                 <h2>${resumeData.name}</h2>
                 <p><strong>Email:</strong> ${resumeData.email}</p>
                 <p><strong>Telefone:</strong> ${resumeData.phone1}</p>
                 ${resumeData.phone2 ? `<p><strong>Telefone 2:</strong> ${resumeData.phone2}</p>` : ''}
                 ${resumeData.linkedin ? `<p><strong>LinkedIn:</strong> ${resumeData.linkedin}</p>` : ''}
-                ${resumeData.skills.length ? `<h3>Habilidades</h3><ul>${resumeData.skills.map(s => `<li>${s}</li>`).join('')}</ul>` : ''}
-                ${resumeData.languages.length ? `<h3>Idiomas</h3><ul>${resumeData.languages.map(l => `<li>${l}</li>`).join('')}</ul>` : ''}
-            </div>
-            <div class="resume-right">
-                ${resumeData.summary ? `<h3>Resumo</h3><p>${resumeData.summary}</p>` : ''}
-                ${resumeData.education.length ? `<h3>Educação</h3><ul>${resumeData.education.map(e => `<li>${e.title} - ${e.institution} (${e.duration})</li>`).join('')}</ul>` : ''}
-                ${resumeData.experience.length ? `<h3>Experiência Profissional</h3><ul>${resumeData.experience.map(exp => `<li>${exp.title} - ${exp.company} (${exp.duration})<br>${exp.description}</li>`).join('')}</ul>` : ''}
-                ${resumeData.certifications.length ? `<h3>Certificações</h3><ul>${resumeData.certifications.map(cert => `<li>${cert.name} - ${cert.institution}<br>${cert.description}</li>`).join('')}</ul>` : ''}
-                ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
             </div>
         `;
     }
@@ -141,6 +132,49 @@ document.addEventListener('DOMContentLoaded', function () {
     generateResumeButton.addEventListener('click', function (event) {
         event.preventDefault();
         generateResume();
+    });
+
+    // 📥 BOTÃO DOWNLOAD PDF (CORRIGIDO)
+    downloadPdfBtn.addEventListener('click', function () {
+        if (resumePreview.style.display === "none") {
+            alert("Gere o currículo antes de baixar o PDF.");
+            return;
+        }
+
+        html2pdf()
+            .set({
+                margin: 10,
+                filename: 'curriculo.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 2, logging: false, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            })
+            .from(resumePreview)
+            .save();
+    });
+
+    // 📥 BOTÃO DOWNLOAD WORD (CORRIGIDO)
+    downloadWordBtn.addEventListener('click', function () {
+        if (resumePreview.style.display === "none") {
+            alert("Gere o currículo antes de baixar o Word.");
+            return;
+        }
+
+        const content = `<!DOCTYPE html>
+            <html>
+            <head><meta charset='UTF-8'></head>
+            <body>
+                ${resumePreview.innerHTML}
+            </body>
+            </html>`;
+
+        const blob = new Blob(['\ufeff' + content], { type: 'application/msword' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'curriculo.doc';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     });
 
     fields.forEach(field => field.addEventListener('input', updateProgress));
