@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // 1. VARIÁVEIS GLOBAIS
     const resumeForm = document.getElementById('resumeForm');
-    const photoInput = document.getElementById('photo');
     const resumePreview = document.getElementById('resumePreview');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
@@ -10,7 +9,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const downloadWordBtn = document.getElementById('downloadWord');
     const generateResumeButton = document.getElementById('generateResumeButton');
 
-    // 2. FUNÇÕES PARA ADICIONAR CAMPOS DINÂMICOS
+    // ✅ Garante que a pré-visualização está oculta ao carregar a página
+    resumePreview.style.display = "none";
+    resumePreview.style.opacity = "0";
+
+    // 2. FUNÇÃO PARA ADICIONAR CAMPOS DINÂMICOS
     function addField(containerId, html) {
         const container = document.getElementById(containerId);
         const newEntry = document.createElement('div');
@@ -56,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         `);
     });
 
-    // 3. FUNÇÕES AUXILIARES
+    // 3. FUNÇÃO PARA ATUALIZAR A BARRA DE PROGRESSO
     function updateProgress() {
         const totalFields = fields.length;
         let filledFields = fields.filter(field => field.value.trim() !== '').length;
@@ -65,17 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
         progressText.textContent = `${progress}%`;
     }
 
-    function getDynamicEntries(selector, fields) {
-        return Array.from(document.querySelectorAll(selector)).map(entry => {
-            let data = {};
-            fields.forEach(field => {
-                let element = entry.querySelector(field.selector);
-                data[field.name] = element ? element.value.trim() : '';
-            });
-            return data;
-        }).filter(entry => Object.values(entry).some(value => value));
-    }
-
+    // 4. FUNÇÃO PARA GERAR O CURRÍCULO
     function generateResume() {
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
@@ -84,47 +77,45 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!name || !email || !phone1) {
             alert("Preencha os campos obrigatórios.");
             resumePreview.style.display = "none";
+            resumePreview.style.opacity = "0";
             return;
         }
 
-        resumePreview.style.display = "flex";
+        // ✅ Exibe a pré-visualização apenas depois de gerar o currículo
+        resumePreview.style.display = "block";
+        setTimeout(() => {
+            resumePreview.style.opacity = "1";
+        }, 100);
 
+        // 🔥 Corrige a coleta de dados dinâmicos
         const resumeData = {
             name,
-            address: document.getElementById('address').value,
+            email,
             phone1,
             phone2: document.getElementById('phone2').value,
-            email,
             linkedin: document.getElementById('linkedin').value,
             summary: document.getElementById('summary').value.trim(),
             skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(Boolean),
             languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(Boolean),
-            education: getDynamicEntries('.education-entry', [
-                { selector: '.education-title', name: 'title' },
-                { selector: '.education-institution', name: 'institution' },
-                { selector: '.education-duration', name: 'duration' }
-            ]),
-            experience: getDynamicEntries('.experience-entry', [
-                { selector: '.experience-title', name: 'title' },
-                { selector: '.experience-company', name: 'company' },
-                { selector: '.experience-duration', name: 'duration' },
-                { selector: '.experience-description', name: 'description' }
-            ]),
-            certifications: getDynamicEntries('.certification-entry', [
-                { selector: '.certification-name', name: 'name' },
-                { selector: '.certification-institution', name: 'institution' },
-                { selector: '.certification-description', name: 'description' }
-            ]),
+            education: document.getElementById('educationContainer').innerHTML,
+            experience: document.getElementById('experienceContainer').innerHTML,
+            certifications: document.getElementById('certificationsContainer').innerHTML,
             activities: document.getElementById('activities').value.trim()
         };
 
         resumePreview.innerHTML = `
-            <div id="resumeContent">
+            <div class="resume-content">
                 <h2>${resumeData.name}</h2>
                 <p><strong>Email:</strong> ${resumeData.email}</p>
                 <p><strong>Telefone:</strong> ${resumeData.phone1}</p>
                 ${resumeData.phone2 ? `<p><strong>Telefone 2:</strong> ${resumeData.phone2}</p>` : ''}
                 ${resumeData.linkedin ? `<p><strong>LinkedIn:</strong> ${resumeData.linkedin}</p>` : ''}
+                ${resumeData.skills.length ? `<h3>Habilidades</h3><ul>${resumeData.skills.map(s => `<li>${s}</li>`).join('')}</ul>` : ''}
+                ${resumeData.languages.length ? `<h3>Idiomas</h3><ul>${resumeData.languages.map(l => `<li>${l}</li>`).join('')}</ul>` : ''}
+                <h3>Educação</h3>${resumeData.education}
+                <h3>Experiência Profissional</h3>${resumeData.experience}
+                <h3>Certificações</h3>${resumeData.certifications}
+                ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
             </div>
         `;
     }
@@ -134,33 +125,30 @@ document.addEventListener('DOMContentLoaded', function () {
         generateResume();
     });
 
-    // 📥 BOTÃO DOWNLOAD PDF (CORRIGIDO)
+    // 📥 DOWNLOAD PDF
     downloadPdfBtn.addEventListener('click', function () {
         if (resumePreview.style.display === "none") {
             alert("Gere o currículo antes de baixar o PDF.");
             return;
         }
 
-        html2pdf()
-            .set({
-                margin: 10,
-                filename: 'curriculo.pdf',
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 2, logging: false, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            })
-            .from(resumePreview)
-            .save();
+        html2pdf().set({
+            margin: 10,
+            filename: 'curriculo.pdf',
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 2, logging: false, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        }).from(resumePreview).save();
     });
 
-    // 📥 BOTÃO DOWNLOAD WORD (CORRIGIDO)
+    // 📥 DOWNLOAD WORD
     downloadWordBtn.addEventListener('click', function () {
         if (resumePreview.style.display === "none") {
             alert("Gere o currículo antes de baixar o Word.");
             return;
         }
 
-        const content = `<!DOCTYPE html>
+        const content = `
             <html>
             <head><meta charset='UTF-8'></head>
             <body>
