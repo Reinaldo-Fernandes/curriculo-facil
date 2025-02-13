@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 📥 DOWNLOAD PDF
     downloadPdfBtn.addEventListener('click', function () {
-        if (resumePreview.style.display === "none" || resumePreview.innerHTML.trim() === '') {
+        if (!resumePreview.innerHTML.trim()) {
             alert("Gere o currículo antes de baixar o PDF.");
             return;
         }
@@ -142,28 +142,29 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 📥 DOWNLOAD WORD
-    downloadWordBtn.addEventListener('click', function () {
-        if (resumePreview.style.display === "none" || resumePreview.innerHTML.trim() === '') {
-            alert("Gere o currículo antes de baixar o Word.");
+    downloadPdfBtn.addEventListener('click', function () {
+        if (!resumePreview.innerHTML.trim()) {
+            alert("Gere o currículo antes de baixar o PDF.");
             return;
         }
-
-        const content = `
-            <html>
-            <head><meta charset='UTF-8'></head>
-            <body>
-                ${resumePreview.innerHTML}
-            </body>
-            </html>`;
-
-        const blob = new Blob(['\ufeff' + content], { type: 'application/msword' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'curriculo.doc';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    
+        const element = document.getElementById('resumePreview');
+        
+        html2canvas(element, { scale: 2 }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+    
+            const imgWidth = 210; // Largura A4 em mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width; // Mantém proporção
+    
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            pdf.save('curriculo.pdf');
+        });
     });
-
+    
     fields.forEach(field => field.addEventListener('input', updateProgress));
 });
