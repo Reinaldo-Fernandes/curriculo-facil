@@ -81,13 +81,16 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // ✅ Exibe a pré-visualização apenas depois de gerar o currículo
+        // ✅ Exibe a pré-visualização corretamente
         resumePreview.style.display = "block";
         setTimeout(() => {
             resumePreview.style.opacity = "1";
         }, 100);
 
-        // 🔥 Corrige a coleta de dados dinâmicos
+        // 🔄 No mobile, rolar até a visualização do currículo
+        resumePreview.scrollIntoView({ behavior: 'smooth' });
+
+        // 🔥 Coleta de dados dinâmicos
         const resumeData = {
             name,
             email,
@@ -142,29 +145,32 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 📥 DOWNLOAD WORD
-    downloadPdfBtn.addEventListener('click', function () {
+    downloadWordBtn.addEventListener('click', function () {
         if (!resumePreview.innerHTML.trim()) {
-            alert("Gere o currículo antes de baixar o PDF.");
+            alert("Gere o currículo antes de baixar o Word.");
             return;
         }
-    
-        const element = document.getElementById('resumePreview');
-        
-        html2canvas(element, { scale: 2 }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-    
-            const imgWidth = 210; // Largura A4 em mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width; // Mantém proporção
-    
-            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            pdf.save('curriculo.pdf');
-        });
+
+        const content = `
+            <html>
+            <head><meta charset='UTF-8'></head>
+            <body>
+                ${resumePreview.innerHTML}
+            </body>
+            </html>`;
+
+        const blob = new Blob(['\ufeff' + content], { type: 'application/msword' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'curriculo.doc';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     });
-    
-    fields.forEach(field => field.addEventListener('input', updateProgress));
+
+    // Atualiza barra de progresso ao alterar campos
+    document.querySelectorAll('input, textarea, select').forEach(field => {
+        field.addEventListener('input', updateProgress);
+    });
+
 });
