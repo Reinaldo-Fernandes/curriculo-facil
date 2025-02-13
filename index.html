@@ -116,7 +116,6 @@
         <footer>
             <p>&copy; Currículo Fácil - 2024 Reinaldo Fernandes. Todos os direitos reservados.</p>
         </footer>
-
         <script>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('./service-worker.js')
@@ -124,6 +123,7 @@
                     .catch(err => console.error('Falha ao registrar o Service Worker:', err));
             }
         </script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
         
     </body>
 </html>
