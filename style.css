@@ -135,7 +135,7 @@ ul {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 10px auto;
-    display: none !important;
+    display: none;
     flex-direction: row;
     gap: 20px;
     border: 1px solid #ddd;
@@ -165,15 +165,12 @@ ul {
 
 @media (max-width: 768px) {
     #resumePreview {
-        flex-direction: column;
         width: 100%;
         height: auto;
-        overflow-x: hidden;
-        overflow-y: auto;
         max-height: none;
         padding: 10px;
-        max-height: 500px;
-        display: none;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     .resume-left {
