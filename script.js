@@ -75,29 +75,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
         const phone1 = document.getElementById('phone1').value.trim();
-
+    
         if (!name || !email || !phone1) {
             alert("Preencha os campos obrigatórios.");
-            resumePreview.style.maxWidth = "100%";
-            resumePreview.style.height = "auto";
             return;
         }
-
-        // ✅ Exibe a pré-visualização corretamente
+    
         resumePreview.style.display = "flex";
-        resumePreview.style.flexDirection = "column"; // Garante layout correto no mobile
+        resumePreview.style.flexDirection = "row";
         resumePreview.style.opacity = "1";
-        resumePreview.style.width = "100%";
-        resumePreview.style.maxWidth = "210mm";
-        resumePreview.style.height = "auto";
-        
-
-        // 🔄 No mobile, rolar até a visualização do currículo
-        setTimeout(() => {
-            window.scrollTo({ top: resumePreview.offsetTop, behavior: 'smooth' });
-        }, 300);
-        
-        // 🔥 Coleta de dados dinâmicos
+    
         const resumeData = {
             name,
             email,
@@ -112,9 +99,10 @@ document.addEventListener('DOMContentLoaded', function () {
             certifications: document.getElementById('certificationsContainer').innerHTML,
             activities: document.getElementById('activities').value.trim()
         };
-
+    
         resumePreview.innerHTML = `
-            <div class="resume-content">
+            <div class="resume-left">
+                <img src="default-photo.jpg" alt="Foto do Candidato" />
                 <h2>${resumeData.name}</h2>
                 <p><strong>Email:</strong> ${resumeData.email}</p>
                 <p><strong>Telefone:</strong> ${resumeData.phone1}</p>
@@ -122,6 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 ${resumeData.linkedin ? `<p><strong>LinkedIn:</strong> ${resumeData.linkedin}</p>` : ''}
                 ${resumeData.skills.length ? `<h3>Habilidades</h3><ul>${resumeData.skills.map(s => `<li>${s}</li>`).join('')}</ul>` : ''}
                 ${resumeData.languages.length ? `<h3>Idiomas</h3><ul>${resumeData.languages.map(l => `<li>${l}</li>`).join('')}</ul>` : ''}
+            </div>
+            <div class="resume-right">
                 <h3>Educação</h3>${resumeData.education}
                 <h3>Experiência Profissional</h3>${resumeData.experience}
                 <h3>Certificações</h3>${resumeData.certifications}
@@ -159,25 +149,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     
         const options = {
-            margin: 5,
+            margin: [5, 5, 5, 5], // Mantém margens uniformes
             filename: 'curriculo.pdf',
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
-                scale: 2, 
-                useCORS: true, 
-                allowTaint: true, 
-                logging: false, 
-                scrollY: 0 
+                scale: 3, // Melhora nitidez
+                useCORS: true,
+                allowTaint: true,
+                logging: false
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
     
         html2pdf().set(options).from(resumePreview).save();
-    });    
-
+    });
+    
     // Atualiza barra de progresso ao alterar campos
     document.querySelectorAll('input, textarea, select').forEach(field => {
         field.addEventListener('input', updateProgress);
     });
 
+    if (window.innerWidth <= 768) {
+        setTimeout(() => {
+            window.scrollTo({ top: resumePreview.offsetTop, behavior: 'smooth' });
+        }, 300);
+    }
+    
 });
