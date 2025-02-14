@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const generateResumeButton = document.getElementById('generateResumeButton');
 
     // ✅ Garante que a pré-visualização está oculta ao carregar a página
-    resumePreview.style.display = "none";
-    resumePreview.style.opacity = "0";
+    resumePreview.style.display = "block";
+        setTimeout(() => {
+            resumePreview.style.opacity = "1";
+        }, 100);
 
     // 2. FUNÇÃO PARA ADICIONAR CAMPOS DINÂMICOS
     function addField(containerId, html) {
@@ -76,20 +78,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!name || !email || !phone1) {
             alert("Preencha os campos obrigatórios.");
-            resumePreview.style.display = "none";
-            resumePreview.style.opacity = "0";
+            resumePreview.style.maxWidth = "100%";
+            resumePreview.style.height = "auto";
             return;
         }
 
         // ✅ Exibe a pré-visualização corretamente
-        resumePreview.style.display = "block";
-        setTimeout(() => {
-            resumePreview.style.opacity = "1";
-        }, 100);
+        resumePreview.style.display = "flex";
+        resumePreview.style.flexDirection = "column"; // Garante layout correto no mobile
+        resumePreview.style.opacity = "1";
+        resumePreview.style.width = "100%";
+        resumePreview.style.maxWidth = "210mm";
+        resumePreview.style.height = "auto";
+        
 
         // 🔄 No mobile, rolar até a visualização do currículo
-        resumePreview.scrollIntoView({ behavior: 'smooth' });
-
+        setTimeout(() => {
+            window.scrollTo({ top: resumePreview.offsetTop, behavior: 'smooth' });
+        }, 300);
+        
         // 🔥 Coleta de dados dinâmicos
         const resumeData = {
             name,
@@ -145,28 +152,28 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 📥 DOWNLOAD WORD
-    downloadWordBtn.addEventListener('click', function () {
+    downloadPdfBtn.addEventListener('click', function () {
         if (!resumePreview.innerHTML.trim()) {
-            alert("Gere o currículo antes de baixar o Word.");
+            alert("Gere o currículo antes de baixar o PDF.");
             return;
         }
-
-        const content = `
-            <html>
-            <head><meta charset='UTF-8'></head>
-            <body>
-                ${resumePreview.innerHTML}
-            </body>
-            </html>`;
-
-        const blob = new Blob(['\ufeff' + content], { type: 'application/msword' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'curriculo.doc';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    });
+    
+        const options = {
+            margin: 5,
+            filename: 'curriculo.pdf',
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                allowTaint: true, 
+                logging: false, 
+                scrollY: 0 
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+    
+        html2pdf().set(options).from(resumePreview).save();
+    });    
 
     // Atualiza barra de progresso ao alterar campos
     document.querySelectorAll('input, textarea, select').forEach(field => {
