@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const downloadPdfBtn = document.getElementById('downloadPdf');
     const downloadWordBtn = document.getElementById('downloadWord');
     const generateResumeButton = document.getElementById('generateResumeButton');
+    const profileImage = document.getElementById('photo')?.files[0];
 
     // ✅ Garante que a pré-visualização está oculta ao carregar a página
     resumePreview.style.display = "block";
@@ -190,8 +191,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (window.innerWidth <= 768) {
         setTimeout(() => {
-            window.scrollTo({ top: resumePreview.offsetTop, behavior: 'smooth' });
-        }, 300);
+            html2pdf().set(options).from(resumePreview).save();
+        }, 500);
+        
     }
     
 });
