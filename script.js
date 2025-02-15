@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
         const phone1 = document.getElementById('phone1').value.trim();
-    
+        
         if (!name || !email || !phone1) {
             alert("Preencha os campos obrigatórios.");
             return;
@@ -84,6 +84,13 @@ document.addEventListener('DOMContentLoaded', function () {
         resumePreview.style.display = "flex";
         resumePreview.style.flexDirection = "row";
         resumePreview.style.opacity = "1";
+    
+        // Captura a URL da imagem, se houver
+        const profileImage = document.getElementById('profileImage')?.files[0];
+        let imageUrl = "default-photo.jpg"; // Imagem padrão
+        if (profileImage) {
+            imageUrl = URL.createObjectURL(profileImage);
+        }
     
         const resumeData = {
             name,
@@ -102,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         resumePreview.innerHTML = `
             <div class="resume-left">
-                <img src="default-photo.jpg" alt="Foto do Candidato" />
+                <img src="${imageUrl}" alt="Foto do Candidato" />
                 <h2>${resumeData.name}</h2>
                 <p><strong>Email:</strong> ${resumeData.email}</p>
                 <p><strong>Telefone:</strong> ${resumeData.phone1}</p>
@@ -118,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
             </div>
         `;
-    }
+    }    
 
     generateResumeButton.addEventListener('click', function (event) {
         event.preventDefault();
@@ -131,15 +138,27 @@ document.addEventListener('DOMContentLoaded', function () {
             alert("Gere o currículo antes de baixar o PDF.");
             return;
         }
-
-        html2pdf().set({
-            margin: 10,
+    
+        const options = {
+            margin: [10, 10, 10, 10], 
             filename: 'curriculo.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2, logging: false, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(resumePreview).save();
+            image: { type: 'jpeg', quality: 1 }, // Qualidade máxima da imagem
+            html2canvas: { 
+                scale: 4, // Aumenta a qualidade (escala padrão é 2)
+                useCORS: true,
+                allowTaint: true,
+                logging: false
+            },
+            jsPDF: { 
+                unit: 'mm', 
+                format: 'a4', 
+                orientation: 'portrait' 
+            }
+        };
+    
+        html2pdf().set(options).from(resumePreview).save();
     });
+    
 
     // 📥 DOWNLOAD WORD
     downloadPdfBtn.addEventListener('click', function () {
