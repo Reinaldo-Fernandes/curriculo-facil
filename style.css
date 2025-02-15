@@ -219,6 +219,13 @@ footer {
 
 /* 📌 Melhorias na responsividade para mobile */
 @media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden;
+    }
+    main {
+        padding: 10px;
+    }
+    
     #resumePreview {
         flex-direction: column;
         width: 100%;
