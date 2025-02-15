@@ -1,7 +1,7 @@
-/* Importação de fontes */
+/* 📌 Importação de fontes */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
 
-/* Estilos globais */
+/* 📌 Estilos globais */
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -9,11 +9,12 @@ body {
     background-color: #ffffff;
     word-wrap: break-word;
     box-sizing: border-box;
-    padding-bottom: 50px;
     font-size: 12pt;
     line-height: 1.5;
+    color: #333;
 }
 
+/* 📌 Cabeçalho */
 header {
     background-color: #1f2e8a;
     color: #fff;
@@ -28,6 +29,7 @@ h1 {
     font-weight: 400;
 }
 
+/* 📌 Conteúdo principal */
 main {
     width: 90%;
     max-width: 800px;
@@ -37,7 +39,7 @@ main {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos de formulário */
+/* 📌 Formulário */
 form section {
     margin-bottom: 30px;
     padding-bottom: 15px;
@@ -58,7 +60,7 @@ input, textarea, select {
     border-radius: 5px;
 }
 
-/* Barra de progresso */
+/* 📌 Barra de progresso */
 #progressBarContainer {
     margin: 20px 0;
     display: flex;
@@ -76,7 +78,7 @@ input, textarea, select {
     color: #666;
 }
 
-/* Botões */
+/* 📌 Botões */
 button {
     padding: 12px 20px;
     font-size: 1rem;
@@ -85,34 +87,23 @@ button {
     cursor: pointer;
 }
 
-/* Diferenciando botões */
-#generateResumeButton {
-    background-color: #007BFF;
-}
-
-#downloadPdf {
-    background-color: #28a745;
-}
-
-#downloadWord {
-    background-color: #f39c12;
-}
-
-/* Efeito ao passar o mouse */
 button:hover {
     transform: scale(1.05);
 }
 
-/* Botões de remoção */
+/* 📌 Diferenciando botões */
+#generateResumeButton { background-color: #007BFF; }
+#downloadPdf { background-color: #28a745; }
+#downloadWord { background-color: #f39c12; }
+
+/* 📌 Botões de remoção */
 .remove-button {
     background-color: #FF4B4B;
     margin-top: 10px;
     cursor: pointer;
 }
 
-.remove-button:hover {
-    background-color: #CC0000;
-}
+.remove-button:hover { background-color: #CC0000; }
 
 .buttons-container {
     display: flex;
@@ -121,87 +112,7 @@ button:hover {
     justify-content: center;
 }
 
-/* Listas */
-ul {
-    list-style-type: disc;
-    margin: 10px 0;
-    padding-left: 20px;
-}
-
-/* Estilo do preview do currículo (layout A4, duas colunas) */
-#resumePreview {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 210mm;
-    height: auto;
-    min-height: 297mm; /* Garante altura da folha A4 */
-    page-break-inside: avoid; /* Evita cortes na impressão */
-    overflow: hidden;
-    page-break-inside: avoid;
-    break-inside: avoid;
-}
-
-
-/* Impressão */
-@media print {
-    body {
-        margin: 2.5cm;
-        font-size: 12px;
-    }
-    #resumePreview {
-        width: 210mm;
-        min-height: 297mm;
-        page-break-after: always;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-}
-
-/* Ajustes para telas menores */
-
-@media (max-width: 768px) {
-    #resumePreview {
-        flex-direction: column; /* Empilha as colunas no mobile */
-        width: 100%;
-        min-height: auto;
-        padding: 10px;
-    }
-
-    .resume-left {
-        width: 100%;
-        max-width: 100%;
-        border-right: none; /* Remove a linha divisória */
-        border-bottom: 4px solid #333; /* Adiciona separação entre as seções */
-        padding: 15px;
-        height: auto;
-    }
-
-    .resume-right {
-        width: 100%;
-        max-width: 100%;
-        padding: 15px;
-    }
-
-    .resume-left::after {
-        display: none; /* Remove a linha vertical no mobile */
-    }
-
-    .resume-left img {
-        width: 100px;
-        height: 100px;
-    }
-
-    button {
-        width: 100%;
-        font-size: 1rem;
-        padding: 12px;
-        margin-bottom: 10px;
-    }
-}
-
+/* 📌 Ajuste da pré-visualização */
 #resumePreview {
     display: flex;
     flex-direction: row;
@@ -211,20 +122,9 @@ ul {
     padding: 10mm; /* Reduz as margens internas para aproveitar mais espaço */
     box-sizing: border-box;
     justify-content: space-between;
-    align-items: stretch; /* Faz as colunas ficarem com o mesmo tamanho */
 }
 
-.resume-left img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 2px solid #000;
-    object-fit: cover;
-    display: block;
-    margin: 0 auto;
-}
-
-/* Coluna esquerda (dados pessoais) */
+/* 📌 Ajuste da coluna esquerda (dados pessoais) */
 .resume-left {
     flex: 0 0 35%;
     max-width: 35%;
@@ -235,10 +135,11 @@ ul {
     flex-direction: column;
     justify-content: flex-start;
     min-height: 100%;  /* Permite expansão */
-    height: 297mm;/* Distribui os conteúdos internamente */
-    border-right: 4px solid #333; /* Linha mais visível */
+    height: auto;
 }
 
+
+/* 📌 Linha divisória (vai até o final da folha) */
 .resume-left::after {
     content: "";
     position: absolute;
@@ -246,10 +147,21 @@ ul {
     top: 0;
     width: 4px;
     height: 100%;
-    background-color: #333; /* Cor da linha */
+    background-color: #333;
 }
 
-/* Coluna direita (experiência e habilidades) */
+/* 📌 Ajuste da imagem dentro da coluna esquerda */
+.resume-left img {
+    width: 100px; /* Mantém tamanho padrão */
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    object-fit: cover;
+    display: block;
+    margin: 10px auto; /* Reduzindo espaço em volta */
+}
+
+/* 📌 Ajuste da coluna direita */
 .resume-right {
     flex: 1;
     padding: 15px;
@@ -258,15 +170,16 @@ ul {
     justify-content: flex-start;
 }
 
+/* 📌 Ajustes nos títulos */
 h2, h3 {
     font-weight: bold;
     text-transform: uppercase;
     border-bottom: 2px solid #000;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
+    padding-bottom: 3px;
+    margin-bottom: 5px; /* Redução de espaçamento */
 }
 
-/* Ajuste para listas não ficarem com muito espaço vazio */
+/* 📌 Ajustes em listas para ocupar menos espaço */
 .resume-left ul, .resume-right ul {
     padding: 0;
     margin: 0;
@@ -274,11 +187,13 @@ h2, h3 {
 }
 
 .resume-left ul li, .resume-right ul li {
-    padding: 5px;
+    background-color: #e8f0fe;
+    padding: 4px 8px;
     border-radius: 5px;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Reduzindo fonte */
+    color: #2a3eb1;
     border: 1px solid #ccc;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     text-align: left;
 }
 
@@ -290,74 +205,7 @@ h2, h3 {
     justify-content: space-between;
 }
 
-.resume-left ul li, .resume-right ul li {
-    background-color: #e8f0fe;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 1rem;
-    color: #2a3eb1;
-    border: 1px solid #ccc;
-    margin-bottom: 5px;
-    text-align: left;
-}
-
-/* Informações de contato */
-.contact-info p {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #000;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-/* Resumo na coluna esquerda */
-.resume-left .summary {
-    max-height: 150px;
-    overflow-y: auto;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-/* Tooltip */
-.info-card {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-}
-.tooltip {
-    display: none;
-    position: absolute;
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    width: 250px;
-    max-width: 450px;
-    text-align: center;
-    font-size: 1.1rem;
-    z-index: 9999;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-}
-.tooltip::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #333 transparent;
-}
-
-.info-card:hover .tooltip {
-    display: block;
-}
-
-/* Footer */
+/* 📌 Rodapé */
 footer {
     background-color: #2a3eb1;
     color: white;
@@ -367,19 +215,48 @@ footer {
     bottom: 0;
     width: 100%;
     font-family: 'Playfair Display', cursive;
-    padding-bottom: 10px;
-}
-footer p {
-    margin: 0;
 }
 
-/* Esconde elementos vazios */
-.resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
-    display: none;
+/* 📌 Melhorias na responsividade para mobile */
+@media (max-width: 768px) {
+    #resumePreview {
+        flex-direction: column;
+        width: 100%;
+        min-height: auto;
+        padding: 8px;
+    }
+
+    .resume-left {
+        width: 100%;
+        max-width: 100%;
+        border-right: none;
+        border-bottom: 3px solid #333;
+        padding: 10px;
+    }
+
+    .resume-right {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .resume-left img {
+        width: 80px; /* Ajuste menor para telas menores */
+        height: 80px;
+    }
 }
 
-/* Paleta de cores customizável */
-.custom-bg-color {
-    background-color: var(--selected-bg-color, #e8f0fe);
-    color: var(--text-color, #000);
+@media print {
+    body {
+        font-size: 12px;
+        margin: 2cm;
+    }
+    
+    #resumePreview {
+        width: 210mm;
+        min-height: 297mm;
+        page-break-after: always;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
 }
