@@ -147,23 +147,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // ✅ Gera a pré-visualização corretamente
         resumePreview.innerHTML = `
-            <div class="resume-left">
-                <img src="${imageUrl}" alt="Foto do Candidato" />
-                <h2>${resumeData.name}</h2>
-                <p><strong>Email:</strong> ${resumeData.email}</p>
-                <p><strong>Telefone:</strong> ${resumeData.phone1}</p>
-                ${resumeData.phone2 ? `<p><strong>Telefone 2:</strong> ${resumeData.phone2}</p>` : ''}
-                ${resumeData.linkedin ? `<p><strong>LinkedIn:</strong> ${resumeData.linkedin}</p>` : ''}
-                ${resumeData.skills.length ? `<h3>Habilidades</h3><ul>${resumeData.skills.map(s => `<li>${s}</li>`).join('')}</ul>` : ''}
-                ${resumeData.languages.length ? `<h3>Idiomas</h3><ul>${resumeData.languages.map(l => `<li>${l}</li>`).join('')}</ul>` : ''}
-            </div>
-            <div class="resume-right">
-                <h3>Educação</h3><p>${resumeData.education}</p>
-                <h3>Experiência Profissional</h3><p>${resumeData.experience}</p>
-                <h3>Certificações</h3><p>${resumeData.certifications}</p>
-                ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
-            </div>
-        `;
+        <div class="resume-left">
+            <img src="${imageUrl}" alt="Foto do Candidato" />
+            <h2>${resumeData.name}</h2>
+            <p><strong>Email:</strong> ${resumeData.email}</p>
+            <p><strong>Telefone:</strong> ${resumeData.phone1}</p>
+            ${resumeData.phone2 ? `<p><strong>Telefone 2:</strong> ${resumeData.phone2}</p>` : ''}
+            ${resumeData.linkedin ? `<p><strong>LinkedIn:</strong> ${resumeData.linkedin}</p>` : ''}
+            
+            ${resumeData.skills.length || resumeData.languages.length ? `
+                <h3>Habilidades e Idiomas</h3>
+                <div class="skills-languages-container">
+                    ${resumeData.languages.length ? `
+                        <h4>Idiomas:</h4>
+                        <ul>${resumeData.languages.map(l => `<li>${l}</li>`).join('')}</ul>
+                    ` : ''}
+                    ${resumeData.skills.length ? `
+                        <h4>Habilidades:</h4>
+                        <ul>${resumeData.skills.map(s => `<li>${s}</li>`).join('')}</ul>
+                    ` : ''}
+                </div>
+            ` : ''}
+        </div>
+        <div class="resume-right">
+            <h3>Educação</h3><p>${resumeData.education}</p>
+            <h3>Experiência Profissional</h3><p>${resumeData.experience}</p>
+            <h3>Certificações</h3><p>${resumeData.certifications}</p>
+            ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
+        </div>
+    `;    
     }
 
     generateResumeButton.addEventListener('click', function (event) {
