@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const generateResumeButton = document.getElementById('generateResumeButton');
     const photoInput = document.getElementById('photo');
     const photoPreview = document.getElementById('photoPreview');
+    const summaryInput = document.getElementById('summary');
+    const summaryCounter = document.getElementById('summaryCounter');
 
     // ✅ CORRIGE O PREVIEW DA IMAGEM
     function previewImage() {
@@ -24,6 +26,29 @@ document.addEventListener('DOMContentLoaded', function () {
     // 🔥 Chama a função quando o usuário selecionar uma imagem
     photoInput.addEventListener('change', previewImage);
 
+    // ✅ ATUALIZA O CONTADOR DO RESUMO
+    function updateSummaryCounter() {
+        const maxLength = 500;
+        const currentLength = summaryInput.value.length;
+        summaryCounter.textContent = `${currentLength} / ${maxLength} caracteres`;
+        if (currentLength > maxLength) {
+            summaryCounter.style.color = "red";
+        } else {
+            summaryCounter.style.color = "black";
+        }
+    }
+    summaryInput.addEventListener('input', updateSummaryCounter);
+
+    // ✅ ATUALIZA A BARRA DE PROGRESSO
+    function updateProgress() {
+        const fields = Array.from(resumeForm.querySelectorAll('input, textarea, select'));
+        const filledFields = fields.filter(field => field.value.trim() !== '').length;
+        const progress = Math.round((filledFields / fields.length) * 100);
+        progressBar.value = progress;
+        progressText.textContent = `${progress}%`;
+    }
+    resumeForm.addEventListener('input', updateProgress);
+
     // ✅ FUNÇÃO PARA ADICIONAR CAMPOS DINÂMICOS
     function addField(containerId, html) {
         const container = document.getElementById(containerId);
@@ -39,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Adiciona evento para remover
         newEntry.querySelector('.remove-button').addEventListener('click', function () {
             container.removeChild(newEntry);
+            updateProgress();
         });
     }
 
@@ -79,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ✅ FUNÇÃO PARA GERAR CURRÍCULO
     function generateResume() {
-        console.log("🚀 Função generateResume chamada!"); // Debug
+        console.log("🚀 Função generateResume chamada!");
 
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
@@ -97,19 +123,25 @@ document.addEventListener('DOMContentLoaded', function () {
         // ✅ Captura a URL da imagem corretamente
         let imageUrl = photoPreview.src || "default-photo.jpg";
 
-        // Dados do currículo
+        // ✅ Captura valores corretos dos campos dinâmicos
+        function getValues(containerId, className) {
+            return Array.from(document.querySelectorAll(`#${containerId} .${className}`))
+                .map(input => input.value.trim())
+                .filter(value => value !== '');
+        }
+
         const resumeData = {
             name,
             email,
             phone1,
-            phone2: document.getElementById('phone2').value,
-            linkedin: document.getElementById('linkedin').value,
-            summary: document.getElementById('summary').value.trim(),
+            phone2: document.getElementById('phone2').value.trim(),
+            linkedin: document.getElementById('linkedin').value.trim(),
+            summary: summaryInput.value.trim(),
             skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(Boolean),
             languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(Boolean),
-            education: document.getElementById('educationContainer').innerHTML,
-            experience: document.getElementById('experienceContainer').innerHTML,
-            certifications: document.getElementById('certificationsContainer').innerHTML,
+            education: getValues('educationContainer', 'education-title').join(', '),
+            experience: getValues('experienceContainer', 'experience-title').join(', '),
+            certifications: getValues('certificationsContainer', 'certification-name').join(', '),
             activities: document.getElementById('activities').value.trim()
         };
 
@@ -126,9 +158,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 ${resumeData.languages.length ? `<h3>Idiomas</h3><ul>${resumeData.languages.map(l => `<li>${l}</li>`).join('')}</ul>` : ''}
             </div>
             <div class="resume-right">
-                <h3>Educação</h3>${resumeData.education}
-                <h3>Experiência Profissional</h3>${resumeData.experience}
-                <h3>Certificações</h3>${resumeData.certifications}
+                <h3>Educação</h3><p>${resumeData.education}</p>
+                <h3>Experiência Profissional</h3><p>${resumeData.experience}</p>
+                <h3>Certificações</h3><p>${resumeData.certifications}</p>
                 ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
             </div>
         `;
