@@ -219,39 +219,28 @@ footer {
 
 /* 📌 Melhorias na responsividade para mobile */
 @media (max-width: 768px) {
-    html, body {
-        overflow-x: hidden;
-    }
-    main {
-        padding: 10px;
-    }
-    
     #resumePreview {
         flex-direction: column;
         width: 100%;
         min-height: auto;
         padding: 8px;
+        display: flex;
+        align-items: center; /* Centraliza os elementos */
+        justify-content: center; 
     }
 
-    .resume-left {
-        width: 100%;
-        max-width: 100%;
-        border-right: none;
-        border-bottom: 3px solid #333;
-        padding: 10px;
-    }
-
-    .resume-right {
-        width: 100%;
+    .resume-left, .resume-right {
+        width: 100%; /* Garante que ocupem toda a tela */
         max-width: 100%;
         padding: 10px;
     }
 
     .resume-left img {
-        width: 80px; /* Ajuste menor para telas menores */
-        height: 80px;
+        width: 100px; /* Mantém tamanho razoável */
+        height: 100px;
     }
 }
+
 
 @media print {
     body {
