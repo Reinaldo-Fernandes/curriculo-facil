@@ -124,6 +124,34 @@ button:hover {
     justify-content: space-between;
 }
 
+/* 📌 Habilidade e idiomas fiquem um abixo do outro */
+.skills-languages-container {
+    display: flex;
+    flex-direction: column; /* Garante que os itens fiquem empilhados */
+    gap: 10px; /* Espaçamento entre as seções */
+}
+
+.skills-languages-container h4 {
+    margin-top: 10px;
+}
+
+.skills-languages-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.skills-languages-container li {
+    margin-left: 10px;
+}
+-p
+
+.skills-languages-container div {
+    background: #f8f8f8; /* Apenas para dar um destaque */
+    padding: 8px;
+    border-radius: 5px;
+}
+
+
 /* 📌 Ajuste da coluna esquerda (dados pessoais) */
 .resume-left {
     flex: 0 0 35%;
@@ -152,8 +180,8 @@ button:hover {
 
 /* 📌 Ajuste da imagem dentro da coluna esquerda */
 .resume-left img {
-    width: 100px; /* Mantém tamanho padrão */
-    height: 100px;
+    width: 120px; /* Mantém tamanho padrão */
+    height: 120px;
     border-radius: 50%;
     border: 2px solid #000;
     object-fit: cover;
