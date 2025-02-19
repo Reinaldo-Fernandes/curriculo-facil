@@ -88,10 +88,18 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Captura a URL da imagem, se houver
         const profileImage = document.getElementById('profileImage')?.files[0];
-        let imageUrl = "default-photo.jpg"; // Imagem padrão
-        if (profileImage) {
-            imageUrl = URL.createObjectURL(profileImage);
-        }
+        let imageUrl = "default-photo.jpg"; // Caso não tenha imagem
+
+            if (profileImage) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.querySelector('.resume-left img').src = e.target.result;
+                };
+                reader.readAsDataURL(profileImage);
+            } else {
+                document.querySelector('.resume-left img').src = imageUrl;
+            }
+                        
     
         const resumeData = {
             name,
@@ -193,7 +201,6 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => {
             html2pdf().set(options).from(resumePreview).save();
         }, 500);
-        
-    }
+    }    
     
 });
