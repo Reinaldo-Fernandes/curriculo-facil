@@ -175,7 +175,21 @@ document.addEventListener('DOMContentLoaded', function () {
             <h3>Certificações</h3><p>${resumeData.certifications}</p>
             ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
         </div>
-    `;    
+    `;
+
+        // ✅ Criar o PDF ao clicar no botão de download
+        downloadPdfBtn.addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.text(`Currículo de ${resumeData.name}`, 20, 30);
+            doc.text(`Email: ${resumeData.email}`, 20, 40);
+            doc.text(`Telefone: ${resumeData.phone1}`, 20, 50);
+            doc.text(`LinkedIn: ${resumeData.linkedin}`, 20, 60);
+
+            // Adicionando outras informações...
+            doc.save('curriculo.pdf');
+        });
     }
 
     generateResumeButton.addEventListener('click', function (event) {
