@@ -6,8 +6,78 @@ document.addEventListener('DOMContentLoaded', function () {
     const progressText = document.getElementById('progressText');
     const downloadPdfBtn = document.getElementById('downloadPdf');
     const generateResumeButton = document.getElementById('generateResumeButton');
+    const photoInput = document.getElementById('photo');
+    const photoPreview = document.getElementById('photoPreview');
 
-    // 1️⃣ ✅ CORREÇÃO: GERAR CURRÍCULO FUNCIONANDO
+    // ✅ CORRIGE O PREVIEW DA IMAGEM
+    function previewImage() {
+        if (photoInput.files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                photoPreview.src = e.target.result;
+                photoPreview.style.display = "block";
+            };
+            reader.readAsDataURL(photoInput.files[0]);
+        }
+    }
+
+    // 🔥 Chama a função quando o usuário selecionar uma imagem
+    photoInput.addEventListener('change', previewImage);
+
+    // ✅ FUNÇÃO PARA ADICIONAR CAMPOS DINÂMICOS
+    function addField(containerId, html) {
+        const container = document.getElementById(containerId);
+        if (!container) {
+            console.error(`❌ Container "${containerId}" não encontrado.`);
+            return;
+        }
+        const newEntry = document.createElement('div');
+        newEntry.classList.add('entry');
+        newEntry.innerHTML = html;
+        container.appendChild(newEntry);
+
+        // Adiciona evento para remover
+        newEntry.querySelector('.remove-button').addEventListener('click', function () {
+            container.removeChild(newEntry);
+        });
+    }
+
+    // ✅ EVENT LISTENERS PARA BOTÕES DE ADIÇÃO
+    document.getElementById('addExperience')?.addEventListener('click', function () {
+        addField('experienceContainer', `
+            <div class="experience-entry">
+                <input type="text" class="experience-title" placeholder="Cargo">
+                <input type="text" class="experience-company" placeholder="Empresa">
+                <input type="text" class="experience-duration" placeholder="Data de Início - Data de Término">
+                <textarea class="experience-description" placeholder="Descrição breve"></textarea>
+                <button type="button" class="remove-button">Remover</button>
+            </div>
+        `);
+    });
+
+    document.getElementById('addEducation')?.addEventListener('click', function () {
+        addField('educationContainer', `
+            <div class="education-entry">
+                <input type="text" class="education-title" placeholder="Nome do Curso">
+                <input type="text" class="education-institution" placeholder="Instituição">
+                <input type="text" class="education-duration" placeholder="Data de Início - Data de Conclusão">
+                <button type="button" class="remove-button">Remover</button>
+            </div>
+        `);
+    });
+
+    document.getElementById('addCertification')?.addEventListener('click', function () {
+        addField('certificationsContainer', `
+            <div class="certification-entry">
+                <input type="text" class="certification-name" placeholder="Nome da Certificação">
+                <input type="text" class="certification-institution" placeholder="Instituição">
+                <textarea class="certification-description" placeholder="Descrição breve"></textarea>
+                <button type="button" class="remove-button">Remover</button>
+            </div>
+        `);
+    });
+
+    // ✅ FUNÇÃO PARA GERAR CURRÍCULO
     function generateResume() {
         console.log("🚀 Função generateResume chamada!"); // Debug
 
@@ -24,17 +94,8 @@ document.addEventListener('DOMContentLoaded', function () {
         resumePreview.style.flexDirection = "row";
         resumePreview.style.opacity = "1";
 
-        // ✅ CORREÇÃO: Captura da imagem correta
-        const photoInput = document.getElementById('photo');
-        let imageUrl = "default-photo.jpg"; // Caso não tenha imagem
-
-        if (photoInput.files.length > 0) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.querySelector('.resume-left img').src = e.target.result;
-            };
-            reader.readAsDataURL(photoInput.files[0]);
-        }
+        // ✅ Captura a URL da imagem corretamente
+        let imageUrl = photoPreview.src || "default-photo.jpg";
 
         // Dados do currículo
         const resumeData = {
@@ -71,64 +132,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
             </div>
         `;
-
-        // 🔍 🚀 Verifica erros ortográficos após gerar o currículo
-        checkSpelling(resumeData);
     }
 
     generateResumeButton.addEventListener('click', function (event) {
         event.preventDefault();
         generateResume();
     });
-
-    // 2️⃣ ✅ ADICIONADO CORRETOR ORTOGRÁFICO
-    function checkSpelling(resumeData) {
-        console.log("📝 Verificando ortografia...");
-
-        // Concatena todos os textos inseridos no currículo
-        const textToCheck = [
-            resumeData.summary,
-            resumeData.skills.join(', '),
-            resumeData.languages.join(', '),
-            resumeData.activities
-        ].join("\n");
-
-        // Chamada para API de correção ortográfica
-        fetch('https://api.languagetool.org/v2/check', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `language=pt-BR&text=${encodeURIComponent(textToCheck)}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.matches.length > 0) {
-                alert(`⚠️ Foram encontrados ${data.matches.length} erros ortográficos.`);
-                console.log("Erros:", data.matches);
-            } else {
-                console.log("✅ Nenhum erro ortográfico encontrado.");
-            }
-        })
-        .catch(error => console.error("Erro ao verificar ortografia:", error));
-    }
-
-    // 3️⃣ ✅ DOWNLOAD DO PDF
-    downloadPdfBtn.addEventListener('click', function () {
-        if (!resumePreview.innerHTML.trim()) {
-            alert("Gere o currículo antes de baixar o PDF.");
-            return;
-        }
-
-        const options = {
-            margin: [10, 10, 10, 10], 
-            filename: 'curriculo.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 4, useCORS: true, allowTaint: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf().set(options).from(resumePreview).save();
-    });
-
 });
