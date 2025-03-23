@@ -27,17 +27,18 @@ document.addEventListener('DOMContentLoaded', function () {
     photoInput.addEventListener('change', previewImage);
 
     // ✅ ATUALIZA O CONTADOR DO RESUMO
-    function updateSummaryCounter() {
+       // Contador para o campo "Resumo"
+       document.getElementById('summary').addEventListener('input', function () {
+        const summary = document.getElementById('summary');
+        const counter = document.getElementById('summaryCounter');
         const maxLength = 500;
-        const currentLength = summaryInput.value.length;
-        summaryCounter.textContent = `${currentLength} / ${maxLength} caracteres`;
+        const currentLength = summary.value.length;
+
         if (currentLength > maxLength) {
-            summaryCounter.style.color = "red";
-        } else {
-            summaryCounter.style.color = "black";
+            summary.value = summary.value.substring(0, maxLength);
         }
-    }
-    summaryInput.addEventListener('input', updateSummaryCounter);
+        counter.textContent = `${summary.value.length} / ${maxLength} caracteres`;
+    });
 
     // ✅ ATUALIZA A BARRA DE PROGRESSO
     function updateProgress() {
@@ -136,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
             phone1,
             phone2: document.getElementById('phone2').value.trim(),
             linkedin: document.getElementById('linkedin').value.trim(),
-            summary: summaryInput.value.trim(),
+            summary: summaryInput.value.trim(), 
             skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(Boolean),
             languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(Boolean),
             education: getValues('educationContainer', 'education-title').join(', '),
@@ -170,29 +171,47 @@ document.addEventListener('DOMContentLoaded', function () {
             ` : ''}
         </div>
         <div class="resume-right">
+            ${resumeData.summary ? `<h3>Resumo Profissional</h3><p>${resumeData.summary}</p>` : ''} <!-- 📌 Adicionado aqui -->
             <h3>Educação</h3><p>${resumeData.education}</p>
             <h3>Experiência Profissional</h3><p>${resumeData.experience}</p>
             <h3>Certificações</h3><p>${resumeData.certifications}</p>
             ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
         </div>
     `;
+    
+}
 
-        // ✅ Criar o PDF ao clicar no botão de download
-        downloadPdfBtn.addEventListener('click', function () {
+        // ✅  Função para baixar currículo como PDF
+        document.getElementById('downloadPdf').addEventListener('click', function (event) {
+            event.preventDefault();
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            doc.text(`Currículo de ${resumeData.name}`, 20, 30);
-            doc.text(`Email: ${resumeData.email}`, 20, 40);
-            doc.text(`Telefone: ${resumeData.phone1}`, 20, 50);
-            doc.text(`LinkedIn: ${resumeData.linkedin}`, 20, 60);
-
-            // Adicionando outras informações...
-            doc.save('curriculo.pdf');
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+        
+            const resumePreview = document.getElementById('resumePreview');
+            html2canvas(resumePreview, { scale: 3, useCORS: true }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210; // Largura de uma folha A4 em mm
+                const imgHeight = canvas.height * imgWidth / canvas.width; // Mantém a proporção da imagem
+        
+                // Garantir que a altura não ultrapasse o limite da página A4
+                if (imgHeight > 297) {
+                    const scaleFactor = 297 / imgHeight;
+                    doc.addImage(imgData, 'PNG', 0, 0, imgWidth * scaleFactor, 297);
+                } else {
+                    doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                }
+        
+                doc.save('curriculo.pdf');
+            });
         });
-    }
+        
 
-    generateResumeButton.addEventListener('click', function (event) {
+    // Listener para o botão "Gerar Currículo"
+    document.getElementById('generateResumeButton').addEventListener('click', function (event) {
         event.preventDefault();
         generateResume();
     });

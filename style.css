@@ -3,15 +3,16 @@
 
 /* 📌 Estilos globais */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-size: 12pt;
     margin: 0;
     padding: 0;
     background-color: #ffffff;
     word-wrap: break-word;
     box-sizing: border-box;
-    font-size: 12pt;
-    line-height: 1.5;
     color: #333;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 /* 📌 Cabeçalho */
@@ -80,8 +81,8 @@ input, textarea, select {
 
 /* 📌 Botões */
 button {
-    padding: 12px 20px;
-    font-size: 1rem;
+    padding: 10px 15px;
+    font-size: 0.9rem;
     font-weight: bold;
     transition: background-color 0.3s, transform 0.2s;
     cursor: pointer;
@@ -112,17 +113,22 @@ button:hover {
     justify-content: center;
 }
 
-/* 📌 Ajuste da pré-visualização */
+/* 📌 Ajuste do conteúdo principal */
 #resumePreview {
-    display: flex;
-    flex-direction: row;
-    width: 210mm; /* Tamanho exato de uma folha A4 */
-    min-height: 297mm; /* Garante altura completa */
-    background-color: white;
-    padding: 10mm; /* Reduz as margens internas para aproveitar mais espaço */
-    box-sizing: border-box;
-    justify-content: space-between;
-}
+    #resumePreview {
+        display: flex;
+        flex-direction: row;
+        width: 210mm;
+        min-height: 297mm;
+        background-color: white;
+        padding: 9mm;
+        box-sizing: border-box;
+        justify-content: space-between;
+        word-wrap: break-word;
+        overflow: hidden;
+        white-space: normal;
+        flex-wrap: wrap;
+    }
 
 /* 📌 Habilidade e idiomas fiquem um abixo do outro */
 .skills-languages-container {
@@ -157,15 +163,15 @@ button:hover {
     flex: 0 0 35%;
     max-width: 35%;
     background-color: #e8f0fe;
-    padding: 15px;
+    padding: 10px;
     border-right: 2px solid #333;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    min-height: 100%;  /* Permite expansão */
-    height: auto;
+    min-height: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
-
 
 /* 📌 Linha divisória (vai até o final da folha) */
 .resume-left::after {
@@ -192,10 +198,19 @@ button:hover {
 /* 📌 Ajuste da coluna direita */
 .resume-right {
     flex: 1;
-    padding: 15px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* 📌 Quebra de linha automática */
+.professional-summary, .resume-right p, .resume-left p {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 
 /* 📌 Ajustes nos títulos */
@@ -231,6 +246,8 @@ h2, h3 {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    max-height: 260mm; /* Limita a altura para evitar transbordamento */
+    overflow: auto; /* Permite rolar se o conteúdo for muito grande */
 }
 
 /* 📌 Rodapé */
@@ -273,14 +290,22 @@ footer {
 @media print {
     body {
         font-size: 12px;
-        margin: 2cm;
+        margin: 0;
+        padding: 0;
     }
-    
+
     #resumePreview {
         width: 210mm;
         min-height: 297mm;
         page-break-after: always;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+        overflow: hidden; /* Não permitir transbordamento */
     }
+
+    /* Garante que as seções sejam bem distribuídas na página */
+    .resume-left, .resume-right {
+        max-height: calc(297mm - 20mm); /* Garante que o conteúdo dentro das colunas não ultrapasse */
+    }
+}
 }
