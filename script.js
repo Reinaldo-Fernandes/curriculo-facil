@@ -120,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         resumePreview.style.display = "flex";
         resumePreview.style.flexDirection = "row";
         resumePreview.style.opacity = "1";
+        resumePreview.style.minHeight = "auto";
 
         // ✅ Captura a URL da imagem corretamente
         let imageUrl = photoPreview.src || "default-photo.jpg";
@@ -192,24 +193,22 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         
             const resumePreview = document.getElementById('resumePreview');
-            html2canvas(resumePreview, { scale: 3, useCORS: true }).then(canvas => {
+        
+            html2canvas(resumePreview, {
+                scale: 4,
+                useCORS: true,
+                logging: false, // Evita logs desnecessários no console
+                scrollY: -window.scrollY // Corrige problemas de captura de posição
+            }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 210; // Largura de uma folha A4 em mm
-                const imgHeight = canvas.height * imgWidth / canvas.width; // Mantém a proporção da imagem
+                const imgWidth = 210; // Largura A4
+                const imgHeight = (canvas.height * imgWidth) / canvas.width; // Mantém a proporção da imagem
         
-                // Garantir que a altura não ultrapasse o limite da página A4
-                if (imgHeight > 297) {
-                    const scaleFactor = 297 / imgHeight;
-                    doc.addImage(imgData, 'PNG', 0, 0, imgWidth * scaleFactor, 297);
-                } else {
-                    doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-                }
-        
+                doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
                 doc.save('curriculo.pdf');
             });
         });
         
-
     // Listener para o botão "Gerar Currículo"
     document.getElementById('generateResumeButton').addEventListener('click', function (event) {
         event.preventDefault();

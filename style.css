@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
 
 /* 📌 Estilos globais */
-body {
+html,body {
     font-size: 12pt;
     margin: 0;
     padding: 0;
@@ -13,6 +13,7 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 }
 
 /* 📌 Cabeçalho */
@@ -38,6 +39,7 @@ main {
     background-color: #fff;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
 }
 
 /* 📌 Formulário */
@@ -116,20 +118,28 @@ button:hover {
 /* 📌 Ajuste do conteúdo principal */
 #resumePreview {
     #resumePreview {
-        display: flex;
+        display: block !important;
         flex-direction: row;
         width: 210mm;
         min-height: 297mm;
         background-color: white;
-        padding: 9mm;
+        padding: 10mm;
         box-sizing: border-box;
         justify-content: space-between;
         word-wrap: break-word;
         overflow: hidden;
         white-space: normal;
-        flex-wrap: wrap;
+        flex-wrap: row;
+        margin-bottom: 20px;
     }
 
+    .buttons-container {
+        margin-top: 20px; /* Aumenta o espaço entre os botões */
+        display: flex;
+        justify-content: center;
+        gap: 15px; /* Garante espaçamento uniforme */
+    }
+    
 /* 📌 Habilidade e idiomas fiquem um abixo do outro */
 .skills-languages-container {
     display: flex;
@@ -163,7 +173,7 @@ button:hover {
     flex: 0 0 35%;
     max-width: 35%;
     background-color: #e8f0fe;
-    padding: 10px;
+    padding: 10px 15px;
     border-right: 2px solid #333;
     display: flex;
     flex-direction: column;
@@ -171,6 +181,7 @@ button:hover {
     min-height: 100%;
     word-break: break-word;
     overflow-wrap: break-word;
+    gap: 10px; /* Espaçamento entre os elementos */
 }
 
 /* 📌 Linha divisória (vai até o final da folha) */
@@ -193,6 +204,8 @@ button:hover {
     object-fit: cover;
     display: block;
     margin: 10px auto; /* Reduzindo espaço em volta */
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 /* 📌 Ajuste da coluna direita */
@@ -204,22 +217,28 @@ button:hover {
     justify-content: flex-start;
     word-break: break-word;
     overflow-wrap: break-word;
+    gap: 10px;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 /* 📌 Quebra de linha automática */
-.professional-summary, .resume-right p, .resume-left p {
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
+/* 🔹 Garante que o texto longo quebre corretamente */
+.resume-right p, .resume-left p, .professional-summary {
+    word-wrap: break-word;  /* 🔹 Quebra palavras longas */
+    white-space: normal;    /* 🔹 Permite que o texto continue embaixo */
+    overflow-wrap: break-word; /* 🔹 Garante a quebra em navegadores diferentes */
 }
+
 
 /* 📌 Ajustes nos títulos */
 h2, h3 {
     font-weight: bold;
     text-transform: uppercase;
     border-bottom: 2px solid #000;
-    padding-bottom: 3px;
-    margin-bottom: 5px; /* Redução de espaçamento */
+    font-size: 16px;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
 }
 
 /* 📌 Ajustes em listas para ocupar menos espaço */
@@ -251,16 +270,29 @@ h2, h3 {
 }
 
 /* 📌 Rodapé */
+
 footer {
-    background-color: #2a3eb1;
+    background-color: #1f2e8a !important; /* 🔹 Cor azul igual ao cabeçalho */
     color: white;
     text-align: center;
-    padding: 3px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
     font-family: 'Playfair Display', cursive;
+    font-size: 14px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100vh; /* 🔹 Faz o footer ocupar toda a altura da tela */
+    width: 100%;
+    position: fixed; /* 🔹 Mantém o footer sempre no meio da tela */
+    top: 50%;
+    transform: translateY(-50%); /* 🔹 Move o footer para o centro exato */
 }
+
+footer p {
+    margin: 0;
+}
+
 
 /* 📌 Melhorias na responsividade para mobile */
 @media (max-width: 768px) {
