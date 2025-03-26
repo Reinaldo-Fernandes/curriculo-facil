@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         resumePreview.style.minHeight = "auto";
 
         // ✅ Captura a URL da imagem corretamente
-        let imageUrl = photoPreview.src || "default-photo.jpg";
+        let imageUrl = photoPreview.src && photoPreview.src !== window.location.href ? `<img src='${photoPreview.src}' alt='Foto do Candidato' />` : '';
 
         // ✅ Captura valores corretos dos campos dinâmicos
         function getValues(containerId, className) {
@@ -141,16 +141,16 @@ document.addEventListener('DOMContentLoaded', function () {
             summary: summaryInput.value.trim(), 
             skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(Boolean),
             languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(Boolean),
-            education: getValues('educationContainer', 'education-title').join(', '),
-            experience: getValues('experienceContainer', 'experience-title').join(', '),
-            certifications: getValues('certificationsContainer', 'certification-name').join(', '),
+            education: getValues('educationContainer', 'education-title'),
+            experience: getValues('experienceContainer', 'experience-title'),
+            certifications: getValues('certificationsContainer', 'certification-name'),
             activities: document.getElementById('activities').value.trim()
         };
 
         // ✅ Gera a pré-visualização corretamente
         resumePreview.innerHTML = `
         <div class="resume-left">
-            <img src="${imageUrl}" alt="Foto do Candidato" />
+        ${imageUrl}
             <h2>${resumeData.name}</h2>
             <p><strong>Email:</strong> ${resumeData.email}</p>
             <p><strong>Telefone:</strong> ${resumeData.phone1}</p>
@@ -172,12 +172,12 @@ document.addEventListener('DOMContentLoaded', function () {
             ` : ''}
         </div>
         <div class="resume-right">
-            ${resumeData.summary ? `<h3>Resumo Profissional</h3><p>${resumeData.summary}</p>` : ''} <!-- 📌 Adicionado aqui -->
-            <h3>Educação</h3><p>${resumeData.education}</p>
-            <h3>Experiência Profissional</h3><p>${resumeData.experience}</p>
-            <h3>Certificações</h3><p>${resumeData.certifications}</p>
+             ${resumeData.summary ? `<h3>Resumo Profissional</h3><p>${resumeData.summary}</p>` : ''}
+            ${resumeData.education.length ? `<h3>Educação</h3><p>${resumeData.education.join(', ')}</p>` : ''}
+            ${resumeData.experience.length ? `<h3>Experiência Profissional</h3><p>${resumeData.experience.join(', ')}</p>` : ''}
+            ${resumeData.certifications.length ? `<h3>Certificações</h3><p>${resumeData.certifications.join(', ')}</p>` : ''}
             ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
-        </div>
+            </div>
     `;
     
 }

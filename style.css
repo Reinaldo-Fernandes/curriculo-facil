@@ -106,6 +106,10 @@ button:hover {
     color: var(--text-color, #000); /* Garante contraste com o fundo */
 }
 
+/* 📌 Diferenciando botões */
+#generateResumeButton { background-color: #007BFF; }
+#downloadPdf { background-color: #28a745; }
+#downloadWord { background-color: #f39c12; }
 
 #resumePreview {
     width: 210mm;  /* Largura A4 */
@@ -123,7 +127,7 @@ button:hover {
     overflow-y:auto ;
 }
 
-/* Coluna Esquerda */
+/* 📌Coluna Esquerda */
 .resume-left {
     flex: 0 0 250px; /* Define uma largura fixa de 200px */
     max-width: 250px; /* Limita a largura máxima da coluna esquerda */
@@ -166,7 +170,7 @@ button:hover {
     font-size: 0.95rem;
 }
 
-/* Estilo para o resumo na coluna esquerda */
+/* 📌tilo para o resumo na coluna esquerda */
 .resume-left .summary {
     margin-top: 20px;
     padding-top: 10px;
@@ -188,7 +192,7 @@ button:hover {
     color: #666; /* Cor do texto */
 }
 
-/* Coluna Direita */
+/*📌 Coluna Direita */
 .resume-right {
     flex: 1; /* Permite que a coluna direita se ajuste ao espaço restante */
     padding: 20px;
@@ -224,14 +228,14 @@ button:hover {
 }
 
 
-/* Estilo para informações de contato */
+/* 📌Estilo para informações de contato */
 .contact-info p {
     margin: 0;
     font-size: 1rem;
     line-height: 1.5;
     color: #000;
 }
-/* Estilo para os cards de informação e tooltips */
+/* 📌Estilo para os cards de informação e tooltips */
 .info-card {
     position: relative;
     display: inline-block;
@@ -239,7 +243,25 @@ button:hover {
     
 }
 
-/* Tooltip corretamente estilizado */
+/* 📌 Barra de progresso */
+#progressBarContainer {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#progressBar {
+    width: 100%;
+    height: 20px;
+}
+
+#progressText {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* 📌Tooltip corretamente estilizado */
 .tooltip {
     display: none;
     position: absolute;
@@ -262,7 +284,7 @@ button:hover {
     transition: opacity 0.3s ease-in-out;
 }
 
-/* Exibir o tooltip ao passar o mouse sobre o ícone */
+/* 📌Exibir o tooltip ao passar o mouse sobre o ícone */
 .info-card:hover .tooltip {
     display: block;
     opacity: 1;
@@ -323,7 +345,7 @@ footer p {
         padding: 10px;
     }
 
-    /* Ajustar o tamanho das tooltips para telas menores */
+    /* 📌Ajustar o tamanho das tooltips para telas menores */
     .tooltip {
         max-width: 90%;
     }
@@ -337,16 +359,16 @@ footer p {
 }
 
 
-/* Esconde elementos sem valor */
+/* 📌Esconde elementos sem valor */
 .resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
     display: none;
 }
 
-/* Cor personalizada para a coluna de dados pessoais */
+/* 📌Cor personalizada para a coluna de dados pessoais */
 .custom-bg-color {
     background-color: var(--selected-bg-color, #e8f0fe); /* Cor padrão é azul claro */
 }
-/* Layout do currículo para formato A4 ao baixar */
+/* 📌Layout do currículo para formato A4 ao baixar */
 #resumePreview.a4 {
     width: 210mm;  /* Largura A4 */
     height: 297mm; /* Altura A4 */
