@@ -1,24 +1,15 @@
-/* 📌 Importação de fontes */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
 
-/* 📌 Estilos globais */
-html,body {
-    font-size: 12pt;
+body {
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #ffffff;
-    word-wrap: break-word;
-    box-sizing: border-box;
-    color: #333;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    
 }
 
-/* 📌 Cabeçalho */
 header {
-    background-color: #1f2e8a;
+    background-color: #2a3eb1;
     color: #fff;
     padding: 10px 0;
     text-align: center;
@@ -31,22 +22,17 @@ h1 {
     font-weight: 400;
 }
 
-/* 📌 Conteúdo principal */
 main {
     width: 90%;
     max-width: 800px;
     margin: 20px auto;
     background-color: #fff;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    flex: 1;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-/* 📌 Formulário */
 form section {
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
 }
 
 label {
@@ -63,50 +49,27 @@ input, textarea, select {
     border-radius: 5px;
 }
 
-/* 📌 Barra de progresso */
-#progressBarContainer {
-    margin: 20px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#progressBar {
-    width: 100%;
-    height: 20px;
-}
-
-#progressText {
-    font-size: 1rem;
-    color: #666;
-}
-
-/* 📌 Botões */
 button {
-    padding: 10px 15px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    transition: background-color 0.3s, transform 0.2s;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
 }
 
 button:hover {
-    transform: scale(1.05);
+    background-color: #0056b3;
 }
 
-/* 📌 Diferenciando botões */
-#generateResumeButton { background-color: #007BFF; }
-#downloadPdf { background-color: #28a745; }
-#downloadWord { background-color: #f39c12; }
-
-/* 📌 Botões de remoção */
 .remove-button {
     background-color: #FF4B4B;
     margin-top: 10px;
-    cursor: pointer;
 }
 
-.remove-button:hover { background-color: #CC0000; }
+.remove-button:hover {
+    background-color: #CC0000;
+}
 
 .buttons-container {
     display: flex;
@@ -115,229 +78,309 @@ button:hover {
     justify-content: center;
 }
 
-/* 📌 Ajuste do conteúdo principal */
-#resumePreview {
-    #resumePreview {
-        display: block !important;
-        flex-direction: row;
-        width: 210mm;
-        min-height: 297mm;
-        background-color: white;
-        padding: 10mm;
-        box-sizing: border-box;
-        justify-content: space-between;
-        word-wrap: break-word;
-        overflow: hidden;
-        white-space: normal;
-        flex-wrap: row;
-        margin-bottom: 20px;
-    }
-
-    .buttons-container {
-        margin-top: 20px; /* Aumenta o espaço entre os botões */
-        display: flex;
-        justify-content: center;
-        gap: 15px; /* Garante espaçamento uniforme */
-    }
-    
-/* 📌 Habilidade e idiomas fiquem um abixo do outro */
-.skills-languages-container {
-    display: flex;
-    flex-direction: column; /* Garante que os itens fiquem empilhados */
-    gap: 10px; /* Espaçamento entre as seções */
-}
-
-.skills-languages-container h4 {
+.skills-display, .languages-display {
     margin-top: 10px;
 }
 
-.skills-languages-container ul {
+.skills-display ul, .languages-display ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.skills-display li, .languages-display li {
+    display: block; /* Garante que cada item ocupe uma linha completa */
+    width: 100%; /* Expande o item para 100% da largura do container */
+    background-color: #e8f0fe;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #2a3eb1;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+}
+
+
+.custom-bg-color {
+    background-color: var(--selected-bg-color, #e8f0fe); /* Azul claro padrão */
+    color: var(--text-color, #000); /* Garante contraste com o fundo */
+}
+
+
+#resumePreview {
+    width: 210mm;  /* Largura A4 */
+    height: 297mm; /* Altura A4 */
+    padding: 2mm; /* Mesma margem usada no PDF */
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px auto 0 auto;  /* Reduz a margem superior para 10px e centraliza o layout */
+    overflow: auto;
+    display:none;
+    flex-direction: row;
+    gap: 20px;
+    border: 1px solid #ddd;
+    box-sizing: border-box; /* Garante que padding seja incluído no tamanho total */
+    overflow-y:auto ;
+}
+
+/* Coluna Esquerda */
+.resume-left {
+    flex: 0 0 250px; /* Define uma largura fixa de 200px */
+    max-width: 250px; /* Limita a largura máxima da coluna esquerda */
+    padding: 20px;
+    background-color: #e8f0fe;
+    border-right: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    overflow: hidden; /* Impede que o conteúdo da coluna esquerda transborde */
+}
+
+.resume-left img {
+    width: 175px;
+    height: 175px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.resume-left h2 {
+    margin-top: 0;
+    color: #2a3eb1;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.resume-left h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ffffff;
+    padding-bottom: 5px;
+    color: #2a3eb1;
+}
+
+.resume-left ul {
     list-style-type: none;
     padding: 0;
 }
 
-.skills-languages-container li {
-    margin-left: 10px;
-}
--p
-
-.skills-languages-container div {
-    background: #f8f8f8; /* Apenas para dar um destaque */
-    padding: 8px;
-    border-radius: 5px;
+.resume-left ul li {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
 }
 
-
-/* 📌 Ajuste da coluna esquerda (dados pessoais) */
-.resume-left {
-    flex: 0 0 35%;
-    max-width: 35%;
-    background-color: #e8f0fe;
-    padding: 10px 15px;
-    border-right: 2px solid #333;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    min-height: 100%;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    gap: 10px; /* Espaçamento entre os elementos */
+/* Estilo para o resumo na coluna esquerda */
+.resume-left .summary {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    font-size: 1rem;
+    max-height: 150px; /* Limita a altura máxima do resumo */
+    text-overflow: ellipsis; /* Adiciona reticências se o texto for muito longo */
+    white-space: normal; /* Permite que o texto quebre em múltiplas linhas */
+    word-wrap: break-word; /* Garante que palavras longas quebrem para se ajustar à largura */
 }
 
-/* 📌 Linha divisória (vai até o final da folha) */
-.resume-left::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 4px;
-    height: 100%;
-    background-color: #333;
+.invalid-summary {
+    border: 1px solid red; /* Altera a borda para vermelho se o resumo for inválido */
 }
 
-/* 📌 Ajuste da imagem dentro da coluna esquerda */
-.resume-left img {
-    width: 120px; /* Mantém tamanho padrão */
-    height: 120px;
-    border-radius: 50%;
-    border: 2px solid #000;
-    object-fit: cover;
-    display: block;
-    margin: 10px auto; /* Reduzindo espaço em volta */
-    text-overflow: ellipsis;
-    max-width: 100%;
+#summaryCounter {
+    margin-top: 5px; /* Espaço entre o resumo e o contador */
+    font-size: 0.9rem; /* Tamanho da fonte do contador */
+    color: #666; /* Cor do texto */
 }
 
-/* 📌 Ajuste da coluna direita */
+/* Coluna Direita */
 .resume-right {
-    flex: 1;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    gap: 10px;
-    text-overflow: ellipsis;
-    max-width: 100%;
+    flex: 1; /* Permite que a coluna direita se ajuste ao espaço restante */
+    padding: 20px;
+    border-radius: 0 25px 25px 0;
+    overflow-y: auto; /* Adiciona rolagem caso o conteúdo seja muito longo */
 }
 
-/* 📌 Quebra de linha automática */
-/* 🔹 Garante que o texto longo quebre corretamente */
-.resume-right p, .resume-left p, .professional-summary {
-    word-wrap: break-word;  /* 🔹 Quebra palavras longas */
-    white-space: normal;    /* 🔹 Permite que o texto continue embaixo */
-    overflow-wrap: break-word; /* 🔹 Garante a quebra em navegadores diferentes */
+.resume-right h2, .resume-right h3 {
+    color: #2a3eb1;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-
-/* 📌 Ajustes nos títulos */
-h2, h3 {
-    font-weight: bold;
-    text-transform: uppercase;
-    border-bottom: 2px solid #000;
-    font-size: 16px;
-    margin-bottom: 8px;
+.resume-right h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ccc;
     padding-bottom: 5px;
 }
 
-/* 📌 Ajustes em listas para ocupar menos espaço */
-.resume-left ul, .resume-right ul {
+.resume-right ul {
+    list-style-type: none;
     padding: 0;
+}
+
+.resume-right ul li {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.resume-right, .resume-left {
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+
+/* Estilo para informações de contato */
+.contact-info p {
     margin: 0;
-    list-style: none;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #000;
+}
+/* Estilo para os cards de informação e tooltips */
+.info-card {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    
 }
 
-.resume-left ul li, .resume-right ul li {
-    background-color: #e8f0fe;
-    padding: 4px 8px;
+/* Tooltip corretamente estilizado */
+.tooltip {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
     border-radius: 5px;
-    font-size: 0.9rem; /* Reduzindo fonte */
-    color: #2a3eb1;
-    border: 1px solid #ccc;
-    margin-bottom: 3px;
-    text-align: left;
+    width: auto;
+    max-width: 300px;
+    min-width: 250px;
+    min-height: 50px;
+    text-align: center;
+    font-size: 1rem;
+    z-index: 2000; /* Aumente o z-index */
+    white-space: normal;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.3s ease-in-out;
 }
 
-/* Ajuste para que o conteúdo ocupe mais espaço e evite lacunas */
-.resume-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    max-height: 260mm; /* Limita a altura para evitar transbordamento */
-    overflow: auto; /* Permite rolar se o conteúdo for muito grande */
+/* Exibir o tooltip ao passar o mouse sobre o ícone */
+.info-card:hover .tooltip {
+    display: block;
+    opacity: 1;
 }
 
-/* 📌 Rodapé */
+
+.info-card i {
+    color: #030303;
+    margin-left: 5px;
+}
+
+.tooltip::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+}
+
+.info-card:hover .tooltip {
+    z-index: 9999;
+    display: block;
+    opacity: 1;
+}
+
 
 footer {
-    background-color: #1f2e8a !important; /* 🔹 Cor azul igual ao cabeçalho */
+    background-color: #2a3eb1;
     color: white;
     text-align: center;
-    font-family: 'Playfair Display', cursive;
-    font-size: 14px;
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    height: 100vh; /* 🔹 Faz o footer ocupar toda a altura da tela */
+    padding: 3px 0;
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    position: fixed; /* 🔹 Mantém o footer sempre no meio da tela */
-    top: 50%;
-    transform: translateY(-50%); /* 🔹 Move o footer para o centro exato */
+    font-family: 'Playfair Display', cursive;
 }
 
 footer p {
     margin: 0;
 }
 
-
-/* 📌 Melhorias na responsividade para mobile */
-@media (max-width: 768px) {
-    #resumePreview {
-        flex-direction: column;
+/* Responsividade para mobile */
+@media (max-width: 480px) {
+    main {
         width: 100%;
-        min-height: auto;
-        padding: 8px;
-        display: flex;
-        align-items: center; /* Centraliza os elementos */
-        justify-content: center; 
-    }
-
-    .resume-left, .resume-right {
-        width: 100%; /* Garante que ocupem toda a tela */
-        max-width: 100%;
         padding: 10px;
     }
 
-    .resume-left img {
-        width: 100px; /* Mantém tamanho razoável */
-        height: 100px;
-    }
-}
-
-
-@media print {
-    body {
-        font-size: 12px;
-        margin: 0;
-        padding: 0;
-    }
-
     #resumePreview {
-        width: 210mm;
-        min-height: 297mm;
-        page-break-after: always;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-        overflow: hidden; /* Não permitir transbordamento */
+        width: 100%;
+        padding: 5px;
     }
 
-    /* Garante que as seções sejam bem distribuídas na página */
     .resume-left, .resume-right {
-        max-height: calc(297mm - 20mm); /* Garante que o conteúdo dentro das colunas não ultrapasse */
+        padding: 10px;
+    }
+
+    /* Ajustar o tamanho das tooltips para telas menores */
+    .tooltip {
+        max-width: 90%;
     }
 }
+@media (max-width: 600px) {
+    .tooltip {
+        max-width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+
+/* Esconde elementos sem valor */
+.resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
+    display: none;
+}
+
+/* Cor personalizada para a coluna de dados pessoais */
+.custom-bg-color {
+    background-color: var(--selected-bg-color, #e8f0fe); /* Cor padrão é azul claro */
+}
+/* Layout do currículo para formato A4 ao baixar */
+#resumePreview.a4 {
+    width: 210mm;  /* Largura A4 */
+    height: 297mm; /* Altura A4 */
+    padding: 2mm;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px auto;  /* Reduz a margem superior */
+}
+
+
+
+#colorPickerSection {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#colorPickerLabel {
+    font-size: 12pt;
+    margin-right: 10px;
+}
+
+#colorPicker {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .tooltip {
+        max-width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
