@@ -59,23 +59,108 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Azul mais escuro no hover */
 }
 
 .remove-button {
-    background-color: #FF4B4B;
+    background-color: #2a3eb1; /* Verde padrão do Bootstrap (mais profissional) */
+    color: white;
     margin-top: 10px;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 .remove-button:hover {
-    background-color: #CC0000;
+    background-color: #2a3eb1; /* Verde mais escuro no hover */
 }
+
+/* 🔹 Botão "Gerar Currículo" (Azul) */
+#generateResumeButton {
+    background-color: #8400ff; /* Azul padrão */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+#generateResumeButton:hover {
+    background-color: #3000b3; /* Azul mais escuro no hover */
+    transform: scale(1.05); /* Aumenta levemente o botão */
+    box-shadow: 0px 0px 10px rgba(0, 86, 179, 0.6); /* Adiciona brilho ao redor */
+}
+
+/* 🔹 Botão "Baixar em PDF" (Laranja) */
+#downloadPdf {
+    background-color: #FF8C00; /* Laranja */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+#downloadPdf:hover {
+    background-color: #e07b00; /* Laranja mais escuro no hover */
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(224, 123, 0, 0.6);
+}
+
+/* 🔹 Botão "Compartilhar no WhatsApp" (Verde) */
+#shareWhatsApp {
+    background-color: #25D366; /* Verde WhatsApp */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+#shareWhatsApp:hover {
+    background-color: #1ebe5d; /* Verde mais escuro no hover */
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(30, 190, 93, 0.6);
+}
+
+/* 🔹 Ícones dentro dos botões */
+#shareWhatsApp i, #generateResumeButton i, #downloadPdf i {
+    font-size: 1.2rem;
+}
+
 
 .buttons-container {
     display: flex;
     gap: 10px;
     margin-top: 20px;
     justify-content: center;
+}
+
+/* 🔹 Estiliza a área de habilidades e idiomas */
+.skills-languages-container {
+    background-color: #ffffff;
+    border: 1px solid #2a3eb1;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.skills-languages-container ul {
+    padding: 0;
+    list-style: none;
+}
+
+.skills-languages-container li {
+    background-color: #e8f0fe;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 3px;
 }
 
 .skills-display, .languages-display {
@@ -108,15 +193,15 @@ button:hover {
 
 /* 📌 Diferenciando botões */
 #generateResumeButton { background-color: #007BFF; }
-#downloadPdf { background-color: #28a745; }
-#downloadWord { background-color: #f39c12; }
+#downloadPdf { background-color: #007BFF; }
+#shareWhatsApp { background-color: #007BFF; }
 
 #resumePreview {
     width: 210mm;  /* Largura A4 */
     height: 297mm; /* Altura A4 */
     padding: 2mm; /* Mesma margem usada no PDF */
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     margin: 10px auto 0 auto;  /* Reduz a margem superior para 10px e centraliza o layout */
     overflow: auto;
     display:none;
@@ -131,19 +216,22 @@ button:hover {
 .resume-left {
     flex: 0 0 250px; /* Define uma largura fixa de 200px */
     max-width: 250px; /* Limita a largura máxima da coluna esquerda */
-    padding: 20px;
+    padding: 25px;
     background-color: #e8f0fe;
     border-right: 1px solid #ddd;
-    border-radius: 5px 0 0 5px;
+    border-radius: 10px 0 0 10px;
     overflow: hidden; /* Impede que o conteúdo da coluna esquerda transborde */
+    
 }
 
+/* 🔹 Deixa a foto do usuário com um destaque elegante */
 .resume-left img {
     width: 175px;
     height: 175px;
     object-fit: cover;
     border-radius: 50%;
-    margin-bottom: 20px;
+    border: 4px solid white;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }
 
 .resume-left h2 {
@@ -195,9 +283,10 @@ button:hover {
 /*📌 Coluna Direita */
 .resume-right {
     flex: 1; /* Permite que a coluna direita se ajuste ao espaço restante */
-    padding: 20px;
+    padding: 25px;
     border-radius: 0 25px 25px 0;
     overflow-y: auto; /* Adiciona rolagem caso o conteúdo seja muito longo */
+    margin-top: -30px
 }
 
 .resume-right h2, .resume-right h3 {
@@ -206,10 +295,29 @@ button:hover {
 }
 
 .resume-right h3 {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #ccc;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border-bottom: 2px solid #2a3eb1;
     padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+/* 🔹 Adiciona um fundo mais escuro para títulos das seções */
+.resume-right h3, .resume-left h3 {
+    background-color: #2a3eb1;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* 🔹 Adiciona bordas e espaçamentos entre as seções */
+.resume-right p {
+    padding: 10px;
+    border-left: 4px solid #2a3eb1;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 .resume-right ul {
@@ -358,6 +466,20 @@ footer p {
     }
 }
 
+/* 🔹 Ajuste para o layout de impressão */
+@media print {
+    body {
+        background-color: white;
+    }
+
+    #resumePreview {
+        box-shadow: none;
+        border: none;
+        width: 100%;
+        height: auto;
+        padding: 0;
+    }
+}
 
 /* 📌Esconde elementos sem valor */
 .resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
@@ -397,12 +519,4 @@ footer p {
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-}
-
-@media (max-width: 600px) {
-    .tooltip {
-        max-width: 90%;
-        left: 50%;
-        transform: translateX(-50%);
-    }
 }

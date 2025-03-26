@@ -5,20 +5,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Currículo Fácil</title>
 
-        <!-- 💡 CSS Local -->
+        <!-- CSS Local -->
         <link rel="stylesheet" href="./style.css">
 
-        <!-- 💡 Font Awesome CDN -->
+        <!-- Font Awesome CDN -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-        <!-- 💡 Scripts JS Locais -->
+        <!-- Scripts JS Locais -->
         <script defer src="./script.js"></script>
 
-        <!-- 💡 Bibliotecas Externas -->
+        <!--  Bibliotecas Externas -->
         <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
         <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-        <!-- 💡 Favicon -->
+        <!-- Favicon -->
         <link rel="icon" href="./favicon.ico">
     </head>
     <body>
@@ -102,13 +102,20 @@
                 </div>
 
                 <div class="buttons-container">
-                    <button type="button" id="generateResumeButton">Gerar Currículo</button>
-                    <button id="downloadPdf" type="button">Baixar em PDF</button>
-                    <button id="downloadWord" type="button">Baixar em Word</button>
+                    <button id="generateResumeButton" type="button">
+                        <i class="fa-solid fa-file-alt"></i> Gerar Currículo
+                    </button>
+                    <button id="downloadPdf" type="button">
+                        <i class="fa-solid fa-file-pdf"></i> Baixar em PDF
+                    </button>
+                    <button id="shareWhatsApp" type="button">
+                        <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
+                    </button>
                 </div>
+                
             </form>
 
-            <!--  💡 Preview do currículo -->
+            <!-- Preview do currículo -->
             <div id="resumePreview"></div>
             <div id="colorPickerSection"></div>
         </main>

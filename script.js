@@ -69,6 +69,49 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+ // ✅ WhatsApp Bottom
+ document.getElementById('shareWhatsApp').addEventListener('click', function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+    });
+
+    const resumePreview = document.getElementById('resumePreview');
+
+    html2canvas(resumePreview, {
+        scale: 2,
+        useCORS: true,
+        scrollY: -window.scrollY
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+        // Salva como Blob para gerar URL
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+
+        // Criar link de download
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = 'curriculo.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Criar link para WhatsApp
+        const whatsappMessage = encodeURIComponent("Confira meu currículo! Baixe aqui: " + pdfUrl);
+        const whatsappUrl = `https://wa.me/?text=${whatsappMessage}`;
+
+        // Abre o WhatsApp
+        window.open(whatsappUrl, '_blank');
+    });
+});
+
     // ✅ EVENT LISTENERS PARA BOTÕES DE ADIÇÃO
     document.getElementById('addExperience')?.addEventListener('click', function () {
         addField('experienceContainer', `
@@ -144,7 +187,24 @@ document.addEventListener('DOMContentLoaded', function () {
             education: getValues('educationContainer', 'education-title'),
             experience: getValues('experienceContainer', 'experience-title'),
             certifications: getValues('certificationsContainer', 'certification-name'),
-            activities: document.getElementById('activities').value.trim()
+            activities: document.getElementById('activities').value.trim(),
+
+            education: getValues('educationContainer', 'education-title').map((title, index) => ({
+                title,
+                institution: document.querySelectorAll('.education-institution')[index]?.value.trim() || '',
+                duration: document.querySelectorAll('.education-duration')[index]?.value.trim() || ''
+            })),
+            experience: getValues('experienceContainer', 'experience-title').map((title, index) => ({
+                title,
+                company: document.querySelectorAll('.experience-company')[index]?.value.trim() || '',
+                duration: document.querySelectorAll('.experience-duration')[index]?.value.trim() || '',
+                description: document.querySelectorAll('.experience-description')[index]?.value.trim() || ''
+            })),
+            certifications: getValues('certificationsContainer', 'certification-name').map((name, index) => ({
+                name,
+                institution: document.querySelectorAll('.certification-institution')[index]?.value.trim() || '',
+                description: document.querySelectorAll('.certification-description')[index]?.value.trim() || ''
+            }))
         };
 
         // ✅ Gera a pré-visualização corretamente
@@ -171,13 +231,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             ` : ''}
         </div>
-        <div class="resume-right">
-             ${resumeData.summary ? `<h3>Resumo Profissional</h3><p>${resumeData.summary}</p>` : ''}
-            ${resumeData.education.length ? `<h3>Educação</h3><p>${resumeData.education.join(', ')}</p>` : ''}
-            ${resumeData.experience.length ? `<h3>Experiência Profissional</h3><p>${resumeData.experience.join(', ')}</p>` : ''}
-            ${resumeData.certifications.length ? `<h3>Certificações</h3><p>${resumeData.certifications.join(', ')}</p>` : ''}
-            ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
-            </div>
+      <div class="resume-right">
+    ${resumeData.summary ? `<h3>Resumo Profissional</h3><p>${resumeData.summary}</p>` : ''}
+
+    ${resumeData.education.length ? `<h3>Educação</h3>` + 
+        resumeData.education.map(edu => `<p><strong>${edu.title}</strong> - ${edu.institution} (${edu.duration})</p>`).join('') : ''}
+
+    ${resumeData.experience.length ? `<h3>Experiência Profissional</h3>` + 
+        resumeData.experience.map(exp => `<p><strong>${exp.title}</strong> - ${exp.company} (${exp.duration})<br>${exp.description}</p>`).join('') : ''}
+
+    ${resumeData.certifications.length ? `<h3>Certificações</h3>` + 
+        resumeData.certifications.map(cert => `<p><strong>${cert.name}</strong> - ${cert.institution}<br>${cert.description}</p>`).join('') : ''}
+
+    ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
+</div>
+
     `;
     
 }
