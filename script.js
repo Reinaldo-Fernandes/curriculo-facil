@@ -319,14 +319,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     campo.focus(); // Garantir que o usuário pode digitar após o erro
 
-    document.querySelectorAll("input, textarea").forEach((campo) => {
-        campo.addEventListener("focus", () => {
-            campo.removeAttribute("disabled");
-            campo.classList.remove("input-error");
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Evita comportamento estranho no mobile
+            btn.click(); // Dispara o evento de clique manualmente
         });
-    });
+    });    
 
 });
-
-
-
