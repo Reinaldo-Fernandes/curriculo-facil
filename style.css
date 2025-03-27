@@ -522,7 +522,25 @@ footer p {
 }
 
 /* Ajustes para telas menores */
+/* Garante que os inputs possam ser editados no mobile */
+input, textarea {
+    pointer-events: auto !important;
+    user-select: auto !important;
+}
+
 @media (max-width: 768px) {
+
+    body {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    input, textarea {
+        font-size: 14px;
+        padding: 12px;
+        width: 100%; /* Para evitar zoom automático no iOS */
+    }
+    
     main {
       width: 100%;
       padding: 10px;

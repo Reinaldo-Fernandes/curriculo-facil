@@ -289,4 +289,13 @@ window.addEventListener('resize', function () {
       generateResume();
     }
   });
+
+  campo.focus(); // Garantir que o usuário pode digitar após o erro
+
+  document.querySelectorAll("input, textarea").forEach((campo) => {
+    campo.addEventListener("focus", () => {
+        campo.removeAttribute("disabled");
+    });
+});
+
 });
