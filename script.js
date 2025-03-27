@@ -287,8 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         
             const resumePreview = document.getElementById('resumePreview');
-            console.log("✅ Clique detectado. Iniciando geração do PDF...");
-
+        
             html2canvas(resumePreview, {
                 scale: 4,
                 useCORS: true,
@@ -319,47 +318,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
     campo.focus(); // Garantir que o usuário pode digitar após o erro
 
-    document.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Evita comportamento estranho no mobile
-            btn.click(); // Dispara o evento de clique manualmente
-        });
-    });    
-    document.getElementById('gerar-curriculo').addEventListener('click', gerarCurriculo);
-    document.getElementById('gerar-curriculo').addEventListener('touchstart', gerarCurriculo);
-    
-    function gerarPDF(event) {
-        event.preventDefault();
-    
-        const resumePreview = document.getElementById('resumePreview');
-        
-        if (!resumePreview) {
-            console.error("❌ Erro: Elemento resumePreview não encontrado.");
-            return;
-        }
-        console.log("✅ Clique detectado. Iniciando geração do PDF...");
-
-        setTimeout(() => {
-            html2canvas(resumePreview, {
-                scale: 3, // Ajustado para melhor qualidade no mobile
-                useCORS: true,
-                scrollY: 0 // Garante captura correta sem deslocamento
-            }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-    
-                const imgWidth = 210; // A4 Width
-                const imgHeight = (canvas.height * imgWidth) / canvas.width; // Mantém a proporção
-    
-                doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-                doc.save('curriculo.pdf');
-            }).catch(err => console.error("❌ Erro ao capturar imagem:", err));
-        }, 300); // Delay de 300ms para garantir renderização
-    }
-    
 });
