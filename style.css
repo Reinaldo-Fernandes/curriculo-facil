@@ -520,3 +520,56 @@ footer p {
     border-radius: 5px;
     cursor: pointer;
 }
+
+/* Ajustes para telas menores */
+@media (max-width: 768px) {
+    main {
+      width: 100%;
+      padding: 10px;
+    }
+  
+    #resumePreview {
+      flex-direction: column; /* Alinha as colunas verticalmente em telas menores */
+      width: 100%;
+      padding: 5px;
+    }
+  
+    .resume-left,
+    .resume-right {
+      width: 100%; /* Garante que as colunas ocupem toda a largura */
+      padding: 10px;
+      box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+    }
+  
+    .resume-left {
+      border-right: none; /* Remove a borda direita em telas menores */
+      border-bottom: 1px solid #ddd; /* Adiciona uma borda inferior para separar as colunas */
+      border-radius: 10px 10px 0 0;
+    }
+  
+    .resume-left img {
+      max-width: 100%; /* Garante que a imagem não ultrapasse a largura do contêiner */
+      height: auto;
+    }
+  
+    .resume-right {
+      margin-top: 0; /* Remove a margem superior em telas menores */
+      border-radius: 0 0 10px 10px;
+    }
+  
+    .buttons-container {
+      flex-direction: column; /* Alinha os botões verticalmente em telas menores */
+      align-items: stretch; /* Estica os botões para ocupar toda a largura */
+    }
+  
+    .buttons-container button {
+      width: 100%; /* Garante que os botões ocupem toda a largura */
+      margin-bottom: 10px; /* Adiciona espaço entre os botões */
+    }
+  
+    .tooltip {
+      max-width: 90%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }

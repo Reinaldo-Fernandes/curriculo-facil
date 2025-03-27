@@ -282,4 +282,11 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         generateResume();
     });
+
+    // Atualiza o currículo quando a janela é redimensionada
+window.addEventListener('resize', function () {
+    if (document.getElementById('generateResumeButton')) {
+      generateResume();
+    }
+  });
 });
