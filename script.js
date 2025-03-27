@@ -150,20 +150,47 @@ document.addEventListener('DOMContentLoaded', function () {
     // ✅ FUNÇÃO PARA GERAR CURRÍCULO
     function generateResume() {
         console.log("🚀 Função generateResume chamada!");
-
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone1 = document.getElementById('phone1').value.trim();
-
-        if (!name || !email || !phone1) {
-            alert("Preencha os campos obrigatórios.");
+    
+        const name = document.getElementById('name');
+        const email = document.getElementById('email');
+        const phone1 = document.getElementById('phone1');
+    
+        let errorMessage = "";
+    
+        if (!name.value.trim()) {
+            errorMessage += "Nome Completo é obrigatório.\n";
+            name.classList.add("input-error");
+        } else {
+            name.classList.remove("input-error");
+        }
+    
+        if (!email.value.trim()) {
+            errorMessage += "Email é obrigatório.\n";
+            email.classList.add("input-error");
+        } else {
+            email.classList.remove("input-error");
+        }
+    
+        if (!phone1.value.trim()) {
+            errorMessage += "Telefone é obrigatório.\n";
+            phone1.classList.add("input-error");
+        } else {
+            phone1.classList.remove("input-error");
+        }
+    
+        if (errorMessage) {
+            const errorBox = document.getElementById("error-message");
+            errorBox.textContent = errorMessage;
+            errorBox.style.display = "block";
             return;
         }
-
+    
+        document.getElementById("error-message").style.display = "none";
+    
         resumePreview.style.display = "flex";
         resumePreview.style.flexDirection = "row";
         resumePreview.style.opacity = "1";
-        resumePreview.style.minHeight = "auto";
+        resumePreview.style.minHeight = "auto";    
 
         // ✅ Captura a URL da imagem corretamente
         let imageUrl = photoPreview.src && photoPreview.src !== window.location.href ? `<img src='${photoPreview.src}' alt='Foto do Candidato' />` : '';
@@ -283,19 +310,23 @@ document.addEventListener('DOMContentLoaded', function () {
         generateResume();
     });
 
-    // Atualiza o currículo quando a janela é redimensionada
-window.addEventListener('resize', function () {
-    if (document.getElementById('generateResumeButton')) {
-      generateResume();
-    }
-  });
-
-  campo.focus(); // Garantir que o usuário pode digitar após o erro
-
-  document.querySelectorAll("input, textarea").forEach((campo) => {
-    campo.addEventListener("focus", () => {
-        campo.removeAttribute("disabled");
+        // Atualiza o currículo quando a janela é redimensionada
+    window.addEventListener('resize', function () {
+        if (document.getElementById('generateResumeButton')) {
+        generateResume();
+        }
     });
-});
+
+    campo.focus(); // Garantir que o usuário pode digitar após o erro
+
+    document.querySelectorAll("input, textarea").forEach((campo) => {
+        campo.addEventListener("focus", () => {
+            campo.removeAttribute("disabled");
+            campo.classList.remove("input-error");
+        });
+    });
 
 });
+
+
+

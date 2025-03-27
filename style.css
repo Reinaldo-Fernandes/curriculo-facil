@@ -540,7 +540,7 @@ input, textarea {
         padding: 12px;
         width: 100%; /* Para evitar zoom automático no iOS */
     }
-    
+
     main {
       width: 100%;
       padding: 10px;
@@ -591,3 +591,8 @@ input, textarea {
       transform: translateX(-50%);
     }
   }
+
+  .input-error {
+    border: 2px solid red;
+    background-color: #ffe6e6;
+}
