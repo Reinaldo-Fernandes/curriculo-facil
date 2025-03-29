@@ -10,13 +10,19 @@ document.addEventListener("DOMContentLoaded", function () {
     generateResumeButton.addEventListener("click", function () {
         console.log("✅ Botão de gerar currículo foi clicado!");
 
-        // Função para capturar valores dos inputs sem modificar o HTML
+        // Função para capturar valores dos inputs e textareas corretamente
         function getValue(id) {
             const element = document.getElementById(id);
-            return element ? element.value.trim() || "Não informado" : "Não informado";
+            if (!element) return "Não informado";
+            
+            // Verifica se é um input, textarea ou outro elemento
+            if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
+                return element.value.trim() || "Não informado";
+            }
+            return element.innerText.trim() || "Não informado";
         }
 
-        // Pegando os valores dos campos
+        // Pegando os valores dos campos corretamente
         let name = getValue("name");
         let summary = getValue("summary");
         let email = getValue("email");
@@ -33,14 +39,14 @@ document.addEventListener("DOMContentLoaded", function () {
         let profilePicture = document.getElementById("profilePicture");
         let profileImageUrl = "";
 
-        if (profilePicture && profilePicture.files.length > 0) {
+        if (profilePicture && profilePicture.files && profilePicture.files.length > 0) {
             const file = profilePicture.files[0];
             profileImageUrl = URL.createObjectURL(file);
         }
 
         let imageTag = profileImageUrl
             ? `<img src="${profileImageUrl}" alt="Foto de perfil" class="resume-photo">`
-            : "";
+            : "<p>Sem foto</p>";
 
         // Gerando o HTML do currículo
         let resumeHTML = `
@@ -76,8 +82,6 @@ document.addEventListener("DOMContentLoaded", function () {
         resumePreview.innerHTML = resumeHTML;
         resumePreview.style.display = "block";
         resumePreview.style.opacity = "1";
-
-        console.log("📌 Dados capturados:", { name, summary, phone, experience, education, skills, certifications, languages });
 
         console.log("✅ Currículo atualizado no preview!");
     });
