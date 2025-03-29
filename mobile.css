@@ -86,9 +86,12 @@ input, textarea {
     }
 
     #resumePreview {
-        flex-direction: column;
+        display: block !important;
+        opacity: 1 !important;
+        flex-direction: column !important;
         width: 100%;
         padding: 10px;
+        background: white;
     }
 
     .resume-left,
