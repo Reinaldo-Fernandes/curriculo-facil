@@ -7,32 +7,18 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    function showResumePreview() {
-        if (window.innerWidth <= 768) { 
-            resumePreview.style.display = "block"; 
-            resumePreview.style.flexDirection = "column"; 
-        } else {
-            resumePreview.style.display = "flex"; 
-            resumePreview.style.flexDirection = "row";
-        }
-    }
-
-    window.addEventListener("resize", showResumePreview);
-
     generateResumeButton.addEventListener("click", function () {
         console.log("✅ Botão de gerar currículo foi clicado!");
 
-        // Capturar valores dos campos
+        // Função para capturar valores dos inputs sem modificar o HTML
         function getValue(id) {
             const element = document.getElementById(id);
-            if (!element) {
-                console.warn(`⚠️ Campo "${id}" não encontrado.`);
-                return "Não informado";
-            }
-            return element.value.trim() || "Não informado";
+            return element ? element.value.trim() || "Não informado" : "Não informado";
         }
 
+        // Pegando os valores dos campos
         let name = getValue("name");
+        let summary = getValue("summary");
         let email = getValue("email");
         let phone = getValue("phone");
         let experience = getValue("experience");
@@ -41,19 +27,38 @@ document.addEventListener("DOMContentLoaded", function () {
         let certifications = getValue("certifications");
         let languages = getValue("languages");
 
-        console.log("📌 Dados capturados:", { name, email, phone, experience, education, skills, certifications, languages });
+        console.log("📌 Dados capturados:", { name, summary, phone, experience, education, skills, certifications, languages });
 
+        // Captura a foto, se existir
+        let profilePicture = document.getElementById("profilePicture");
+        let profileImageUrl = "";
+
+        if (profilePicture && profilePicture.files.length > 0) {
+            const file = profilePicture.files[0];
+            profileImageUrl = URL.createObjectURL(file);
+        }
+
+        let imageTag = profileImageUrl
+            ? `<img src="${profileImageUrl}" alt="Foto de perfil" class="resume-photo">`
+            : "";
+
+        // Gerando o HTML do currículo
         let resumeHTML = `
             <div class="resume-left">
+                ${imageTag}
                 <h2>${name}</h2>
                 <p><strong>Email:</strong> ${email}</p>
                 <p><strong>Telefone:</strong> ${phone}</p>
-                <h2>Educação</h2>
-                <p>${education}</p>
             </div>
             <div class="resume-right">
+                <h2>Resumo Profissional</h2>
+                <p>${summary}</p>
+
                 <h2>Experiência</h2>
                 <p>${experience}</p>
+
+                <h2>Educação</h2>
+                <p>${education}</p>
 
                 <h2>Habilidades</h2>
                 <p>${skills}</p>
@@ -71,6 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
         resumePreview.innerHTML = resumeHTML;
         resumePreview.style.display = "block";
         resumePreview.style.opacity = "1";
+
+        console.log("📌 Dados capturados:", { name, summary, phone, experience, education, skills, certifications, languages });
 
         console.log("✅ Currículo atualizado no preview!");
     });
