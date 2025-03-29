@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Executar a função ao carregar a página para definir o layout corretamente
+    // Garante que o preview será ajustado corretamente ao carregar a página
     showResumePreview();
     window.addEventListener("resize", showResumePreview);
 
@@ -49,8 +49,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("🔍 HTML do currículo gerado:", resumeHTML);
 
+        // Garante que o conteúdo será atualizado
         resumePreview.innerHTML = resumeHTML;
-        resumePreview.classList.add("visible"); // Usa uma classe CSS para exibição
+        resumePreview.style.display = "block"; 
+        resumePreview.style.opacity = "1";
+
         console.log("✅ Currículo atualizado no preview!");
     });
+
+    // Teste extra para verificar se a área do currículo está visível
+    setInterval(() => {
+        console.log("🎯 Visibilidade do currículo:", window.getComputedStyle(resumePreview).display);
+    }, 3000); // Verifica a cada 3 segundos
 });
