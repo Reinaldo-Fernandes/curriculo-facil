@@ -316,6 +316,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    campo.focus(); // Garantir que o usuário pode digitar após o erro
+   let campo = document.getElementById("id-do-input");
 
 });

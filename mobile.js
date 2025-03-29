@@ -1,33 +1,34 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const resumePreview = document.getElementById("resumePreview");
-    const generateButton = document.getElementById("generateResume");
+    const generateResumeButton = document.querySelector("#generateResumeButton");
+    const resumePreview = document.querySelector("#resumePreview");
 
-    if (!resumePreview || !generateButton) {
+    if (!generateResumeButton || !resumePreview) {
         console.error("❌ Erro: Elementos não encontrados no DOM.");
         return;
     }
 
     function showResumePreview() {
         if (window.innerWidth <= 768) { 
-            resumePreview.style.display = "block"; 
-            resumePreview.style.opacity = "1";
-            resumePreview.style.flexDirection = "column"; 
+            resumePreview.classList.add("mobile-view");
+            resumePreview.classList.remove("desktop-view");
         } else {
-            resumePreview.style.display = "flex"; 
-            resumePreview.style.flexDirection = "row";
+            resumePreview.classList.add("desktop-view");
+            resumePreview.classList.remove("mobile-view");
         }
     }
 
+    // Executar a função ao carregar a página para definir o layout corretamente
+    showResumePreview();
     window.addEventListener("resize", showResumePreview);
 
-    generateButton.addEventListener("click", function () {
+    generateResumeButton.addEventListener("click", function () {
         console.log("✅ Botão de gerar currículo foi clicado!");
 
-        let name = document.getElementById("name")?.value.trim() || "Nome não informado";
-        let email = document.getElementById("email")?.value.trim() || "Não informado";
-        let phone = document.getElementById("phone")?.value.trim() || "Não informado";
-        let experience = document.getElementById("experience")?.value.trim() || "Nenhuma experiência adicionada";
-        let skills = document.getElementById("skills")?.value.trim() || "Nenhuma habilidade adicionada";
+        let name = document.querySelector("#name")?.value.trim() || "Nome não informado";
+        let email = document.querySelector("#email")?.value.trim() || "Não informado";
+        let phone = document.querySelector("#phone")?.value.trim() || "Não informado";
+        let experience = document.querySelector("#experience")?.value.trim() || "Nenhuma experiência adicionada";
+        let skills = document.querySelector("#skills")?.value.trim() || "Nenhuma habilidade adicionada";
 
         console.log("📌 Dados capturados:", { name, email, phone, experience, skills });
 
@@ -49,12 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("🔍 HTML do currículo gerado:", resumeHTML);
 
         resumePreview.innerHTML = resumeHTML;
-        resumePreview.style.display = "block";
-        resumePreview.style.opacity = "1";
-        resumePreview.style.visibility = "visible";
-        resumePreview.style.position = "relative";
-        resumePreview.style.zIndex = "100";
-
+        resumePreview.classList.add("visible"); // Usa uma classe CSS para exibição
         console.log("✅ Currículo atualizado no preview!");
     });
 });

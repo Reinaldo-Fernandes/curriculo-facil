@@ -15,7 +15,6 @@
 
         <!-- Scripts JS Locais -->
         <script defer src="./script.js"></script>
-        <script defer src="./mobile.js"></script>
 
         <!--  Bibliotecas Externas -->
         <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
@@ -126,16 +125,9 @@
         <footer style="background-color: #1f2e8a !important; color: white;">
             <p>&copy; 2024 - Currículo Fácil. Todos os direitos reservados.</p>
         </footer>
-        
-        
-        <script>
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(() => console.log('Service Worker registrado com sucesso.'))
-                    .catch(err => console.error('Falha ao registrar o Service Worker:', err));
-            }
-        </script>
+     
         <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
         
+        <script defer src="./mobile.js"></script>
     </body>
 </html>

@@ -86,14 +86,29 @@ input, textarea {
     }
 
     #resumePreview {
-        display: block !important;
-        opacity: 1 !important;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
         flex-direction: column !important;
         width: 100%;
         padding: 10px;
         background: white;
     }
 
+    .resume-preview.visible {
+        display: block;
+        opacity: 1;
+    }
+    
+    .resume-preview.mobile-view {
+        flex-direction: column;
+    }
+    
+    .resume-preview.desktop-view {
+        display: flex;
+        flex-direction: row;
+    }
+    
     .resume-left,
     .resume-right {
         width: 100%;
