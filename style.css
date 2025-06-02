@@ -62,7 +62,7 @@ button:hover {
 }
 
 .remove-button {
-    background-color: #dc3545;
+    background-color: #2a3eb1; /* Verde padrão do Bootstrap (mais profissional) */
     color: white;
     margin-top: 10px;
     border: none;
@@ -72,7 +72,7 @@ button:hover {
 }
 
 .remove-button:hover {
-    background-color: #c82333;
+    background-color: #2a3eb1; /* Verde mais escuro no hover */
 }
 
 #generateResumeButton {
@@ -156,24 +156,48 @@ button:hover {
     border-radius: 3px;
 }
 
+.skills-display, .languages-display {
+    margin-top: 10px;
+}
+
+.skills-display ul, .languages-display ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.skills-display li, .languages-display li {
+    display: block; /* Garante que cada item ocupe uma linha completa */
+    width: 100%; /* Expande o item para 100% da largura do container */
+    background-color: #e8f0fe;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #2a3eb1;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+}
+
+
 .custom-bg-color {
     background-color: var(--selected-bg-color, #e8f0fe);
     color: var(--text-color, #000);
 }
 
+/* 📌 Diferenciando botões */
+#generateResumeButton { background-color: #007BFF; }
+#downloadPdf { background-color: #007BFF; }
+#shareWhatsApp { background-color: #007BFF; }
+
 #resumePreview {
-    width: 210mm !important;
-    height: 297mm !important;
-    min-width: 210mm;
-    min-height: 297mm;
-    max-width: 210mm;
-    max-height: 297mm;
-    padding: 0;
+    width: 210mm;  /* Largura A4 */
+    height: 297mm; /* Altura A4 */
+    padding: 2mm; /* Mesma margem usada no PDF */
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    margin: 10px auto 0 auto;
-    overflow: hidden;
-    display: none;
+    margin: 10px auto 0 auto;  /* Reduz a margem superior para 10px e centraliza o layout */
+    overflow: auto;
+    display:none;
     flex-direction: row;
     border: 1px solid #ddd;
     box-sizing: border-box;
@@ -191,18 +215,12 @@ button:hover {
 }
 
 .resume-left img {
-    width: 45mm;
-    height: 45mm;
-    max-width: 100%;
-    max-height: 100%;
-    aspect-ratio: 1 / 1;
+    width: 175px;
+    height: 175px;
     object-fit: cover;
     border-radius: 50%;
     border: 4px solid white;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-    display: block;
-    margin: 0 auto 10px auto;
-    image-rendering: auto;
 }
 
 .resume-left h2 {
@@ -243,6 +261,7 @@ button:hover {
     font-size: 0.9rem;
 }
 
+/* 📌tilo para o resumo na coluna esquerda */
 .resume-left .summary {
     margin-top: 20px;
     padding-top: 10px;
@@ -265,16 +284,11 @@ button:hover {
 }
 
 .resume-right {
-    flex: 1;
-    padding: 5mm 5mm;
+    flex: 1; /* Permite que a coluna direita se ajuste ao espaço restante */
+    padding: 25px;
     border-radius: 0 25px 25px 0;
-    overflow-y: auto;
-    margin-top: 0;
-    box-sizing: border-box;
-}
-
-.resume-right h3:first-of-type {
-    margin-top: 0;
+    overflow-y: auto; /* Adiciona rolagem caso o conteúdo seja muito longo */
+    margin-top: -30px
 }
 
 .resume-right h2, .resume-right h3 {
@@ -300,9 +314,7 @@ button:hover {
     border-left: 4px solid #2a3eb1;
     background-color: #f5f5f5;
     border-radius: 5px;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    line-height: 1.4;
+    margin-bottom: 10px;
 }
 
 .resume-right ul {
@@ -321,6 +333,8 @@ button:hover {
     white-space: normal;
 }
 
+
+/* 📌Estilo para informações de contato */
 .contact-info p {
     margin: 0;
     font-size: 1rem;
@@ -332,6 +346,7 @@ button:hover {
     position: relative;
     display: inline-block;
     cursor: pointer;
+    
 }
 
 #progressBarContainer {
@@ -394,6 +409,13 @@ button:hover {
     border-color: transparent transparent #333 transparent;
 }
 
+.info-card:hover .tooltip {
+    z-index: 9999;
+    display: block;
+    opacity: 1;
+}
+
+
 footer {
     background-color: #2a3eb1;
     color: white;
@@ -410,53 +432,39 @@ footer p {
     margin: 0;
 }
 
-@media (max-width: 768px) {
+/* Responsividade para mobile */
+@media (max-width: 480px) {
     main {
-        width: 95%;
-        padding: 15px;
+        width: 100%;
+        padding: 10px;
     }
 
     #resumePreview {
-        flex-direction: column;
         width: 100%;
-        height: auto;
-        padding: 10px;
-        box-shadow: none;
-        border: 1px solid #ddd;
-        margin: 10px auto;
+        padding: 5px;
     }
 
     .resume-left, .resume-right {
-        flex: none;
-        max-width: 100%;
-        width: 100%;
-        padding: 15px;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        border-radius: 0;
+        padding: 10px;
     }
 
-    .resume-left {
-        border-radius: 10px 10px 0 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
+    /* 📌Ajustar o tamanho das tooltips para telas menores */
+    .tooltip {
+        max-width: 90%;
     }
+}
+@media (max-width: 600px) {
+    .tooltip {
+        max-width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
 
-    .resume-left img {
-        width: 45mm;
-        height: 45mm;
-        max-width: 100%;
-        max-height: 100%;
-        aspect-ratio: 1 / 1;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 4px solid white;
-        box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-        display: block;
-        margin: 0 auto 10px auto;
-        image-rendering: auto;
+/* 🔹 Ajuste para o layout de impressão */
+@media print {
+    body {
+        background-color: white;
     }
 
     .buttons-container {
@@ -470,33 +478,42 @@ footer p {
     }
 }
 
-.resume-left p:empty, .resume-right p:empty,
-.resume-left ul:empty, .resume-right ul:empty,
-.resume-right h3:empty + p:empty,
-.resume-right h3:empty + div:empty {
-    display: none !important;
+/* 📌Esconde elementos sem valor */
+.resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
+    display: none;
 }
 
-#resumePreview.force-desktop-layout {
-    width: 210mm !important;
-    height: 297mm !important;
-    min-width: 210mm;
-    min-height: 297mm;
-    max-width: 210mm;
-    max-height: 297mm;
+/* 📌Cor personalizada para a coluna de dados pessoais */
+.custom-bg-color {
+    background-color: var(--selected-bg-color, #e8f0fe); /* Cor padrão é azul claro */
+}
+/* 📌Layout do currículo para formato A4 ao baixar */
+#resumePreview.a4 {
+    width: 210mm;  /* Largura A4 */
+    height: 297mm; /* Altura A4 */
+    padding: 2mm;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px auto;  /* Reduz a margem superior */
 }
 
-#resumePreview.force-desktop-layout .resume-left img {
-    width: 45mm !important;
-    height: 45mm !important;
-    max-width: 100%;
-    max-height: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 4px solid white;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-    display: block;
-    margin: 0 auto 5mm auto !important;
-    image-rendering: auto;
+
+
+#colorPickerSection {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#colorPickerLabel {
+    font-size: 12pt;
+    margin-right: 10px;
+}
+
+#colorPicker {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
