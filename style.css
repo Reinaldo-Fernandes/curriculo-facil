@@ -178,7 +178,6 @@ button:hover {
     margin-bottom: 5px;
 }
 
-
 .custom-bg-color {
     background-color: var(--selected-bg-color, #e8f0fe);
     color: var(--text-color, #000);
@@ -197,10 +196,14 @@ button:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     margin: 10px auto 0 auto;  /* Reduz a margem superior para 10px e centraliza o layout */
     overflow: auto;
-    display:none;
-    flex-direction: row;
+    display: flex; /* Garante que o container se comporte como flexbox por padrão */
+    flex-direction: row; /* Mantém o layout horizontal por padrão */
     border: 1px solid #ddd;
     box-sizing: border-box;
+    /* Adicionado para garantir que o tamanho A4 seja mantido em todas as telas */
+    min-width: 210mm;
+    max-width: 210mm;
+    overflow-x: auto; /* Permite rolagem horizontal se a tela for menor que 210mm */
 }
 
 .resume-left {
@@ -261,7 +264,7 @@ button:hover {
     font-size: 0.9rem;
 }
 
-/* 📌tilo para o resumo na coluna esquerda */
+/* 📌Estilo para o resumo na coluna esquerda */
 .resume-left .summary {
     margin-top: 20px;
     padding-top: 10px;
@@ -332,7 +335,6 @@ button:hover {
     word-wrap: break-word;
     white-space: normal;
 }
-
 
 /* 📌Estilo para informações de contato */
 .contact-info p {
@@ -432,28 +434,42 @@ footer p {
     margin: 0;
 }
 
-/* Responsividade para mobile */
-@media (max-width: 480px) {
+/* --- Ajustes para o layout em mobile (para que fique como desktop) --- */
+/*
+  O objetivo é que o `#resumePreview` mantenha o layout de duas colunas
+  e as dimensões de A4, mesmo em telas menores. Isso pode introduzir
+  rolagem horizontal, mas garante a consistência visual.
+*/
+@media (max-width: 768px) { /* Aplica-se a tablets e celulares menores */
     main {
         width: 100%;
         padding: 10px;
     }
 
     #resumePreview {
-        width: 100%;
-        padding: 5px;
+        /* Força o layout de desktop em telas menores */
+        width: 210mm; /* Mantém a largura A4 */
+        min-width: 210mm; /* Impede que ele encolha */
+        max-width: 210mm; /* Impede que ele expanda */
+        flex-direction: row; /* Mantém o layout horizontal */
+        margin: 10px auto; /* Centraliza melhor em telas menores */
+        overflow-x: auto; /* Permite rolagem horizontal se o conteúdo transbordar */
     }
 
-    .resume-left, .resume-right {
-        padding: 10px;
+    .resume-left {
+        /* Mantém as propriedades de flexbox e largura do desktop */
+        flex: 0 0 65mm;
+        max-width: 65mm;
+        padding: 10mm 5mm; /* Mantém o padding do desktop */
     }
 
-    /* 📌Ajustar o tamanho das tooltips para telas menores */
-    .tooltip {
-        max-width: 90%;
+    .resume-right {
+        /* Mantém as propriedades de flexbox e padding do desktop */
+        flex: 1;
+        padding: 25px; /* Mantém o padding do desktop */
     }
-}
-@media (max-width: 600px) {
+
+    /* Ajusta o tamanho das tooltips para evitar que transbordem em telas menores */
     .tooltip {
         max-width: 90%;
         left: 50%;
@@ -487,6 +503,7 @@ footer p {
 .custom-bg-color {
     background-color: var(--selected-bg-color, #e8f0fe); /* Cor padrão é azul claro */
 }
+
 /* 📌Layout do currículo para formato A4 ao baixar */
 #resumePreview.a4 {
     width: 210mm;  /* Largura A4 */
@@ -496,8 +513,6 @@ footer p {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 10px auto;  /* Reduz a margem superior */
 }
-
-
 
 #colorPickerSection {
     margin-top: 20px;

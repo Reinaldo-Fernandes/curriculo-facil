@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 📌 VARIÁVEIS DO DOM
     const resumeForm = document.getElementById('resumeForm');
     const resumePreview = document.getElementById('resumePreview');
     const progressBar = document.getElementById('progressBar');
@@ -16,9 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const emailInput = document.getElementById('email');
     const phone1Input = document.getElementById('phone1');
 
-    // ---
-    // ✅ PRÉ-VISUALIZAÇÃO DA IMAGEM
-    // ---
+    // Preview da imagem carregada
     function previewImage() {
         if (photoInput.files.length > 0) {
             const reader = new FileReader();
@@ -31,9 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     photoInput.addEventListener('change', previewImage);
 
-    // ---
-    // ✅ CONTADOR DE CARACTERES DO RESUMO
-    // ---
+    // Contador de caracteres do resumo
     summaryInput.addEventListener('input', function () {
         const maxLength = 500;
         const currentLength = summaryInput.value.length;
@@ -44,31 +39,25 @@ document.addEventListener('DOMContentLoaded', function () {
         summaryCounter.textContent = `${summaryInput.value.length} / ${maxLength} caracteres`;
     });
 
-    // ---
-    // ✅ ATUALIZAÇÃO DA BARRA DE PROGRESSO
-    // ---
+    // Atualiza barra de progresso preenchimento campos
     function updateProgress() {
-        // Exclui input type="file" e campos desabilitados/somente leitura
         const fields = Array.from(resumeForm.querySelectorAll('input:not([type="file"]):not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]):not([readonly])'));
         const filledFields = fields.filter(field => field.value.trim() !== '').length;
         const totalFields = fields.length;
-        
+
         let progress = 0;
         if (totalFields > 0) {
             progress = Math.round((filledFields / totalFields) * 100);
         }
-        
+
         progressBar.value = progress;
         progressText.textContent = `${progress}%`;
     }
 
-    // Inicializa a barra de progresso e adiciona listener
     resumeForm.addEventListener('input', updateProgress);
     updateProgress();
 
-    // ---
-    // ✅ ADICIONA CAMPOS DINÂMICOS (EDUCAÇÃO, EXPERIÊNCIA, CERTIFICAÇÕES)
-    // ---
+    // Função para adicionar campos dinâmicos (experiência, educação, certificações)
     function addField(containerId, htmlContent) {
         const container = document.getElementById(containerId);
         if (!container) {
@@ -80,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
         newEntry.innerHTML = htmlContent;
         container.appendChild(newEntry);
 
+        // Botão remover
         newEntry.querySelector('.remove-button').addEventListener('click', function () {
             container.removeChild(newEntry);
             updateProgress();
@@ -90,13 +80,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addExperience')?.addEventListener('click', function () {
         addField('experienceContainer', `
             <div class="experience-entry">
-                <label for="exp-title">Cargo</label>
+                <label>Cargo</label>
                 <input type="text" class="experience-title" placeholder="Cargo">
-                <label for="exp-company">Empresa</label>
+                <label>Empresa</label>
                 <input type="text" class="experience-company" placeholder="Empresa">
-                <label for="exp-duration">Período</label>
+                <label>Período</label>
                 <input type="text" class="experience-duration" placeholder="Data de Início - Data de Término">
-                <label for="exp-description">Descrição</label>
+                <label>Descrição</label>
                 <textarea class="experience-description" placeholder="Descrição breve"></textarea>
                 <button type="button" class="remove-button">Remover</button>
             </div>
@@ -106,11 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addEducation')?.addEventListener('click', function () {
         addField('educationContainer', `
             <div class="education-entry">
-                <label for="edu-title">Nome do Curso</label>
+                <label>Nome do Curso</label>
                 <input type="text" class="education-title" placeholder="Nome do Curso">
-                <label for="edu-institution">Instituição</label>
+                <label>Instituição</label>
                 <input type="text" class="education-institution" placeholder="Instituição">
-                <label for="edu-duration">Período</label>
+                <label>Período</label>
                 <input type="text" class="education-duration" placeholder="Data de Início - Data de Conclusão">
                 <button type="button" class="remove-button">Remover</button>
             </div>
@@ -120,26 +110,22 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addCertification')?.addEventListener('click', function () {
         addField('certificationsContainer', `
             <div class="certification-entry">
-                <label for="cert-name">Nome da Certificação</label>
+                <label>Nome da Certificação</label>
                 <input type="text" class="certification-name" placeholder="Nome da Certificação">
-                <label for="cert-institution">Instituição</label>
+                <label>Instituição</label>
                 <input type="text" class="certification-institution" placeholder="Instituição">
-                <label for="cert-description">Descrição</label>
+                <label>Descrição</label>
                 <textarea class="certification-description" placeholder="Descrição breve"></textarea>
                 <button type="button" class="remove-button">Remover</button>
             </div>
         `);
     });
 
-    // ---
-    // ✅ FUNÇÃO PARA GERAR O CURRÍCULO (PRÉ-VISUALIZAÇÃO)
-    // ---
+    // Gera dados do currículo e atualiza preview HTML
     function generateResume() {
-        console.log("🚀 Função generateResume chamada!");
-
         let hasError = false;
 
-        // Validação dos campos obrigatórios
+        // Valida campos obrigatórios
         if (!nameInput.value.trim()) {
             nameInput.classList.add("input-error");
             hasError = true;
@@ -164,21 +150,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (hasError) {
             errorMessageDiv.textContent = "Por favor, preencha todos os campos obrigatórios (Nome, Email, Telefone).";
             errorMessageDiv.style.display = "block";
-            resumePreview.style.display = "none"; // Esconde o preview se houver erro
+            resumePreview.style.display = "none";
             return;
         }
 
-        errorMessageDiv.style.display = "none"; // Esconde a mensagem de erro se tudo estiver OK
-
-        // **ADICIONA A CLASSE PARA FORÇAR O LAYOUT DESKTOP**
+        errorMessageDiv.style.display = "none";
         resumePreview.classList.add('force-desktop-layout');
-
-        // Exibe o preview e ajusta o layout
         resumePreview.style.display = "flex";
         resumePreview.style.opacity = "1";
 
+        // Imagem da foto se existir
         let imageUrl = photoPreview.src && photoPreview.src !== window.location.href ? `<img src='${photoPreview.src}' alt='Foto do Candidato' />` : '';
 
+        // Função para capturar dados dos campos dinâmicos
         function getDynamicEntries(containerId, fieldClasses) {
             const container = document.getElementById(containerId);
             if (!container) return [];
@@ -216,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
             activities: document.getElementById('activities').value.trim(),
         };
 
-        // Renderiza o HTML do currículo
+        // Atualiza preview HTML do currículo
         resumePreview.innerHTML = `
             <div class="resume-left custom-bg-color">
                 ${imageUrl}
@@ -264,119 +248,49 @@ document.addEventListener('DOMContentLoaded', function () {
                             ${cert.certificationDescription}
                         </p>`).join('') : ''}
 
-                ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
+                ${resumeData.activities ? `<h3>Atividades Complementares</h3><p>${resumeData.activities}</p>` : ''}
             </div>
         `;
+        updateProgress();
     }
 
-    // ---
-    // ✅ DOWNLOAD DO CURRÍCULO COMO PDF
-    // ---
+    generateResumeButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        generateResume();
+    });
+
+    // Botão baixar PDF
     downloadPdfBtn.addEventListener('click', function (event) {
         event.preventDefault();
-        const { jsPDF } = window.jspdf;
 
-        // Garante que o preview esteja gerado e com o layout de desktop forçado
-        generateResume(); 
-
-        // Temporariamente ajusta a altura do resumePreview para o conteúdo total
-        // Isso é crucial para que html2canvas capture o currículo inteiro, e não apenas uma página A4
-        resumePreview.style.height = 'auto'; // Permite que a altura se ajuste ao conteúdo
-        // Força um repaint para o browser recalcular a altura
-        resumePreview.offsetHeight; 
-
-        // Define a escala para o html2canvas
-        let html2canvasScale = 4; // Boa escala para PDF de alta qualidade
+        generateResume();
 
         html2canvas(resumePreview, {
-            scale: html2canvasScale,
-            useCORS: true,
-            logging: false,
-            // scrollY: 0, // Garante que a captura começa do topo
-            // windowWidth: resumePreview.scrollWidth, // Garante que a largura da janela de captura é a do elemento
-            // windowHeight: resumePreview.scrollHeight, // Garante que a altura da janela de captura é a do elemento
+            scale: 5,          // qualidade da imagem
+            useCORS: true,     // permite imagens externas
+            logging: false     // desativa logs no console
         }).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
-            
+            const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
                 format: 'a4'
             });
 
-            // Largura da página do PDF em mm, sem as margens padrão do jsPDF (0 a getWidth())
-            const pdfWidth = pdf.internal.pageSize.getWidth(); 
-            // Altura da imagem no PDF, mantendo a proporção original do canvas
-            const imgHeight = (canvas.height * pdfWidth) / canvas.width; 
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            // Mantém proporção da imagem para calcular altura no PDF
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-            let position = 0;
-            let heightLeft = imgHeight;
-            const pageHeight = pdf.internal.pageSize.getHeight();
-
-            // Adiciona a imagem ao PDF, dividindo em páginas se necessário
-            while (heightLeft > 0) {
-                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-                heightLeft -= pageHeight;
-                if (heightLeft > 0) {
-                    pdf.addPage();
-                    position -= pageHeight; // Ajusta a posição para a próxima página
-                }
-            }
-
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
             pdf.save('curriculo.pdf');
-
         }).catch(error => {
             console.error("Erro ao gerar PDF:", error);
-            alert("Ocorreu um erro ao gerar o PDF. Por favor, tente novamente. Se o problema persistir, pode ser um problema de compatibilidade com o seu navegador ou dispositivo.");
-        }).finally(() => {
-            // Volta a altura do preview para o padrão A4 (297mm) para a visualização no navegador
-            resumePreview.style.height = '297mm'; 
+            alert("Ocorreu um erro ao gerar o PDF. Por favor, tente novamente.");
         });
     });
 
-    // ---
-    // ✅ COMPARTILHAR NO WHATSAPP
-    // ---
-    document.getElementById('shareWhatsApp').addEventListener('click', function () {
-        const whatsappMessage = encodeURIComponent("Confira meu currículo! Você pode baixá-lo no site ou me pedir o arquivo.");
-        const whatsappUrl = `https://wa.me/?text=${whatsappMessage}`;
-        window.open(whatsappUrl, '_blank');
-        alert("O compartilhamento de arquivos PDF diretamente via WhatsApp por um link gerado no navegador não é possível. O usuário poderá baixar o PDF e compartilhar manualmente.");
-    });
-
-
-    // ---
-    // ✅ LISTENERS PARA AÇÕES PRINCIPAIS
-    // ---
-    generateResumeButton.addEventListener('click', function (event) {
-        event.preventDefault();
-        generateResume();
-    });
-
-    let resizeTimer;
-    window.addEventListener('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            // Regenera o currículo se o preview estiver visível, mantendo o layout desktop forçado
-            if (resumePreview.style.display === 'flex' && resumePreview.classList.contains('force-desktop-layout')) {
-                generateResume();
-            }
-        }, 250);
-    });
-
-    // ---
-    // ✅ TOOLTIPS
-    // ---
-    document.querySelectorAll('.info-card').forEach(card => {
-        const tooltip = card.querySelector('.tooltip');
-        const text = card.dataset.text;
-        if (tooltip && text) {
-            tooltip.textContent = text;
-        }
-    });
-
-    // Inicializa a visibilidade do preview para 'none' e remove a classe force-desktop-layout ao carregar a página.
-    // A classe será adicionada dinamicamente quando o currículo for gerado.
-    resumePreview.style.display = 'none';
-    resumePreview.classList.remove('force-desktop-layout'); 
+    // Inicializa preview vazio
+    generateResume();
 });
