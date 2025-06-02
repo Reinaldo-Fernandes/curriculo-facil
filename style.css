@@ -5,7 +5,6 @@ body {
     margin: 0;
     padding: 0;
     background-color: #ffffff;
-    
 }
 
 header {
@@ -63,7 +62,7 @@ button:hover {
 }
 
 .remove-button {
-    background-color: #2a3eb1; /* Verde padrão do Bootstrap (mais profissional) */
+    background-color: #dc3545; /* Vermelho para "remover" */
     color: white;
     margin-top: 10px;
     border: none;
@@ -73,7 +72,7 @@ button:hover {
 }
 
 .remove-button:hover {
-    background-color: #2a3eb1; /* Verde mais escuro no hover */
+    background-color: #c82333; /* Vermelho mais escuro no hover */
 }
 
 /* 🔹 Botão "Gerar Currículo" (Azul) */
@@ -135,7 +134,6 @@ button:hover {
     font-size: 1.2rem;
 }
 
-
 .buttons-container {
     display: flex;
     gap: 10px;
@@ -185,7 +183,6 @@ button:hover {
     margin-bottom: 5px;
 }
 
-
 .custom-bg-color {
     background-color: var(--selected-bg-color, #e8f0fe); /* Azul claro padrão */
     color: var(--text-color, #000); /* Garante contraste com o fundo */
@@ -196,48 +193,50 @@ button:hover {
 #downloadPdf { background-color: #007BFF; }
 #shareWhatsApp { background-color: #007BFF; }
 
+
 #resumePreview {
-    width: 210mm;  /* Largura A4 */
+    width: 210mm; /* Largura A4 */
     height: 297mm; /* Altura A4 */
-    padding: 2mm; /* Mesma margem usada no PDF */
+    padding: 0;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    margin: 10px auto 0 auto;  /* Reduz a margem superior para 10px e centraliza o layout */
-    overflow: auto;
+    margin: 10px auto 0 auto;
+    overflow: hidden;
     display:none;
     flex-direction: row;
-    gap: 20px;
     border: 1px solid #ddd;
-    box-sizing: border-box; /* Garante que padding seja incluído no tamanho total */
-    overflow-y:auto ;
+    box-sizing: border-box;
 }
 
 /* 📌Coluna Esquerda */
 .resume-left {
-    flex: 0 0 250px; /* Define uma largura fixa de 200px */
-    max-width: 250px; /* Limita a largura máxima da coluna esquerda */
-    padding: 25px;
+    flex: 0 0 65mm;
+    max-width: 65mm;
+    padding: 10mm 5mm;
     background-color: #e8f0fe;
     border-right: 1px solid #ddd;
     border-radius: 10px 0 0 10px;
-    overflow: hidden; /* Impede que o conteúdo da coluna esquerda transborde */
-    
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 /* 🔹 Deixa a foto do usuário com um destaque elegante */
 .resume-left img {
-    width: 175px;
-    height: 175px;
+    width: 45mm;
+    height: 45mm;
     object-fit: cover;
     border-radius: 50%;
     border: 4px solid white;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    display: block;
+    margin: 0 auto 10px auto;
 }
 
 .resume-left h2 {
     margin-top: 0;
     color: #2a3eb1;
     font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
 }
 
 .resume-left h3 {
@@ -246,47 +245,61 @@ button:hover {
     border-bottom: 1px solid #ffffff;
     padding-bottom: 5px;
     color: #2a3eb1;
+    background-color: #2a3eb1;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.resume-left p {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    line-height: 1.4;
 }
 
 .resume-left ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 .resume-left ul li {
-    margin-bottom: 10px;
-    font-size: 0.95rem;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
 }
 
-/* 📌tilo para o resumo na coluna esquerda */
+/* 📌Estilo para o resumo na coluna esquerda */
 .resume-left .summary {
     margin-top: 20px;
     padding-top: 10px;
     border-top: 1px solid #ddd;
     font-size: 1rem;
-    max-height: 150px; /* Limita a altura máxima do resumo */
-    text-overflow: ellipsis; /* Adiciona reticências se o texto for muito longo */
-    white-space: normal; /* Permite que o texto quebre em múltiplas linhas */
-    word-wrap: break-word; /* Garante que palavras longas quebrem para se ajustar à largura */
+    max-height: 150px;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
 .invalid-summary {
-    border: 1px solid red; /* Altera a borda para vermelho se o resumo for inválido */
+    border: 1px solid red;
 }
 
 #summaryCounter {
-    margin-top: 5px; /* Espaço entre o resumo e o contador */
-    font-size: 0.9rem; /* Tamanho da fonte do contador */
-    color: #666; /* Cor do texto */
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #666;
 }
 
 /*📌 Coluna Direita */
 .resume-right {
-    flex: 1; /* Permite que a coluna direita se ajuste ao espaço restante */
-    padding: 25px;
+    flex: 1;
+    padding: 10mm 5mm;
     border-radius: 0 25px 25px 0;
-    overflow-y: auto; /* Adiciona rolagem caso o conteúdo seja muito longo */
-    margin-top: -30px
+    overflow-y: auto;
+    margin-top: 0;
+    box-sizing: border-box;
 }
 
 .resume-right h2, .resume-right h3 {
@@ -295,15 +308,11 @@ button:hover {
 }
 
 .resume-right h3 {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: bold;
     border-bottom: 2px solid #2a3eb1;
     padding-bottom: 5px;
     margin-bottom: 15px;
-}
-
-/* 🔹 Adiciona um fundo mais escuro para títulos das seções */
-.resume-right h3, .resume-left h3 {
     background-color: #2a3eb1;
     color: white;
     padding: 5px;
@@ -318,23 +327,25 @@ button:hover {
     background-color: #f5f5f5;
     border-radius: 5px;
     margin-bottom: 10px;
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
 
 .resume-right ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 .resume-right ul li {
-    margin-bottom: 10px;
-    font-size: 0.95rem;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
 }
 
 .resume-right, .resume-left {
     word-wrap: break-word;
     white-space: normal;
 }
-
 
 /* 📌Estilo para informações de contato */
 .contact-info p {
@@ -348,7 +359,7 @@ button:hover {
     position: relative;
     display: inline-block;
     cursor: pointer;
-    
+
 }
 
 /* 📌 Barra de progresso */
@@ -383,7 +394,7 @@ button:hover {
     min-height: 50px;
     text-align: center;
     font-size: 1rem;
-    z-index: 2000; /* Aumente o z-index */
+    z-index: 2000;
     white-space: normal;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
     top: 100%;
@@ -397,7 +408,6 @@ button:hover {
     display: block;
     opacity: 1;
 }
-
 
 .info-card i {
     color: #030303;
@@ -421,86 +431,107 @@ button:hover {
     opacity: 1;
 }
 
-
 footer {
     background-color: #2a3eb1;
     color: white;
     text-align: center;
     padding: 3px 0;
-    position: fixed;
+    position: relative;
     bottom: 0;
     width: 100%;
     font-family: 'Playfair Display', cursive;
+    margin-top: 20px;
 }
 
 footer p {
     margin: 0;
 }
 
-/* Responsividade para mobile */
-@media (max-width: 480px) {
+/* Responsividade para mobile (as regras abaixo serão sobrescritas quando force-desktop-layout estiver ativa) */
+@media (max-width: 768px) {
     main {
-        width: 100%;
-        padding: 10px;
+        width: 95%;
+        padding: 15px;
     }
 
     #resumePreview {
-        width: 100%;
-        padding: 5px;
-    }
-
-    .resume-left, .resume-right {
-        padding: 10px;
-    }
-
-    /* 📌Ajustar o tamanho das tooltips para telas menores */
-    .tooltip {
-        max-width: 90%;
-    }
-}
-@media (max-width: 600px) {
-    .tooltip {
-        max-width: 90%;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-}
-
-/* 🔹 Ajuste para o layout de impressão */
-@media print {
-    body {
-        background-color: white;
-    }
-
-    #resumePreview {
-        box-shadow: none;
-        border: none;
+        flex-direction: column;
         width: 100%;
         height: auto;
-        padding: 0;
+        padding: 10px;
+        box-shadow: none;
+        border: 1px solid #ddd;
+        margin: 10px auto;
+    }
+
+    .resume-left,
+    .resume-right {
+        flex: none;
+        max-width: 100%;
+        width: 100%;
+        padding: 15px;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        border-radius: 0;
+    }
+
+    .resume-left {
+        border-radius: 10px 10px 0 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .resume-left img {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 15px;
+    }
+
+    .resume-left p {
+        text-align: center;
+    }
+
+    .resume-left h3, .resume-right h3 {
+        text-align: left;
+        padding-left: 10px;
+    }
+
+    .buttons-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .buttons-container button {
+        width: 100%;
+        margin-bottom: 10px;
     }
 }
 
-/* 📌Esconde elementos sem valor */
-.resume-left p:empty, .resume-right p:empty, .resume-left ul:empty, .resume-right ul:empty {
-    display: none;
+/* Regras para esconder elementos vazios */
+.resume-left p:empty,
+.resume-right p:empty,
+.resume-left ul:empty,
+.resume-right ul:empty,
+.resume-right h3:empty + p:empty,
+.resume-right h3:empty + div:empty {
+    display: none !important;
 }
 
 /* 📌Cor personalizada para a coluna de dados pessoais */
 .custom-bg-color {
-    background-color: var(--selected-bg-color, #e8f0fe); /* Cor padrão é azul claro */
+    background-color: var(--selected-bg-color, #e8f0fe);
 }
 /* 📌Layout do currículo para formato A4 ao baixar */
 #resumePreview.a4 {
-    width: 210mm;  /* Largura A4 */
-    height: 297mm; /* Altura A4 */
-    padding: 2mm;
+    width: 210mm;
+    height: 297mm;
+    padding: 0;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px auto;  /* Reduz a margem superior */
+    margin: 10px auto;
 }
-
-
 
 #colorPickerSection {
     margin-top: 20px;
@@ -519,4 +550,78 @@ footer p {
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
+}
+
+/* --- NOVO E AJUSTADO: FORÇA LAYOUT DE DESKTOP PARA PRÉ-VISUALIZAÇÃO E PDF --- */
+#resumePreview.force-desktop-layout {
+    flex-direction: row !important;
+    width: 210mm !important; /* Largura A4 EXATA */
+    height: 297mm !important; /* ALTURA A4 EXATA para o html2canvas "entender" uma única página */
+    /* Removendo quaisquer margens ou paddings que possam criar espaço indesejado */
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important; /* Remove qualquer borda */
+    box-shadow: none !important; /* Remove sombra para impressão limpa */
+    overflow: hidden !important; /* Crucial para a captura */
+    position: relative !important;
+    box-sizing: border-box !important;
+    background-color: #fff !important; /* Garante fundo branco para impressão */
+}
+
+#resumePreview.force-desktop-layout .resume-left,
+#resumePreview.force-desktop-layout .resume-right {
+    flex: none !important;
+    /* Reduzindo o padding horizontal para o mínimo. Experimente 0mm, 1mm ou 2mm aqui se quiser margens *muito* pequenas. */
+    padding: 8mm 2mm !important; /* Ajustado: 8mm de top/bottom, 2mm de left/right */
+    border-right: none !important; /* Remove borda entre colunas */
+    border-bottom: none !important;
+    border-radius: 0 !important;
+    display: block !important;
+    text-align: left !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    height: 100%; /* Faz as colunas ocuparem toda a altura do pai (resumePreview) */
+    overflow: hidden; /* Importante para que o conteúdo não vaze visualmente */
+}
+
+#resumePreview.force-desktop-layout .resume-left {
+    width: 65mm !important; /* Mantém a largura da coluna esquerda */
+    max-width: 65mm !important;
+}
+
+#resumePreview.force-desktop-layout .resume-right {
+    flex: 1 !important;
+    width: auto !important;
+    overflow-y: hidden !important; /* Esconde rolagem, html2canvas cuidará da quebra de página */
+}
+
+#resumePreview.force-desktop-layout .resume-left img {
+    width: 45mm !important;
+    height: 45mm !important;
+    margin: 0 auto 5mm auto !important;
+}
+
+/* Ajustes de fonte e espaçamento para otimizar o uso do espaço A4 */
+#resumePreview.force-desktop-layout p,
+#resumePreview.force-desktop-layout ul li {
+    font-size: 0.82rem !important; /* Fonte um pouco menor para caber mais conteúdo */
+    line-height: 1.25 !important; /* Ajusta espaçamento entre linhas */
+    margin-bottom: 2mm !important; /* Espaçamento entre parágrafos/itens de lista */
+}
+
+#resumePreview.force-desktop-layout h2 {
+    font-size: 1.4rem !important; /* Tamanho do nome */
+    margin-bottom: 4mm !important;
+}
+
+#resumePreview.force-desktop-layout h3 {
+    font-size: 1.05rem !important; /* Tamanho dos títulos de seção */
+    padding: 2.5mm !important; /* Ajustado */
+    margin-top: 7mm !important; /* Ajustado */
+    margin-bottom: 3mm !important; /* Ajustado */
+}
+
+/* Ajuste para garantir que os títulos de seção não tenham margem inferior extra no último item */
+#resumePreview.force-desktop-layout h3:last-of-type {
+    margin-bottom: 0 !important;
 }
