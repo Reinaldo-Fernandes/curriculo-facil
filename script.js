@@ -16,9 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const emailInput = document.getElementById('email');
     const phone1Input = document.getElementById('phone1');
 
-    // ---
-    // ✅ PRÉ-VISUALIZAÇÃO DA IMAGEM
-    // ---
+    // --- Preview da imagem
     function previewImage() {
         if (photoInput.files.length > 0) {
             const reader = new FileReader();
@@ -31,9 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     photoInput.addEventListener('change', previewImage);
 
-    // ---
-    // ✅ CONTADOR DE CARACTERES DO RESUMO
-    // ---
+    // --- Contador de caracteres do resumo
     summaryInput.addEventListener('input', function () {
         const maxLength = 500;
         const currentLength = summaryInput.value.length;
@@ -44,11 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
         summaryCounter.textContent = `${summaryInput.value.length} / ${maxLength} caracteres`;
     });
 
-    // ---
-    // ✅ ATUALIZAÇÃO DA BARRA DE PROGRESSO
-    // ---
+    // --- Atualização da barra de progresso
     function updateProgress() {
-        // Exclui input type="file" e campos desabilitados/somente leitura
         const fields = Array.from(resumeForm.querySelectorAll('input:not([type="file"]):not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]):not([readonly])'));
         const filledFields = fields.filter(field => field.value.trim() !== '').length;
         const totalFields = fields.length;
@@ -62,13 +55,10 @@ document.addEventListener('DOMContentLoaded', function () {
         progressText.textContent = `${progress}%`;
     }
 
-    // Inicializa a barra de progresso e adiciona listener
     resumeForm.addEventListener('input', updateProgress);
     updateProgress();
 
-    // ---
-    // ✅ ADICIONA CAMPOS DINÂMICOS (EDUCAÇÃO, EXPERIÊNCIA, CERTIFICAÇÕES)
-    // ---
+    // --- Adiciona campos dinâmicos
     function addField(containerId, htmlContent) {
         const container = document.getElementById(containerId);
         if (!container) {
@@ -131,15 +121,12 @@ document.addEventListener('DOMContentLoaded', function () {
         `);
     });
 
-    // ---
-    // ✅ FUNÇÃO PARA GERAR O CURRÍCULO (PRÉ-VISUALIZAÇÃO)
-    // ---
+    // --- Geração do currículo (pré-visualização)
     function generateResume() {
         console.log("🚀 Função generateResume chamada!");
 
         let hasError = false;
 
-        // Validação dos campos obrigatórios
         if (!nameInput.value.trim()) {
             nameInput.classList.add("input-error");
             hasError = true;
@@ -164,16 +151,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (hasError) {
             errorMessageDiv.textContent = "Por favor, preencha todos os campos obrigatórios (Nome, Email, Telefone).";
             errorMessageDiv.style.display = "block";
-            resumePreview.style.display = "none"; // Esconde o preview se houver erro
+            resumePreview.style.display = "none";
             return;
         }
 
-        errorMessageDiv.style.display = "none"; // Esconde a mensagem de erro se tudo estiver OK
+        errorMessageDiv.style.display = "none";
 
-        // **ADICIONA A CLASSE PARA FORÇAR O LAYOUT DESKTOP**
         resumePreview.classList.add('force-desktop-layout');
-
-        // Exibe o preview e ajusta o layout
         resumePreview.style.display = "flex";
         resumePreview.style.opacity = "1";
 
@@ -216,7 +200,6 @@ document.addEventListener('DOMContentLoaded', function () {
             activities: document.getElementById('activities').value.trim(),
         };
 
-        // Renderiza o HTML do currículo
         resumePreview.innerHTML = `
             <div class="resume-left custom-bg-color">
                 ${imageUrl}
@@ -244,139 +227,131 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="resume-right">
                 ${resumeData.summary ? `<h3>Resumo Profissional</h3><p>${resumeData.summary}</p>` : ''}
 
-                ${resumeData.experience.length ? `<h3>Experiência Profissional</h3>` +
-                    resumeData.experience.map(exp => `
-                        <p>
-                            <strong>${exp.experienceTitle}</strong> - ${exp.experienceCompany} (${exp.experienceDuration})<br>
-                            ${exp.experienceDescription}
-                        </p>`).join('') : ''}
+                ${resumeData.experience.length ? `
+                    <h3>Experiência Profissional</h3>
+                    ${resumeData.experience.map(exp => `
+                        <div class="experience-entry">
+                            <h4>${exp.experienceTitle || ''}</h4>
+                            <p><strong>${exp.experienceCompany || ''}</strong></p>
+                            <p><em>${exp.experienceDuration || ''}</em></p>
+                            <p>${exp.experienceDescription || ''}</p>
+                        </div>
+                    `).join('')}
+                ` : ''}
 
-                ${resumeData.education.length ? `<h3>Educação</h3>` +
-                    resumeData.education.map(edu => `
-                        <p>
-                            <strong>${edu.educationTitle}</strong> - ${edu.educationInstitution} (${edu.educationDuration})
-                        </p>`).join('') : ''}
+                ${resumeData.education.length ? `
+                    <h3>Educação</h3>
+                    ${resumeData.education.map(edu => `
+                        <div class="education-entry">
+                            <h4>${edu.educationTitle || ''}</h4>
+                            <p><strong>${edu.educationInstitution || ''}</strong></p>
+                            <p><em>${edu.educationDuration || ''}</em></p>
+                        </div>
+                    `).join('')}
+                ` : ''}
 
-                ${resumeData.certifications.length ? `<h3>Certificações</h3>` +
-                    resumeData.certifications.map(cert => `
-                        <p>
-                            <strong>${cert.certificationName}</strong> - ${cert.certificationInstitution}<br>
-                            ${cert.certificationDescription}
-                        </p>`).join('') : ''}
+                ${resumeData.certifications.length ? `
+                    <h3>Certificações</h3>
+                    ${resumeData.certifications.map(cert => `
+                        <div class="certification-entry">
+                            <h4>${cert.certificationName || ''}</h4>
+                            <p><strong>${cert.certificationInstitution || ''}</strong></p>
+                            <p>${cert.certificationDescription || ''}</p>
+                        </div>
+                    `).join('')}
+                ` : ''}
 
-                ${resumeData.activities ? `<h3>Atividades Extracurriculares</h3><p>${resumeData.activities}</p>` : ''}
+                ${resumeData.activities ? `
+                    <h3>Atividades Complementares</h3>
+                    <p>${resumeData.activities}</p>
+                ` : ''}
             </div>
         `;
+
+        // Atualiza a barra de progresso
+        updateProgress();
     }
 
-    // ---
-    // ✅ DOWNLOAD DO CURRÍCULO COMO PDF
-    // ---
+    generateResumeButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        generateResume();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // --- Download do PDF com paginação corrigida para evitar página em branco
     downloadPdfBtn.addEventListener('click', function (event) {
         event.preventDefault();
+
         const { jsPDF } = window.jspdf;
 
-        // Garante que o preview esteja gerado e com o layout de desktop forçado
-        generateResume(); 
+        generateResume();
 
-        // Temporariamente ajusta a altura do resumePreview para o conteúdo total
-        // Isso é crucial para que html2canvas capture o currículo inteiro, e não apenas uma página A4
-        resumePreview.style.height = 'auto'; // Permite que a altura se ajuste ao conteúdo
-        // Força um repaint para o browser recalcular a altura
-        resumePreview.offsetHeight; 
-
-        // Define a escala para o html2canvas
-        let html2canvasScale = 4; // Boa escala para PDF de alta qualidade
+        // Ajusta altura para tirar screenshot
+        resumePreview.style.height = 'auto';
+        resumePreview.offsetHeight; // Força reflow
 
         html2canvas(resumePreview, {
-            scale: html2canvasScale,
+            scale: 5,
             useCORS: true,
             logging: false,
-            // scrollY: 0, // Garante que a captura começa do topo
-            // windowWidth: resumePreview.scrollWidth, // Garante que a largura da janela de captura é a do elemento
-            // windowHeight: resumePreview.scrollHeight, // Garante que a altura da janela de captura é a do elemento
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
         }).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
-            
             const pdf = new jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
                 format: 'a4'
             });
 
-            // Largura da página do PDF em mm, sem as margens padrão do jsPDF (0 a getWidth())
-            const pdfWidth = pdf.internal.pageSize.getWidth(); 
-            // Altura da imagem no PDF, mantendo a proporção original do canvas
-            const imgHeight = (canvas.height * pdfWidth) / canvas.width; 
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
 
-            let position = 0;
+            const imgWidth = pdfWidth;
+            const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
             let heightLeft = imgHeight;
-            const pageHeight = pdf.internal.pageSize.getHeight();
+            let position = 0;
 
-            // Adiciona a imagem ao PDF, dividindo em páginas se necessário
+            // Conversão px para mm para recorte
+            const pxPerMm = canvas.height / imgHeight;
+
             while (heightLeft > 0) {
-                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-                heightLeft -= pageHeight;
-                if (heightLeft > 0) {
+                const renderHeight = Math.min(heightLeft, pdfHeight);
+                const sHeight = renderHeight * pxPerMm;
+
+                pdf.addImage(
+                    imgData,
+                    'PNG',
+                    0,
+                    0,
+                    imgWidth,
+                    renderHeight,
+                    undefined,
+                    'NONE',
+                    0,
+                    position * pxPerMm,
+                    canvas.width,
+                    sHeight
+                );
+
+                heightLeft -= renderHeight;
+                position += renderHeight;
+
+                // Só adiciona nova página se restar conteúdo maior que 10mm (evita página branca)
+                if (heightLeft > 10) {
                     pdf.addPage();
-                    position -= pageHeight; // Ajusta a posição para a próxima página
+                } else {
+                    break;
                 }
             }
 
             pdf.save('curriculo.pdf');
-
         }).catch(error => {
             console.error("Erro ao gerar PDF:", error);
-            alert("Ocorreu um erro ao gerar o PDF. Por favor, tente novamente. Se o problema persistir, pode ser um problema de compatibilidade com o seu navegador ou dispositivo.");
+            alert("Erro ao gerar o PDF. Tente novamente.");
         }).finally(() => {
-            // Volta a altura do preview para o padrão A4 (297mm) para a visualização no navegador
-            resumePreview.style.height = '297mm'; 
+            resumePreview.style.height = '297mm'; // A4 fixo
         });
     });
-
-    // ---
-    // ✅ COMPARTILHAR NO WHATSAPP
-    // ---
-    document.getElementById('shareWhatsApp').addEventListener('click', function () {
-        const whatsappMessage = encodeURIComponent("Confira meu currículo! Você pode baixá-lo no site ou me pedir o arquivo.");
-        const whatsappUrl = `https://wa.me/?text=${whatsappMessage}`;
-        window.open(whatsappUrl, '_blank');
-        alert("O compartilhamento de arquivos PDF diretamente via WhatsApp por um link gerado no navegador não é possível. O usuário poderá baixar o PDF e compartilhar manualmente.");
-    });
-
-
-    // ---
-    // ✅ LISTENERS PARA AÇÕES PRINCIPAIS
-    // ---
-    generateResumeButton.addEventListener('click', function (event) {
-        event.preventDefault();
-        generateResume();
-    });
-
-    let resizeTimer;
-    window.addEventListener('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            // Regenera o currículo se o preview estiver visível, mantendo o layout desktop forçado
-            if (resumePreview.style.display === 'flex' && resumePreview.classList.contains('force-desktop-layout')) {
-                generateResume();
-            }
-        }, 250);
-    });
-
-    // ---
-    // ✅ TOOLTIPS
-    // ---
-    document.querySelectorAll('.info-card').forEach(card => {
-        const tooltip = card.querySelector('.tooltip');
-        const text = card.dataset.text;
-        if (tooltip && text) {
-            tooltip.textContent = text;
-        }
-    });
-
-    // Inicializa a visibilidade do preview para 'none' e remove a classe force-desktop-layout ao carregar a página.
-    // A classe será adicionada dinamicamente quando o currículo for gerado.
-    resumePreview.style.display = 'none';
-    resumePreview.classList.remove('force-desktop-layout'); 
 });
