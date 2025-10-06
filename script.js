@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             reader.onload = function (e) {
                 photoPreview.src = e.target.result;
                 photoPreview.style.display = "block";
+                generateResume(); // Atualiza o preview após o upload da foto
             };
             reader.readAsDataURL(photoInput.files[0]);
         }
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
             summaryInput.value = summaryInput.value.substring(0, maxLength);
         }
         summaryCounter.textContent = `${summaryInput.value.length} / ${maxLength} caracteres`;
+        generateResume(); // Atualiza o preview em tempo real
     });
 
     // Função robusta para configurar campos dinâmicos (Experiência, Educação, Certificações)
@@ -77,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             itemId++;
             updateProgress();
+            generateResume();
         });
     }
 
@@ -119,13 +122,13 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     `;
 
-    // --- Configuração dos Campos Dinâmicos (CORRIGIDO) ---
+    // --- Configuração dos Campos Dinâmicos ---
     setupDynamicField('addExperience', 'experienceContainer', experienceTemplate);
     setupDynamicField('addEducation', 'educationContainer', educationTemplate);
     setupDynamicField('addCertification', 'certificationsContainer', certificationTemplate);
 
 
-    // Lógica de Preenchimento da barra de progresso (Mantida a lógica simplificada do usuário)
+    // Lógica de Preenchimento da barra de progresso 
     function updateProgress() {
         const fields = Array.from(resumeForm.querySelectorAll('input:not([type="file"]):not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]):not([readonly])'));
         const filledFields = fields.filter(field => field.value.trim() !== '').length;
@@ -139,7 +142,14 @@ document.addEventListener('DOMContentLoaded', function () {
         progressBar.value = progress;
         progressText.textContent = `${progress}%`;
     }
-    resumeForm.addEventListener('input', updateProgress);
+    resumeForm.addEventListener('input', function(event) {
+        updateProgress();
+        // Garante que o preview é atualizado em tempo real para campos não dinâmicos
+        if (!event.target.closest('.dynamic-item')) {
+            generateResume();
+        }
+    });
+
     updateProgress();
 
     // Função para capturar dados dos campos dinâmicos
@@ -152,11 +162,11 @@ document.addEventListener('DOMContentLoaded', function () {
             fieldClasses.forEach(cls => {
                 const element = entry.querySelector(`.${cls}`);
                 if (element) {
-                    // Mapeamento direto do nome da classe para a chave (sem camelCase complexo)
                     const key = cls.replace(/-/g, '_');
                     data[key] = element.value.trim();
                 }
             });
+            // Filtra entradas vazias no bloco, mas não remove se houver pelo menos um valor
             return data;
         }).filter(data => Object.values(data).some(value => value !== ''));
     }
@@ -164,14 +174,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Gera dados do currículo e atualiza preview HTML
     function generateResume() {
-        // ... (Validação e erro message aqui) ...
-
         errorMessageDiv.style.display = "none";
-        // As classes de layout forçam o A4 em mobile para permitir o zoom/arrastar (style.css)
         resumePreview.style.display = "flex";
         resumePreview.style.opacity = "1";
 
-        // Imagem da foto se existir
         const photoFound = photoPreview.src && photoPreview.src !== window.location.href && photoPreview.style.display !== 'none';
         let imageUrl = photoFound ? `<img id="previewPhoto" src='${photoPreview.src}' alt='Foto do Candidato' />` : '';
 
@@ -181,29 +187,30 @@ document.addEventListener('DOMContentLoaded', function () {
         const certificationEntries = getDynamicEntries('certificationsContainer', ['certification-name', 'certification-institution', 'certification-description']);
 
         const resumeData = {
-            name: nameInput.value.trim() || '[Seu Nome]',
+            name: nameInput.value.trim() || 'Seu Nome Completo',
             address: document.getElementById('address').value.trim(),
-            email: emailInput.value.trim() || '[Seu Email]',
-            phone1: phone1Input.value.trim() || '[Seu Telefone]',
+            email: emailInput.value.trim() || 'seu.email@exemplo.com',
+            phone1: phone1Input.value.trim() || '(99) 99999-9999',
             phone2: document.getElementById('phone2').value.trim(),
             linkedin: document.getElementById('linkedin').value.trim(),
             summary: summaryInput.value.trim() || 'Escreva aqui um resumo profissional envolvente, destacando suas principais habilidades e objetivos de carreira.',
             skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(Boolean),
-            languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(Boolean),
+            languages: document.getElementById('languages').value.split('\n').map(l => l.trim()).filter(Boolean), // Suporta quebra de linha
             education: educationEntries,
             experience: experienceEntries,
             certifications: certificationEntries,
             activities: document.getElementById('activities').value.trim(),
         };
-
+        
         // --- Montagem dos Blocos HTML ---
+        // Contato simplificado para a coluna lateral
         let contactInfo = `
-            <p><i class="fa-solid fa-envelope"></i> ${resumeData.email}</p>
-            <p><i class="fa-solid fa-phone"></i> ${resumeData.phone1}</p>
+            ${resumeData.email ? `<p><i class="fa-solid fa-envelope"></i> ${resumeData.email}</p>` : ''}
+            ${resumeData.phone1 ? `<p><i class="fa-solid fa-phone"></i> ${resumeData.phone1}</p>` : ''}
+            ${resumeData.phone2 ? `<p><i class="fa-solid fa-mobile-alt"></i> ${resumeData.phone2}</p>` : ''}
+            ${resumeData.linkedin ? `<p><i class="fa-brands fa-linkedin"></i> <a href="${resumeData.linkedin}" target="_blank">${resumeData.linkedin.split('/').pop() || 'LinkedIn'}</a></p>` : ''}
+            ${resumeData.address ? `<p><i class="fa-solid fa-map-marker-alt"></i> ${resumeData.address}</p>` : ''}
         `;
-        if (resumeData.phone2) contactInfo += `<p><i class="fa-solid fa-mobile-alt"></i> ${resumeData.phone2}</p>`;
-        if (resumeData.linkedin) contactInfo += `<p><i class="fa-brands fa-linkedin"></i> <a href="${resumeData.linkedin}" target="_blank">${resumeData.linkedin.split('/').pop()}</a></p>`;
-        if (resumeData.address) contactInfo += `<p><i class="fa-solid fa-map-marker-alt"></i> ${resumeData.address}</p>`;
 
         let skillsHtml = resumeData.skills.map(s => `<li>${s}</li>`).join('');
         let languagesHtml = resumeData.languages.map(l => `<li>${l}</li>`).join('');
@@ -251,11 +258,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 ${imageUrl}
                 <h2>${resumeData.name}</h2>
                 
-                <h3><i class="fa-solid fa-user"></i> PERFIL</h3>
-                <p class="summary">${resumeData.summary}</p>
-
-                <h3><i class="fa-solid fa-phone-volume"></i> CONTATO</h3>
-                <div class="contact-info">${contactInfo}</div>
+                ${contactInfo.trim() ? `
+                    <h3><i class="fa-solid fa-phone-volume"></i> CONTATO</h3>
+                    <div class="contact-info">${contactInfo}</div>
+                ` : ''}
 
                 ${skillsHtml ? `
                     <h3><i class="fa-solid fa-tools"></i> HABILIDADES</h3>
@@ -268,6 +274,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 ` : ''}
             </div>
             <div class="resume-right">
+                <section class="summary-section">
+                    <h3><i class="fa-solid fa-user"></i> RESUMO PROFISSIONAL</h3>
+                    <p class="summary-text">${resumeData.summary}</p>
+                </section>
                 <section class="experience-section">
                     <h3><i class="fa-solid fa-briefcase"></i> EXPERIÊNCIA PROFISSIONAL</h3>
                     ${experiencesHtml || '<p>Preencha sua experiência profissional para esta seção aparecer.</p>'}
@@ -290,28 +300,27 @@ document.addEventListener('DOMContentLoaded', function () {
         generateResume();
     });
 
-    // 🚩 CÓDIGO CORRIGIDO: Botão baixar PDF com suporte a múltiplas páginas e layout A4
+    // 🚩 CÓDIGO FINAL CORRIGIDO: Botão baixar PDF com suporte a múltiplas páginas e layout A4
     downloadPdfBtn.addEventListener('click', function (event) {
         event.preventDefault();
 
-        generateResume();
+        generateResume(); // Garante que o preview está atualizado
 
         // 1. Clonamos o preview para garantir que o html2canvas capture o layout A4
         const previewClone = resumePreview.cloneNode(true);
         previewClone.style.width = '210mm';
         previewClone.style.minWidth = '210mm';
         previewClone.style.maxWidth = '210mm';
-        previewClone.style.height = 'auto'; // Captura todo o conteúdo
-        // Adiciona fora da tela para evitar flash visual
+        previewClone.style.height = 'auto'; 
         previewClone.style.position = 'fixed'; 
         previewClone.style.top = '-9999px'; 
 
-        document.body.appendChild(previewClone); // Adiciona ao DOM (temporariamente)
+        document.body.appendChild(previewClone);
 
         html2canvas(previewClone, {
-            scale: 5,          // qualidade da imagem
-            useCORS: true,     // permite imagens externas
-            logging: false     // desativa logs no console
+            scale: 5,         
+            useCORS: true,     
+            logging: false     
         }).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
             const { jsPDF } = window.jspdf;
@@ -321,22 +330,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 format: 'a4'
             });
 
-            const pdfWidth = pdf.internal.pageSize.getWidth(); // 210 mm
-            const pdfHeight = pdf.internal.pageSize.getHeight(); // 297 mm
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
             
-            // 2. Calcula a proporção correta para caber na página A4
             const imgProps = pdf.getImageProperties(imgData);
-            const imgWidth = pdfWidth; // Imagem ocupa a largura total do A4 (210mm)
-            const imgHeight = (imgProps.height * imgWidth) / imgProps.width; // Altura calculada pela proporção
+            const imgWidth = pdfWidth;
+            const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-            // 3. Verifica se a imagem é maior que uma página A4 e usa um plugin multipágina se necessário
             let heightLeft = imgHeight;
             let position = 0;
 
             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pdfHeight;
 
-            // Lógica para adicionar páginas se o currículo for muito longo
             while (heightLeft >= -1) {
                 position = heightLeft - imgHeight;
                 pdf.addPage();
@@ -349,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error("Erro ao gerar PDF:", error);
             alert("Ocorreu um erro ao gerar o PDF. Por favor, tente novamente.");
         }).finally(() => {
-             document.body.removeChild(previewClone); // Remove o clone após a captura
+             document.body.removeChild(previewClone); 
         });
     });
 
