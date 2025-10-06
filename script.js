@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       margin: [10,10,10,10],
       filename: 'curriculo.pdf',
       image: { type: 'jpeg', quality: 1 },
-      html2canvas: { scale: 4, dpi: 300, useCORS: true, scrollY: 0 },
+      html2canvas: { scale: 4, dpi: 400, useCORS: true, scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['css','avoid-all'] }
     };

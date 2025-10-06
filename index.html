@@ -28,14 +28,11 @@
     }
     </script>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@700;900&display=swap">
-    
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script defer src="./script.js"></script>
-    
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="icon" href="./favicon.ico">
 </head>
     <body>
@@ -67,18 +64,19 @@
                     <label for="photo">Foto</label>
                     <img id="photoPreview" src="" alt="Prévia da Foto" style="display:none; width: 150px; height: 150px; border-radius: 50%; margin-top: 10px;">
                     <input type="file" id="photo" accept="image/*" aria-label="Carregar foto">
+
+                    <div class="summary-container">
+                        <h2>Resumo <i class="fa-regular fa-address-card"></i>
+                            <span class="info-card" data-text="Uma breve apresentação de suas qualificações mais relevantes.">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                                <span class="tooltip"></span>
+                            </span>
+                        </h2>
+                        <textarea id="summary" class="professional-summary" placeholder="Breve resumo das suas habilidades e experiências mais relevantes."></textarea>
+                        <div id="summaryCounter">0 / 500 caracteres</div>
+                    </div>
                 </section>
 
-                <div class="summary-container">
-                    <h2>Resumo <i class="fa-regular fa-address-card"></i>
-                        <span class="info-card" data-text="Uma breve apresentação de suas qualificações mais relevantes.">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span class="tooltip"></span>
-                        </span>
-                    </h2>
-                    <textarea id="summary" class="professional-summary" placeholder="Breve resumo das suas habilidades e experiências mais relevantes."></textarea>
-                    <div id="summaryCounter">0 / 500 caracteres</div>
-                </div>
                 <section>
                     <h2>Educação <i class="fa-solid fa-book"></i></h2>
                     <div id="educationContainer"></div>
@@ -139,5 +137,8 @@
         <footer style="background-color: #1f2e8a !important; color: white;">
             <p>&copy; 2024 - Currículo Fácil. Todos os direitos reservados.</p>
         </footer>
+
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     </body>
+
 </html>
