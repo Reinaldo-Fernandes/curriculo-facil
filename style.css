@@ -1,156 +1,363 @@
+/* Fontes do Usuário: Roboto (texto) e Playfair Display (títulos) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@700;900&display=swap');
+
+/* Variáveis de Cores (Azul Sóbrio) */
 :root {
-  --primary-color: #243c82;
-  --accent-color: #e6ecff;
-  --text-color: #222;
-  --font-title: 'Playfair Display', serif;
-  --font-body: 'Inter', sans-serif;
+    --primary-color: #2a3eb1; /* Azul Marinho Sóbrio */
+    --secondary-color: #f4f4f9; /* Cinza claro para fundo sutil */
+    --text-color: #333;
+    --light-border: #ddd;
+    --font-name: 'Playfair Display', serif;
+    --font-body: 'Roboto', sans-serif;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  background: #f5f7fb;
-  font-family: var(--font-body);
-  color: var(--text-color);
+    font-family: var(--font-body);
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f5; 
+    color: var(--text-color);
 }
 
-/* ---------- Cabeçalho ---------- */
 header {
-  background: var(--primary-color);
-  color: white;
-  text-align: center;
-  padding: 15px 0;
-  font-family: var(--font-title);
-  font-size: 1.4rem;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 15px 0;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-family: var(--font-name);
+    font-weight: 700; 
 }
 
 main {
-  width: 95%;
-  max-width: 900px;
-  margin: 25px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    width: 95%;
+    max-width: 900px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow-x: hidden; 
 }
 
-h2 {
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--accent-color);
-  padding-bottom: 5px;
-  font-family: var(--font-title);
+/* --- Estilização do Formulário --- */
+form section, .summary-container {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid var(--light-border);
+    border-radius: 6px;
+}
+
+form h2, .summary-container h2 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--light-border);
+    padding-bottom: 5px;
+    margin-top: 0;
+    font-size: 1.5rem;
 }
 
 label {
-  font-weight: 600;
-  margin-top: 10px;
-  display: block;
+    display: block;
+    margin-top: 10px;
+    font-weight: 500;
+    color: var(--primary-color);
+    font-size: 0.95rem;
 }
 
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-family: var(--font-body);
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+    font-family: var(--font-body);
 }
 
+input:focus, textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 5px rgba(42, 62, 177, 0.2);
+}
+
+.dynamic-item {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 15px;
+    margin-top: 15px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+/* --- Botões Uniformizados --- */
 button {
-  background: var(--primary-color);
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s;
+    padding: 12px 20px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.2s;
 }
-button:hover { background: #1d2f66; }
 
+button:hover {
+    background-color: #1f2e8a;
+    transform: translateY(-1px);
+}
+
+/* Botões de Remover */
+.remove-button {
+    background-color: #dc3545; 
+    margin-top: 10px;
+    padding: 8px 12px;
+}
+.remove-button:hover {
+    background-color: #c82333;
+}
+
+/* Container de botões principais */
 .buttons-container {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    justify-content: center;
 }
 
-/* ---------- Preview do Currículo ---------- */
+#generateResumeButton, #downloadPdf, #shareWhatsApp {
+    background-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(42, 62, 177, 0.4);
+}
+
+/* --- Estilo da Prévia (Preview) - Desktop/Base A4 --- */
 #resumePreview {
-  width: 210mm;
-  min-height: 297mm;
-  margin: 40px auto;
-  background: white;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-  display: flex;
-  overflow: hidden;
-  transition: transform 0.3s;
-  cursor: default;
+    /* Define o tamanho físico A4 */
+    width: 210mm;
+    min-height: 297mm;
+    margin: 30px auto;
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    font-size: 11pt;
+    /* Transições suaves para o zoom */
+    transition: all 0.3s ease-in-out; 
+    cursor: default; 
+    transform: none; /* Desktop: sem transformação */
+    overflow: hidden; /* Evita barras de rolagem desnecessárias no desktop */
 }
 
+/* Coluna Esquerda */
 .resume-left {
-  background: var(--accent-color);
-  flex: 0 0 70mm;
-  padding: 20mm 10mm;
-  border-right: 1px solid #ddd;
-  text-align: center;
+    flex: 0 0 70mm; 
+    max-width: 70mm;
+    padding: 15mm 8mm;
+    background-color: var(--secondary-color);
+    border-right: 1px solid var(--light-border);
+    text-align: left;
+    box-sizing: border-box;
 }
+
 .resume-left img {
-  width: 35mm;
-  height: 35mm;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid white;
-  margin-bottom: 10px;
+    width: 30mm;
+    height: 30mm;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    margin: 0 auto 10px auto;
+    display: block; 
 }
+
 .resume-left h2 {
-  font-size: 1.4rem;
-  color: var(--primary-color);
-  margin-bottom: 15px;
+    margin-top: 0;
+    color: var(--primary-color);
+    font-family: var(--font-name);
+    font-size: 1.5rem;
+    text-align: center;
+    line-height: 1.2;
 }
+
 .resume-left h3 {
-  text-align: left;
-  margin-top: 25px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 4px;
-  color: var(--primary-color);
-  font-size: 1rem;
+    font-size: 1.05rem;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 3px;
+    color: var(--primary-color);
+    font-weight: 700;
 }
-.resume-left ul { list-style: none; padding-left: 10px; text-align: left; }
-.resume-left ul li { margin: 3px 0; }
 
+/* Coluna Direita */
 .resume-right {
-  flex: 1;
-  padding: 20mm 15mm;
-  font-size: 10.5pt;
+    flex: 1;
+    padding: 15mm 15mm 15mm 10mm;
+    box-sizing: border-box;
+    min-height: 100%;
 }
+
 .resume-right h3 {
-  color: var(--primary-color);
-  font-size: 1.2rem;
-  border-bottom: 2px solid var(--accent-color);
-  margin-bottom: 10px;
-  font-family: var(--font-title);
-}
-.resume-right h4 { margin: 5px 0; font-weight: 600; }
-.resume-right p { margin: 2px 0 10px 0; line-height: 1.5; text-align: justify; }
-
-/* ---------- Responsividade ---------- */
-@media (max-width: 900px) {
-  #resumePreview { transform: scale(0.45) translateX(-50%); margin-left: 50%; cursor: zoom-in; }
-  #resumePreview.expanded { transform: scale(1) translateX(0); cursor: zoom-out; }
-  main { padding: 15px; }
-  .buttons-container { flex-direction: column; }
+    font-size: 1.3rem;
+    font-weight: 700;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    text-align: left; 
 }
 
-/* ---------- Impressão ---------- */
+.summary-section {
+    margin-bottom: 30px;
+}
+.summary-text {
+    text-align: justify;
+    margin-bottom: 15px;
+    font-style: italic;
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.resume-right section div {
+    margin-bottom: 20px;
+    padding-left: 10px;
+    border-left: 3px solid var(--light-border);
+}
+
+.resume-right h4 {
+    margin: 0 0 3px 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #444;
+}
+
+.resume-right p {
+    padding: 0;
+    border-left: none;
+    background-color: transparent;
+    border-radius: 0;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.resume-right ul {
+    list-style-type: disc; 
+    padding-left: 20px;
+}
+
+/* --- Responsividade (Mobile) - Otimizado para Performance --- */
+@media (max-width: 950px) {
+    main {
+        padding: 15px;
+    }
+    
+    .buttons-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .buttons-container button {
+        width: 100%;
+    }
+
+    /* 🌟 FIX: A4 Preview em Mobile - Usa transform: scale() para visualização fluida */
+    #resumePreview {
+        width: 210mm; 
+        min-height: 297mm;
+        margin: 10px auto;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        
+        /* Centraliza e aplica o REDIMENSIONAMENTO para caber na tela. */
+        transform-origin: top center;
+        transform: translate(-50%, 0) scale(0.45); 
+        
+        margin-left: 50%;
+        margin-right: 50%;
+        
+        cursor: zoom-in; /* Indica que é clicável */
+        overflow: hidden; /* Garante que não aparecem barras de rolagem enquanto está "diminuído" */
+    }
+    
+    /* 🌟 FIX: Estilo quando expandido/zoomado (Escala para 100%) */
+    #resumePreview.expanded {
+        /* Retorna a escala para 1 (tamanho real de 210mm) */
+        transform: translate(-50%, 0) scale(1); 
+        cursor: zoom-out; 
+        overflow: auto; /* Permite rolagem horizontal/vertical */
+    }
+
+    .resume-left {
+        flex: 0 0 60mm; 
+        max-width: 60mm;
+        padding: 10mm 5mm;
+    }
+
+    .resume-right {
+        padding: 10mm;
+    }
+}
+
+/* --- Impressão --- */
 @media print {
-  header, footer, main, .buttons-container, #progressBarContainer { display: none !important; }
-  #resumePreview {
-    width: 210mm !important;
-    min-height: 297mm !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-    transform: none !important;
-  }
-  .resume-left, .resume-right { padding: 10mm !important; }
-  .resume-left h3, .resume-right h3 { color: black !important; }
+    body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+    
+    header, footer, main, .buttons-container, #progressBarContainer, #error-message {
+        display: none !important;
+    }
+
+    #resumePreview {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        cursor: default !important;
+        transform: none !important; 
+        overflow: visible !important;
+    }
+
+    .resume-left, .resume-right {
+        padding: 10mm;
+        height: auto;
+        overflow: visible;
+    }
+
+    .resume-left h3, .resume-right h3 {
+        color: black !important;
+        border-bottom-color: black !important;
+    }
+}
+
+
+/* 🚩 CORREÇÕES ESSENCIAIS PARA PAGINAÇÃO E QUALIDADE DO PDF */
+
+/* A propriedade page-break-inside: avoid é CRUCIAL para evitar que cortes ocorram no meio de blocos de conteúdo */
+
+/* Evita que seções principais sejam cortadas */
+.resume-right section, 
+.summary-section {
+    page-break-inside: avoid !important;
+}
+
+/* Evita que um item de experiência/educação/certificação seja cortado no meio da página */
+.experience-entry, 
+.education-entry,
+.certification-entry,
+.resume-right ul li {
+    page-break-inside: avoid !important;
+}
+
+/* Garante que a coluna lateral (esquerda) seja renderizada inteira, mantendo o layout de duas colunas */
+.resume-left {
+    page-break-inside: avoid !important; 
 }
