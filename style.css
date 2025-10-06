@@ -41,7 +41,6 @@ main {
     padding: 25px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     border-radius: 8px;
-    /* Garante que o conteúdo expandido do preview não cause rolagem inesperada */
     overflow-x: hidden; 
 }
 
@@ -134,9 +133,9 @@ button:hover {
     box-shadow: 0 0 5px rgba(42, 62, 177, 0.4);
 }
 
-/* --- Estilo da Prévia (Preview) - Desktop --- */
+/* --- Estilo da Prévia (Preview) - Desktop/Base A4 --- */
 #resumePreview {
-    /* Base style for A4 preview container */
+    /* Define o tamanho físico A4 */
     width: 210mm;
     min-height: 297mm;
     margin: 30px auto;
@@ -146,9 +145,11 @@ button:hover {
     flex-direction: row;
     box-sizing: border-box;
     font-size: 11pt;
-    overflow: hidden;
+    /* Transições suaves para o zoom */
     transition: all 0.3s ease-in-out; 
-    cursor: default; /* Desktop não precisa de zoom-in */
+    cursor: default; 
+    transform: none; /* Desktop: sem transformação */
+    overflow: hidden; /* Evita barras de rolagem desnecessárias no desktop */
 }
 
 /* Coluna Esquerda */
@@ -250,7 +251,7 @@ button:hover {
     padding-left: 20px;
 }
 
-/* --- Responsividade (Mobile) --- */
+/* --- Responsividade (Mobile) - Otimizado para Performance --- */
 @media (max-width: 950px) {
     main {
         padding: 15px;
@@ -265,36 +266,34 @@ button:hover {
         width: 100%;
     }
 
-    /* 🌟 NOVO: A4 Preview em Mobile - Ajustado para a largura da tela */
+    /* 🌟 FIX: A4 Preview em Mobile - Usa transform: scale() para visualização fluida */
     #resumePreview {
-        width: 95%; /* Ajusta para a largura do main container */
-        min-height: auto;
-        height: auto;
-        /* Mantém a proporção A4 (210/297) para visualização elegante */
-        aspect-ratio: 210 / 297; 
+        width: 210mm; 
+        min-height: 297mm;
         margin: 10px auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        overflow: hidden; /* Esconde o conteúdo que transborda, forçando o ajuste */
+        
+        /* Centraliza a página de 210mm e aplica um REDIMENSIONAMENTO de ~45% para caber na tela. 
+           O uso de scale é muito mais performático que alterar dimensões. */
+        transform-origin: top center;
+        transform: scale(0.45); 
+        
+        /* Ajusta o posicionamento horizontal depois da escala para que o centro da página 
+           (210mm) fique no centro da tela. */
+        margin-left: 50%;
+        margin-right: 50%;
+        transform: translate(-50%, 0) scale(0.45); 
+        
         cursor: zoom-in; /* Indica que é clicável */
-        /* O conteúdo do A4 é escalado internamente para caber */
-        transform-origin: top left;
-        transform: scale(1);
+        overflow: hidden; /* Garante que não aparecem barras de rolagem enquanto está "diminuído" */
     }
     
-    /* 🌟 NOVO: Estilo quando expandido/zoomado (Simula o zoom do PDF) */
+    /* 🌟 FIX: Estilo quando expandido/zoomado (Escala para 100%) */
     #resumePreview.expanded {
-        width: 210mm; 
-        max-width: 210mm;
-        height: auto; 
-        min-height: 297mm;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); 
+        /* Retorna a escala para 1 (tamanho real de 210mm), permitindo zoom e arrastar */
+        transform: translate(-50%, 0) scale(1); 
         cursor: zoom-out; 
-        /* Permite rolagem horizontal/vertical para o A4 real */
-        overflow: auto; 
-        
-        /* Centraliza o preview expandido na tela. */
-        margin-left: 50%;
-        transform: translateX(-50%);
+        overflow: auto; /* Permite rolagem horizontal/vertical */
     }
 
     .resume-left {
@@ -326,8 +325,8 @@ button:hover {
         margin: 0;
         box-shadow: none;
         page-break-after: always;
-        cursor: default !important; /* Remove cursor de zoom na impressão */
-        transform: none !important;
+        cursor: default !important;
+        transform: none !important; /* Essencial para impressão */
         overflow: visible !important;
     }
 
