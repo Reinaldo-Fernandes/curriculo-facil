@@ -30,15 +30,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Contador de caracteres do resumo
     summaryInput.addEventListener('input', function () {
-        const charCount = this.value.length;
-        summaryCounter.textContent = `${charCount} caracteres`;
+        const maxLength = 500;
+        const currentLength = summaryInput.value.length;
+
+        if (currentLength > maxLength) {
+            summaryInput.value = summaryInput.value.substring(0, maxLength);
+        }
+        summaryCounter.textContent = `${summaryInput.value.length} / ${maxLength} caracteres`;
     });
 
-    // Funções de adicionar/remover campos
-    function setupDynamicField(addButtonId, containerId, templateHtml, inputSelector, fieldName) {
+    // Função robusta para configurar campos dinâmicos (Experiência, Educação, Certificações)
+    function setupDynamicField(addButtonId, containerId, templateHtml) {
         const addButton = document.getElementById(addButtonId);
         const container = document.getElementById(containerId);
         let itemId = 0;
+
+        if (!addButton || !container) {
+            console.error(`Erro: O botão com ID '${addButtonId}' ou o container com ID '${containerId}' não foi encontrado.`);
+            return;
+        }
 
         addButton.addEventListener('click', function () {
             const newItem = document.createElement('div');
@@ -47,13 +57,22 @@ document.addEventListener('DOMContentLoaded', function () {
             newItem.innerHTML = templateHtml;
             container.appendChild(newItem);
 
-            newItem.querySelector('.remove-button').addEventListener('click', function () {
-                container.removeChild(newItem);
-                updateProgress();
-            });
+            // Adiciona listener para o botão de remover
+            const removeButton = newItem.querySelector('.remove-button');
+            if (removeButton) {
+                 removeButton.addEventListener('click', function () {
+                    container.removeChild(newItem);
+                    updateProgress();
+                    generateResume(); // Atualiza o preview ao remover
+                });
+            }
 
-            newItem.querySelectorAll(inputSelector).forEach(input => {
-                input.addEventListener('input', updateProgress);
+            // Adiciona listeners para os inputs dentro do novo item
+            newItem.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('input', function() {
+                    updateProgress();
+                    generateResume(); // Atualiza o preview em tempo real
+                });
             });
 
             itemId++;
@@ -61,190 +80,192 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Templates HTML
+    // --- Templates HTML para Campos Dinâmicos ---
     const experienceTemplate = `
-        <label>Cargo/Título:</label>
-        <input type="text" class="experience-title" placeholder="Ex: Desenvolvedor Front-end">
-        <label>Empresa:</label>
-        <input type="text" class="experience-company" placeholder="Ex: Tech Solutions Ltda">
-        <label>Período:</label>
-        <input type="text" class="experience-period" placeholder="Ex: Jan 2020 - Dez 2023">
-        <label>Descrição:</label>
-        <textarea class="experience-description" placeholder="Descreva suas responsabilidades e conquistas."></textarea>
-        <button type="button" class="remove-button">Remover Experiência</button>
+        <div class="experience-entry entry">
+            <label>Cargo/Título:</label>
+            <input type="text" class="experience-title" placeholder="Ex: Desenvolvedor Front-end">
+            <label>Empresa:</label>
+            <input type="text" class="experience-company" placeholder="Ex: Tech Solutions Ltda">
+            <label>Período:</label>
+            <input type="text" class="experience-duration" placeholder="Ex: Jan 2020 - Dez 2023">
+            <label>Descrição:</label>
+            <textarea class="experience-description" placeholder="Descreva suas responsabilidades e conquistas."></textarea>
+            <button type="button" class="remove-button">Remover Experiência</button>
+        </div>
     `;
 
     const educationTemplate = `
-        <label>Curso/Grau:</label>
-        <input type="text" class="education-course" placeholder="Ex: Bacharelado em Ciência da Computação">
-        <label>Instituição:</label>
-        <input type="text" class="education-institution" placeholder="Ex: Universidade Federal">
-        <label>Período:</label>
-        <input type="text" class="education-period" placeholder="Ex: 2016 - 2020">
-        <button type="button" class="remove-button">Remover Educação</button>
+        <div class="education-entry entry">
+            <label>Curso/Grau:</label>
+            <input type="text" class="education-title" placeholder="Ex: Bacharelado em Ciência da Computação">
+            <label>Instituição:</label>
+            <input type="text" class="education-institution" placeholder="Ex: Universidade Federal">
+            <label>Período:</label>
+            <input type="text" class="education-duration" placeholder="Ex: 2016 - 2020">
+            <button type="button" class="remove-button">Remover Educação</button>
+        </div>
     `;
 
-    const skillTemplate = `
-        <label>Habilidade:</label>
-        <input type="text" class="skill-name" placeholder="Ex: JavaScript">
-        <label>Nível (1-10):</label>
-        <input type="number" class="skill-level" min="1" max="10" value="5">
-        <button type="button" class="remove-button">Remover Habilidade</button>
+    const certificationTemplate = `
+        <div class="certification-entry entry">
+            <label>Nome da Certificação:</label>
+            <input type="text" class="certification-name" placeholder="Ex: AWS Certified Cloud Practitioner">
+            <label>Instituição Emissora:</label>
+            <input type="text" class="certification-institution" placeholder="Ex: Amazon Web Services">
+            <label>Descrição:</label>
+            <textarea class="certification-description" placeholder="Ex: Foco em serviços de computação em nuvem."></textarea>
+            <button type="button" class="remove-button">Remover Certificação</button>
+        </div>
     `;
 
-    const languageTemplate = `
-        <label>Idioma:</label>
-        <input type="text" class="language-name" placeholder="Ex: Inglês">
-        <label>Nível:</label>
-        <input type="text" class="language-level" placeholder="Ex: Fluente, Intermediário">
-        <button type="button" class="remove-button">Remover Idioma</button>
-    `;
+    // --- Configuração dos Campos Dinâmicos (CORRIGIDO) ---
+    setupDynamicField('addExperience', 'experienceContainer', experienceTemplate);
+    setupDynamicField('addEducation', 'educationContainer', educationTemplate);
+    setupDynamicField('addCertification', 'certificationsContainer', certificationTemplate);
 
-    setupDynamicField('addExperience', 'experiencesContainer', experienceTemplate, 'input, textarea', 'experiência');
-    setupDynamicField('addEducation', 'educationContainer', educationTemplate, 'input', 'educação');
-    setupDynamicField('addSkill', 'skillsContainer', skillTemplate, 'input', 'habilidade');
-    setupDynamicField('addLanguage', 'languagesContainer', languageTemplate, 'input', 'idioma');
 
-    // Lógica de Preenchimento da barra de progresso
-    const requiredFields = [
-        nameInput, emailInput, phone1Input, summaryInput
-    ];
-
+    // Lógica de Preenchimento da barra de progresso (Mantida a lógica simplificada do usuário)
     function updateProgress() {
-        let filledCount = 0;
-        const totalFields = requiredFields.length;
+        const fields = Array.from(resumeForm.querySelectorAll('input:not([type="file"]):not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]):not([readonly])'));
+        const filledFields = fields.filter(field => field.value.trim() !== '').length;
+        const totalFields = fields.length;
 
-        requiredFields.forEach(field => {
-            if (field.value.trim() !== '') {
-                filledCount++;
-            }
-        });
+        let progress = 0;
+        if (totalFields > 0) {
+            progress = Math.round((filledFields / totalFields) * 100);
+        }
 
-        // Contar campos dinâmicos (mínimo de 1 para cada seção, se existir)
-        const dynamicSections = [
-            { containerId: 'experiencesContainer', min: 1 },
-            { containerId: 'educationContainer', min: 1 }
-        ];
-
-        let totalDynamicSections = 0;
-        let filledDynamicSections = 0;
-
-        dynamicSections.forEach(section => {
-            totalDynamicSections += section.min;
-            const container = document.getElementById(section.containerId);
-            if (container.children.length >= section.min) {
-                filledDynamicSections += 1;
-            }
-        });
-
-        const totalProgressParts = totalFields + totalDynamicSections;
-        const currentFilledParts = filledCount + filledDynamicSections;
-
-        const progress = (currentFilledParts / totalProgressParts) * 100;
         progressBar.value = progress;
-        progressText.textContent = `${Math.round(progress)}%`;
+        progressText.textContent = `${progress}%`;
+    }
+    resumeForm.addEventListener('input', updateProgress);
+    updateProgress();
+
+    // Função para capturar dados dos campos dinâmicos
+    function getDynamicEntries(containerId, fieldClasses) {
+        const container = document.getElementById(containerId);
+        if (!container) return [];
+        const entries = Array.from(container.querySelectorAll('.dynamic-item'));
+        return entries.map(entry => {
+            const data = {};
+            fieldClasses.forEach(cls => {
+                const element = entry.querySelector(`.${cls}`);
+                if (element) {
+                    // Mapeamento direto do nome da classe para a chave (sem camelCase complexo)
+                    const key = cls.replace(/-/g, '_');
+                    data[key] = element.value.trim();
+                }
+            });
+            return data;
+        }).filter(data => Object.values(data).some(value => value !== ''));
     }
 
-    // Adiciona evento de input para campos principais
-    requiredFields.forEach(field => field.addEventListener('input', updateProgress));
 
-    // Lógica de Geração do Currículo
+    // Gera dados do currículo e atualiza preview HTML
     function generateResume() {
-        const name = nameInput.value || '[Seu Nome Completo]';
-        const title = document.getElementById('title').value || '[Seu Título Profissional]';
-        const email = emailInput.value || '[Seu E-mail]';
-        const phone1 = phone1Input.value || '[Seu Telefone]';
-        const phone2 = document.getElementById('phone2').value;
-        const linkedin = document.getElementById('linkedin').value;
-        const address = document.getElementById('address').value;
-        const summary = summaryInput.value || 'Escreva aqui um resumo profissional envolvente, destacando suas principais habilidades e objetivos de carreira. Idealmente, tenha entre 3 e 5 linhas.';
-        const photoSrc = photoPreview.src || 'placeholder-photo.jpg';
+        // ... (Validação e erro message aqui) ...
 
+        errorMessageDiv.style.display = "none";
+        // As classes de layout forçam o A4 em mobile para permitir o zoom/arrastar (style.css)
+        resumePreview.style.display = "flex";
+        resumePreview.style.opacity = "1";
+
+        // Imagem da foto se existir
+        const photoFound = photoPreview.src && photoPreview.src !== window.location.href && photoPreview.style.display !== 'none';
+        let imageUrl = photoFound ? `<img id="previewPhoto" src='${photoPreview.src}' alt='Foto do Candidato' />` : '';
+
+        // --- Coleta de Dados ---
+        const educationEntries = getDynamicEntries('educationContainer', ['education-title', 'education-institution', 'education-duration']);
+        const experienceEntries = getDynamicEntries('experienceContainer', ['experience-title', 'experience-company', 'experience-duration', 'experience-description']);
+        const certificationEntries = getDynamicEntries('certificationsContainer', ['certification-name', 'certification-institution', 'certification-description']);
+
+        const resumeData = {
+            name: nameInput.value.trim() || '[Seu Nome]',
+            address: document.getElementById('address').value.trim(),
+            email: emailInput.value.trim() || '[Seu Email]',
+            phone1: phone1Input.value.trim() || '[Seu Telefone]',
+            phone2: document.getElementById('phone2').value.trim(),
+            linkedin: document.getElementById('linkedin').value.trim(),
+            summary: summaryInput.value.trim() || 'Escreva aqui um resumo profissional envolvente, destacando suas principais habilidades e objetivos de carreira.',
+            skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(Boolean),
+            languages: document.getElementById('languages').value.split(',').map(l => l.trim()).filter(Boolean),
+            education: educationEntries,
+            experience: experienceEntries,
+            certifications: certificationEntries,
+            activities: document.getElementById('activities').value.trim(),
+        };
+
+        // --- Montagem dos Blocos HTML ---
         let contactInfo = `
-            <p><i class="fa-solid fa-envelope"></i> ${email}</p>
-            <p><i class="fa-solid fa-phone"></i> ${phone1}</p>
+            <p><i class="fa-solid fa-envelope"></i> ${resumeData.email}</p>
+            <p><i class="fa-solid fa-phone"></i> ${resumeData.phone1}</p>
         `;
-        if (phone2) contactInfo += `<p><i class="fa-solid fa-mobile-alt"></i> ${phone2}</p>`;
-        if (linkedin) contactInfo += `<p><i class="fa-brands fa-linkedin"></i> <a href="${linkedin}" target="_blank">${linkedin.split('/').pop()}</a></p>`;
-        if (address) contactInfo += `<p><i class="fa-solid fa-map-marker-alt"></i> ${address}</p>`;
+        if (resumeData.phone2) contactInfo += `<p><i class="fa-solid fa-mobile-alt"></i> ${resumeData.phone2}</p>`;
+        if (resumeData.linkedin) contactInfo += `<p><i class="fa-brands fa-linkedin"></i> <a href="${resumeData.linkedin}" target="_blank">${resumeData.linkedin.split('/').pop()}</a></p>`;
+        if (resumeData.address) contactInfo += `<p><i class="fa-solid fa-map-marker-alt"></i> ${resumeData.address}</p>`;
 
-        // Coletar Experiências
-        const experiences = Array.from(document.querySelectorAll('#experiencesContainer .dynamic-item')).map(item => ({
-            title: item.querySelector('.experience-title').value || 'Cargo/Título',
-            company: item.querySelector('.experience-company').value || 'Empresa',
-            period: item.querySelector('.experience-period').value || 'Período',
-            description: item.querySelector('.experience-description').value || 'Descrição das atividades e resultados.'
-        }));
-
-        let experiencesHtml = experiences.map(exp => `
+        let skillsHtml = resumeData.skills.map(s => `<li>${s}</li>`).join('');
+        let languagesHtml = resumeData.languages.map(l => `<li>${l}</li>`).join('');
+        
+        let experiencesHtml = resumeData.experience.map(exp => `
             <div>
-                <h4>${exp.title} na ${exp.company}</h4>
-                <p><strong>Período:</strong> ${exp.period}</p>
-                <p>${exp.description}</p>
+                <h4>${exp.experience_title} na ${exp.experience_company}</h4>
+                <p><strong>Período:</strong> ${exp.experience_duration}</p>
+                <p>${exp.experience_description}</p>
             </div>
         `).join('');
 
-        // Coletar Educação
-        const education = Array.from(document.querySelectorAll('#educationContainer .dynamic-item')).map(item => ({
-            course: item.querySelector('.education-course').value || 'Curso/Grau',
-            institution: item.querySelector('.education-institution').value || 'Instituição',
-            period: item.querySelector('.education-period').value || 'Período'
-        }));
-
-        let educationHtml = education.map(edu => `
+        let educationHtml = resumeData.education.map(edu => `
             <li>
-                <h4>${edu.course}</h4>
-                <p>${edu.institution} (${edu.period})</p>
+                <h4>${edu.education_title}</h4>
+                <p>${edu.education_institution} (${edu.education_duration})</p>
             </li>
         `).join('');
 
-        // Coletar Habilidades
-        const skills = Array.from(document.querySelectorAll('#skillsContainer .dynamic-item')).map(item => ({
-            name: item.querySelector('.skill-name').value || 'Habilidade',
-            level: item.querySelector('.skill-level').value || 5
-        }));
-
-        let skillsHtml = skills.map(skill => `
-            <li>${skill.name} (Nível: ${skill.level}/10)</li>
+        let certificationsHtml = resumeData.certifications.map(cert => `
+            <li>
+                <h4>${cert.certification_name}</h4>
+                <p>${cert.certification_institution} (${cert.certification_description})</p>
+            </li>
         `).join('');
 
-        // Coletar Idiomas
-        const languages = Array.from(document.querySelectorAll('#languagesContainer .dynamic-item')).map(item => ({
-            name: item.querySelector('.language-name').value || 'Idioma',
-            level: item.querySelector('.language-level').value || 'Nível'
-        }));
-
-        let languagesHtml = languages.map(lang => `
-            <li>${lang.name} (${lang.level})</li>
-        `).join('');
-
-        // Coletar Atividades (outros campos)
-        const activities = document.getElementById('activities').value;
-        const activitiesHtml = activities ? `
-            <section class="other-activities">
-                <h3><i class="fa-solid fa-ellipsis"></i> ATIVIDADES E INTERESSES</h3>
-                <p>${activities}</p>
+        const certificationsSection = certificationsHtml ? `
+            <section class="certifications-section">
+                <h3><i class="fa-solid fa-award"></i> CERTIFICAÇÕES</h3>
+                <ul>${certificationsHtml}</ul>
             </section>
         ` : '';
 
-        // Montagem final do HTML
+        const activitiesHtml = resumeData.activities ? `
+            <section class="other-activities">
+                <h3><i class="fa-solid fa-school-circle-exclamation"></i> ATIVIDADES EXTRACURRICULARES</h3>
+                <p>${resumeData.activities}</p>
+            </section>
+        ` : '';
+
+
+        // --- Montagem final do HTML no Preview ---
         resumePreview.innerHTML = `
             <div class="resume-left custom-bg-color">
-                <img id="previewPhoto" src="${photoSrc}" alt="Sua Foto">
-                <h2>${name}</h2>
-                <p style="text-align: center;">${title}</p>
+                ${imageUrl}
+                <h2>${resumeData.name}</h2>
                 
                 <h3><i class="fa-solid fa-user"></i> PERFIL</h3>
-                <p class="summary">${summary}</p>
+                <p class="summary">${resumeData.summary}</p>
 
                 <h3><i class="fa-solid fa-phone-volume"></i> CONTATO</h3>
                 <div class="contact-info">${contactInfo}</div>
 
-                <h3><i class="fa-solid fa-tools"></i> HABILIDADES</h3>
-                <div class="skills-display"><ul>${skillsHtml}</ul></div>
+                ${skillsHtml ? `
+                    <h3><i class="fa-solid fa-tools"></i> HABILIDADES</h3>
+                    <div class="skills-display"><ul>${skillsHtml}</ul></div>
+                ` : ''}
 
-                <h3><i class="fa-solid fa-language"></i> IDIOMAS</h3>
-                <div class="languages-display"><ul>${languagesHtml}</ul></div>
+                ${languagesHtml ? `
+                    <h3><i class="fa-solid fa-language"></i> IDIOMAS</h3>
+                    <div class="languages-display"><ul>${languagesHtml}</ul></div>
+                ` : ''}
             </div>
             <div class="resume-right">
                 <section class="experience-section">
@@ -257,6 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <ul>${educationHtml || '<li>Preencha sua formação acadêmica para esta seção aparecer.</li>'}</ul>
                 </section>
                 
+                ${certificationsSection} 
                 ${activitiesHtml}
             </div>
         `;
@@ -331,7 +353,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Inicializa preview vazio
+    // Inicializa preview
     generateResume();
-    updateProgress();
 });
