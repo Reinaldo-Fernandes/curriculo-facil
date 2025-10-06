@@ -305,15 +305,23 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
 
         generateResume(); // Garante que o preview está atualizado
+        console.log("1. Gerando currículo e criando clone para PDF."); // TRACE
 
         // 1. Clonamos o preview para garantir que o html2canvas capture o layout A4
         const previewClone = resumePreview.cloneNode(true);
+        
+        // FIX CRUCIAL: Remove estilos que podem quebrar a renderização A4 (especialmente em mobile/zoom)
+        previewClone.classList.remove('expanded'); // Remove o estado de zoom
         previewClone.style.width = '210mm';
         previewClone.style.minWidth = '210mm';
         previewClone.style.maxWidth = '210mm';
         previewClone.style.height = 'auto'; 
         previewClone.style.position = 'fixed'; 
         previewClone.style.top = '-9999px'; 
+        previewClone.style.transform = 'none'; // Remove qualquer transformação (scale, translate)
+        previewClone.style.marginLeft = '0'; 
+        previewClone.style.marginRight = '0';
+        // FIM FIX CRUCIAL
 
         document.body.appendChild(previewClone);
 
@@ -322,8 +330,15 @@ document.addEventListener('DOMContentLoaded', function () {
             useCORS: true,     
             logging: false     
         }).then(canvas => {
+            console.log("2. html2canvas concluído. Iniciando jspdf."); // TRACE
             const imgData = canvas.toDataURL('image/png');
             const { jsPDF } = window.jspdf;
+            
+            // Verifica se o jsPDF foi carregado corretamente
+            if (!jsPDF) {
+                throw new Error("A biblioteca jsPDF não foi carregada corretamente. Verifique o index.html.");
+            }
+
             const pdf = new jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
@@ -351,32 +366,24 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             pdf.save('curriculo.pdf');
+            console.log("3. PDF salvo com sucesso."); // TRACE
         }).catch(error => {
             console.error("Erro ao gerar PDF:", error);
-            alert("Ocorreu um erro ao gerar o PDF. Por favor, tente novamente.");
+            alert("Ocorreu um erro ao gerar o PDF. Por favor, tente novamente. Detalhes no console.");
         }).finally(() => {
+             console.log("4. Removendo clone do DOM."); // TRACE
              document.body.removeChild(previewClone); 
         });
     });
 
-    // 🌟 NOVA FUNCIONALIDADE: Expandir/Diminuir o preview A4 em dispositivos móveis 
-    // Garante que só acontece em telas menores
-    if (window.innerWidth <= 950) { 
-        resumePreview.addEventListener('click', function() {
-            // Alterna a classe 'expanded'
-            this.classList.toggle('expanded');
-            
-            // Altera o cursor para indicar a próxima ação
-            if (this.classList.contains('expanded')) {
-                this.style.cursor = 'zoom-out';
-            } else {
-                this.style.cursor = 'zoom-in';
-            }
-            
-            // Opcional: Rolagem para o topo do preview ao expandir
+    // 🌟 FUNCIONALIDADE DE EXPANDIR/DIMINUIR (Zoom in/out) - Otimizada 
+    resumePreview.addEventListener('click', function() {
+        this.classList.toggle('expanded');
+        
+        if (this.classList.contains('expanded')) {
             this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-    }
+        }
+    });
 
     // Inicializa preview
     generateResume();
