@@ -273,16 +273,12 @@ button:hover {
         margin: 10px auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         
-        /* Centraliza a página de 210mm e aplica um REDIMENSIONAMENTO de ~45% para caber na tela. 
-           O uso de scale é muito mais performático que alterar dimensões. */
+        /* Centraliza e aplica o REDIMENSIONAMENTO para caber na tela. */
         transform-origin: top center;
-        transform: scale(0.45); 
+        transform: translate(-50%, 0) scale(0.45); 
         
-        /* Ajusta o posicionamento horizontal depois da escala para que o centro da página 
-           (210mm) fique no centro da tela. */
         margin-left: 50%;
         margin-right: 50%;
-        transform: translate(-50%, 0) scale(0.45); 
         
         cursor: zoom-in; /* Indica que é clicável */
         overflow: hidden; /* Garante que não aparecem barras de rolagem enquanto está "diminuído" */
@@ -290,7 +286,7 @@ button:hover {
     
     /* 🌟 FIX: Estilo quando expandido/zoomado (Escala para 100%) */
     #resumePreview.expanded {
-        /* Retorna a escala para 1 (tamanho real de 210mm), permitindo zoom e arrastar */
+        /* Retorna a escala para 1 (tamanho real de 210mm) */
         transform: translate(-50%, 0) scale(1); 
         cursor: zoom-out; 
         overflow: auto; /* Permite rolagem horizontal/vertical */
@@ -326,7 +322,7 @@ button:hover {
         box-shadow: none;
         page-break-after: always;
         cursor: default !important;
-        transform: none !important; /* Essencial para impressão */
+        transform: none !important; 
         overflow: visible !important;
     }
 
@@ -340,4 +336,28 @@ button:hover {
         color: black !important;
         border-bottom-color: black !important;
     }
+}
+
+
+/* 🚩 CORREÇÕES ESSENCIAIS PARA PAGINAÇÃO E QUALIDADE DO PDF */
+
+/* A propriedade page-break-inside: avoid é CRUCIAL para evitar que cortes ocorram no meio de blocos de conteúdo */
+
+/* Evita que seções principais sejam cortadas */
+.resume-right section, 
+.summary-section {
+    page-break-inside: avoid !important;
+}
+
+/* Evita que um item de experiência/educação/certificação seja cortado no meio da página */
+.experience-entry, 
+.education-entry,
+.certification-entry,
+.resume-right ul li {
+    page-break-inside: avoid !important;
+}
+
+/* Garante que a coluna lateral (esquerda) seja renderizada inteira, mantendo o layout de duas colunas */
+.resume-left {
+    page-break-inside: avoid !important; 
 }

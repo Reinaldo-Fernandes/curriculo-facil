@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let languagesHtml = resumeData.languages.map(l => `<li>${l}</li>`).join('');
         
         let experiencesHtml = resumeData.experience.map(exp => `
-            <div>
+            <div class="experience-entry">
                 <h4>${exp.experience_title} na ${exp.experience_company}</h4>
                 <p><strong>Período:</strong> ${exp.experience_duration}</p>
                 <p>${exp.experience_description}</p>
@@ -231,16 +231,16 @@ document.addEventListener('DOMContentLoaded', function () {
         `).join('');
 
         let certificationsHtml = resumeData.certifications.map(cert => `
-            <li>
+            <div class="certification-entry">
                 <h4>${cert.certification_name}</h4>
                 <p>${cert.certification_institution} (${cert.certification_description})</p>
-            </li>
+            </div>
         `).join('');
 
         const certificationsSection = certificationsHtml ? `
             <section class="certifications-section">
                 <h3><i class="fa-solid fa-award"></i> CERTIFICAÇÕES</h3>
-                <ul>${certificationsHtml}</ul>
+                ${certificationsHtml}
             </section>
         ` : '';
 
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function () {
         generateResume();
     });
 
-    // 🚩 CÓDIGO CORRIGIDO PARA DOWNLOAD DE ALTA QUALIDADE E PAGINAÇÃO A4
+    // 🚩 CÓDIGO FINAL CORRIGIDO PARA DOWNLOAD DE ALTA QUALIDADE E PAGINAÇÃO A4
     downloadPdfBtn.addEventListener('click', function (event) {
         event.preventDefault();
 
@@ -308,34 +308,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const element = document.getElementById('resumePreview');
         
-        // 1. Clona o preview e remove a classe 'expanded' (zoom) para garantir o A4 completo
-        // Criar o clone aqui é a forma mais segura de garantir que o html2pdf use o layout A4 base
-        const previewClone = element.cloneNode(true);
-        previewClone.classList.remove('expanded'); 
-        
-        // 2. Opções de Configuração para html2pdf (Alta Qualidade)
+        // Configurações para html2pdf (Alta Qualidade e Paginação)
         const options = {
-            margin: [10, 10, 10, 10], // Margem: Top, Left, Bottom, Right (em mm)
+            margin: [10, 10, 10, 10], // Margem: Top, Right, Bottom, Left (em mm)
             filename: 'curriculo.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
-                scale: 5, // Aumenta a resolução em 5x para alta qualidade (300dpi)
+                scale: 4, // Resolução alta para qualidade 300 DPI
                 dpi: 300, // Define DPI (Dots per inch)
                 letterRendering: true, // Melhora a renderização de texto
                 useCORS: true 
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            // ESSENCIAL: Garante que as seções não sejam cortadas no meio e usem a quebra de página.
+            // ESSENCIAL: Garante que as seções não sejam cortadas no meio (depende do CSS)
             pagebreak: { 
                 mode: ['css', 'avoid-all'], 
-                // A quebra de página ocorre ANTES de cada nova seção dentro de resume-right.
-                before: '.resume-right section' 
+                // A quebra de página ocorre ANTES de cada nova seção principal, se necessário.
+                before: '.experience-section, .education-section, .certifications-section' 
             } 
         };
 
+        // Garante que o preview não está "expandido" (zoom) no mobile antes de gerar o PDF
+        const wasExpanded = element.classList.contains('expanded');
+        if (wasExpanded) {
+             element.classList.remove('expanded');
+        }
+
         // 3. Processa e baixa o PDF
         if (typeof html2pdf !== 'undefined') {
-            html2pdf().from(previewClone).set(options).save().catch(error => {
+            html2pdf().from(element).set(options).save().then(() => {
+                // Restaura o estado 'expanded' (zoom) após o download, se necessário
+                if (wasExpanded) {
+                    element.classList.add('expanded');
+                }
+            }).catch(error => {
                 console.error("Erro ao gerar PDF:", error);
                 alert("Ocorreu um erro ao gerar o PDF. Detalhes no console.");
             });
