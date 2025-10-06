@@ -300,41 +300,52 @@ document.addEventListener('DOMContentLoaded', function () {
         generateResume();
     });
 
-    // 🚩 CÓDIGO FINAL CORRIGIDO: Implementação com html2pdf.bundle.min.js
+    // 🚩 CÓDIGO CORRIGIDO PARA DOWNLOAD DE ALTA QUALIDADE E PAGINAÇÃO A4
     downloadPdfBtn.addEventListener('click', function (event) {
         event.preventDefault();
 
         generateResume(); // Garante que o preview está atualizado
 
-        // 1. Clona o preview e remove a classe 'expanded' (zoom) para garantir o A4 completo
-        const previewClone = resumePreview.cloneNode(true);
-        previewClone.classList.remove('expanded'); // Remove o zoom do mobile
+        const element = document.getElementById('resumePreview');
         
-        // Configurações do html2pdf.js
+        // 1. Clona o preview e remove a classe 'expanded' (zoom) para garantir o A4 completo
+        // Criar o clone aqui é a forma mais segura de garantir que o html2pdf use o layout A4 base
+        const previewClone = element.cloneNode(true);
+        previewClone.classList.remove('expanded'); 
+        
+        // 2. Opções de Configuração para html2pdf (Alta Qualidade)
         const options = {
-            margin: 10, // Margem de 10mm em todos os lados (padrão)
+            margin: [10, 10, 10, 10], // Margem: Top, Left, Bottom, Right (em mm)
             filename: 'curriculo.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
-                scale: 5, // Resolução mais alta
+                scale: 5, // Aumenta a resolução em 5x para alta qualidade (300dpi)
+                dpi: 300, // Define DPI (Dots per inch)
+                letterRendering: true, // Melhora a renderização de texto
                 useCORS: true 
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            // ESSENCIAL: Permite quebrar o conteúdo longo em múltiplas páginas
-            pagebreak: { mode: 'css', before: '.resume-right section' } 
+            // ESSENCIAL: Garante que as seções não sejam cortadas no meio e usem a quebra de página.
+            pagebreak: { 
+                mode: ['css', 'avoid-all'], 
+                // A quebra de página ocorre ANTES de cada nova seção dentro de resume-right.
+                before: '.resume-right section' 
+            } 
         };
 
-        // 2. Chama a função html2pdf para gerar e baixar o PDF
+        // 3. Processa e baixa o PDF
         if (typeof html2pdf !== 'undefined') {
-            html2pdf().from(previewClone).set(options).save();
+            html2pdf().from(previewClone).set(options).save().catch(error => {
+                console.error("Erro ao gerar PDF:", error);
+                alert("Ocorreu um erro ao gerar o PDF. Detalhes no console.");
+            });
         } else {
-            alert('Erro: Biblioteca html2pdf não carregada. Verifique o index.html.');
-            console.error('html2pdf não está definido.');
+            alert('Erro: A biblioteca html2pdf não foi carregada. Verifique o index.html.');
         }
 
     });
 
-    // 🌟 FUNCIONALIDADE DE EXPANDIR/DIMINUIR (Zoom in/out)
+    // 🌟 FUNCIONALIDADE DE EXPANDIR/DIMINUIR (Zoom in/out) - MANTIDA
     resumePreview.addEventListener('click', function() {
         this.classList.toggle('expanded');
         
