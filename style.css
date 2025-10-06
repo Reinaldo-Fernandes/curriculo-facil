@@ -188,6 +188,7 @@ button:hover {
 #downloadPdf { background-color: #007BFF; }
 #shareWhatsApp { background-color: #007BFF; }
 
+/* 📌 Estilo do preview (A4 para Desktop/Impressão) */
 #resumePreview {
     width: 210mm;  /* Largura A4 */
     height: 297mm; /* Altura A4 */
@@ -195,15 +196,15 @@ button:hover {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     margin: 10px auto 0 auto;  /* Reduz a margem superior para 10px e centraliza o layout */
-    overflow: auto;
+    overflow: hidden; /* Oculta barras de rolagem desnecessárias em desktop */
     display: flex; /* Garante que o container se comporte como flexbox por padrão */
     flex-direction: row; /* Mantém o layout horizontal por padrão */
     border: 1px solid #ddd;
     box-sizing: border-box;
-    /* Adicionado para garantir que o tamanho A4 seja mantido em todas as telas */
-    min-width: 210mm;
-    max-width: 210mm;
-    overflow-x: auto; /* Permite rolagem horizontal se a tela for menor que 210mm */
+    /* Linhas removidas para permitir responsividade em mobile, mas mantidas para o PDF */
+    /* min-width: 210mm; */
+    /* max-width: 210mm; */
+    /* overflow-x: auto; */ 
 }
 
 .resume-left {
@@ -434,39 +435,50 @@ footer p {
     margin: 0;
 }
 
-/* --- Ajustes para o layout em mobile (para que fique como desktop) --- */
-/*
-  O objetivo é que o `#resumePreview` mantenha o layout de duas colunas
-  e as dimensões de A4, mesmo em telas menores. Isso pode introduzir
-  rolagem horizontal, mas garante a consistência visual.
-*/
+/* --- Ajustes para o layout em mobile (para que se ajuste à tela) --- */
 @media (max-width: 768px) { /* Aplica-se a tablets e celulares menores */
     main {
         width: 100%;
         padding: 10px;
     }
 
+    /* ❗ Ajuste Principal: Torna o preview responsivo no mobile */
     #resumePreview {
-        /* Força o layout de desktop em telas menores */
-        width: 210mm; /* Mantém a largura A4 */
-        min-width: 210mm; /* Impede que ele encolha */
-        max-width: 210mm; /* Impede que ele expanda */
-        flex-direction: row; /* Mantém o layout horizontal */
-        margin: 10px auto; /* Centraliza melhor em telas menores */
-        overflow-x: auto; /* Permite rolagem horizontal se o conteúdo transbordar */
+        width: 95%; /* Ocupa 95% da largura da tela */
+        height: auto; /* Permite que a altura se ajuste ao conteúdo */
+        min-width: unset; /* Remove a largura mínima A4 */
+        max-width: unset; /* Remove a largura máxima A4 */
+        flex-direction: column; /* FORÇA O LAYOUT DE UMA COLUNA */
+        margin: 10px auto;
+        overflow-x: hidden; /* Remove rolagem horizontal */
+        box-shadow: none; /* Deixa a visualização mais limpa em mobile */
+        border: none;
     }
 
+    /* ❗ Permite que a coluna da esquerda ocupe a largura total */
     .resume-left {
-        /* Mantém as propriedades de flexbox e largura do desktop */
-        flex: 0 0 65mm;
-        max-width: 65mm;
-        padding: 10mm 5mm; /* Mantém o padding do desktop */
+        flex: 1 1 100%; /* Ocupa a largura total */
+        max-width: 100%;
+        padding: 15px; /* Ajuste de padding */
+        border-right: none;
+        border-bottom: 1px solid #ddd; /* Separador no mobile */
+        border-radius: 10px 10px 0 0; /* Ajusta os cantos arredondados */
+        text-align: center; /* Centraliza o conteúdo da coluna esquerda */
+    }
+
+    .resume-left img {
+        margin: 0 auto 10px auto; /* Centraliza a foto */
+    }
+
+    .resume-left p {
+        text-align: left; /* Alinha o texto das informações pessoais à esquerda */
     }
 
     .resume-right {
-        /* Mantém as propriedades de flexbox e padding do desktop */
-        flex: 1;
-        padding: 25px; /* Mantém o padding do desktop */
+        flex: 1 1 100%; /* Ocupa a largura total */
+        padding: 15px; /* Ajuste de padding */
+        border-radius: 0 0 10px 10px; /* Ajusta os cantos arredondados */
+        margin-top: 0; /* Remove a margem negativa */
     }
 
     /* Ajusta o tamanho das tooltips para evitar que transbordem em telas menores */
@@ -474,6 +486,16 @@ footer p {
         max-width: 90%;
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    /* Mantém os botões do formulário responsivos */
+    .buttons-container {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .buttons-container button {
+        width: 100%;
     }
 }
 
