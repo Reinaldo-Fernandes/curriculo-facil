@@ -201,10 +201,6 @@ button:hover {
     flex-direction: row; /* Mantém o layout horizontal por padrão */
     border: 1px solid #ddd;
     box-sizing: border-box;
-    /* Linhas removidas para permitir responsividade em mobile, mas mantidas para o PDF */
-    /* min-width: 210mm; */
-    /* max-width: 210mm; */
-    /* overflow-x: auto; */ 
 }
 
 .resume-left {
@@ -435,50 +431,48 @@ footer p {
     margin: 0;
 }
 
-/* --- Ajustes para o layout em mobile (para que se ajuste à tela) --- */
+/* --- Ajustes para o layout em mobile (para que fique como desktop) --- */
+/*
+  O objetivo é que o `#resumePreview` mantenha o layout de duas colunas
+  e as dimensões de A4, mesmo em telas menores. Isso introduz
+  rolagem horizontal (permitindo o "zoom" ou arrastar para ver),
+  mas garante a consistência visual do currículo.
+*/
 @media (max-width: 768px) { /* Aplica-se a tablets e celulares menores */
     main {
         width: 100%;
         padding: 10px;
     }
 
-    /* ❗ Ajuste Principal: Torna o preview responsivo no mobile */
     #resumePreview {
-        width: 95%; /* Ocupa 95% da largura da tela */
-        height: auto; /* Permite que a altura se ajuste ao conteúdo */
-        min-width: unset; /* Remove a largura mínima A4 */
-        max-width: unset; /* Remove a largura máxima A4 */
-        flex-direction: column; /* FORÇA O LAYOUT DE UMA COLUNA */
-        margin: 10px auto;
-        overflow-x: hidden; /* Remove rolagem horizontal */
-        box-shadow: none; /* Deixa a visualização mais limpa em mobile */
-        border: none;
+        /* Força o layout de desktop em telas menores */
+        width: 210mm; /* Mantém a largura A4 */
+        min-width: 210mm; /* Impede que ele encolha */
+        max-width: 210mm; /* Impede que ele expanda */
+        height: auto; /* Permite que o conteúdo longo seja visualizado */
+        flex-direction: row; /* Mantém o layout horizontal (duas colunas) */
+        margin: 10px auto; /* Centraliza melhor em telas menores */
+        overflow-x: auto; /* PERMITE ROLAGEM HORIZONTAL PARA "ZOOM" */
+        overflow-y: visible; /* Garante que o conteúdo para baixo seja visível */
+        box-shadow: none; /* Remove a sombra em mobile para visualização limpa */
+        border: none; /* Remove a borda em mobile para visualização limpa */
     }
 
-    /* ❗ Permite que a coluna da esquerda ocupe a largura total */
     .resume-left {
-        flex: 1 1 100%; /* Ocupa a largura total */
-        max-width: 100%;
-        padding: 15px; /* Ajuste de padding */
-        border-right: none;
-        border-bottom: 1px solid #ddd; /* Separador no mobile */
-        border-radius: 10px 10px 0 0; /* Ajusta os cantos arredondados */
-        text-align: center; /* Centraliza o conteúdo da coluna esquerda */
-    }
-
-    .resume-left img {
-        margin: 0 auto 10px auto; /* Centraliza a foto */
-    }
-
-    .resume-left p {
-        text-align: left; /* Alinha o texto das informações pessoais à esquerda */
+        /* Mantém as propriedades de flexbox e largura do desktop */
+        flex: 0 0 65mm;
+        max-width: 65mm;
+        padding: 10mm 5mm; /* Mantém o padding do desktop */
+        border-right: 1px solid #ddd; /* Mantém o separador vertical */
+        border-radius: 10px 0 0 10px;
+        text-align: left; /* Garante que o texto volte a alinhar na esquerda */
     }
 
     .resume-right {
-        flex: 1 1 100%; /* Ocupa a largura total */
-        padding: 15px; /* Ajuste de padding */
-        border-radius: 0 0 10px 10px; /* Ajusta os cantos arredondados */
-        margin-top: 0; /* Remove a margem negativa */
+        /* Mantém as propriedades de flexbox e padding do desktop */
+        flex: 1;
+        padding: 25px; /* Mantém o padding do desktop */
+        margin-top: -30px; /* Mantém o alinhamento de desktop */
     }
 
     /* Ajusta o tamanho das tooltips para evitar que transbordem em telas menores */
@@ -488,7 +482,7 @@ footer p {
         transform: translateX(-50%);
     }
 
-    /* Mantém os botões do formulário responsivos */
+    /* Faz os botões ficarem responsivos sem quebrar o formulário */
     .buttons-container {
         flex-direction: column;
         gap: 5px;
