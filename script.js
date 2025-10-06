@@ -300,83 +300,41 @@ document.addEventListener('DOMContentLoaded', function () {
         generateResume();
     });
 
-    // 🚩 CÓDIGO FINAL CORRIGIDO: Botão baixar PDF com suporte a múltiplas páginas e layout A4
+    // 🚩 CÓDIGO FINAL CORRIGIDO: Implementação com html2pdf.bundle.min.js
     downloadPdfBtn.addEventListener('click', function (event) {
         event.preventDefault();
 
         generateResume(); // Garante que o preview está atualizado
-        console.log("1. Gerando currículo e criando clone para PDF."); // TRACE
 
-        // 1. Clonamos o preview para garantir que o html2canvas capture o layout A4
+        // 1. Clona o preview e remove a classe 'expanded' (zoom) para garantir o A4 completo
         const previewClone = resumePreview.cloneNode(true);
+        previewClone.classList.remove('expanded'); // Remove o zoom do mobile
         
-        // FIX CRUCIAL: Remove estilos que podem quebrar a renderização A4 (especialmente em mobile/zoom)
-        previewClone.classList.remove('expanded'); // Remove o estado de zoom
-        previewClone.style.width = '210mm';
-        previewClone.style.minWidth = '210mm';
-        previewClone.style.maxWidth = '210mm';
-        previewClone.style.height = 'auto'; 
-        previewClone.style.position = 'fixed'; 
-        previewClone.style.top = '-9999px'; 
-        previewClone.style.transform = 'none'; // Remove qualquer transformação (scale, translate)
-        previewClone.style.marginLeft = '0'; 
-        previewClone.style.marginRight = '0';
-        // FIM FIX CRUCIAL
+        // Configurações do html2pdf.js
+        const options = {
+            margin: 10, // Margem de 10mm em todos os lados (padrão)
+            filename: 'curriculo.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 5, // Resolução mais alta
+                useCORS: true 
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            // ESSENCIAL: Permite quebrar o conteúdo longo em múltiplas páginas
+            pagebreak: { mode: 'css', before: '.resume-right section' } 
+        };
 
-        document.body.appendChild(previewClone);
+        // 2. Chama a função html2pdf para gerar e baixar o PDF
+        if (typeof html2pdf !== 'undefined') {
+            html2pdf().from(previewClone).set(options).save();
+        } else {
+            alert('Erro: Biblioteca html2pdf não carregada. Verifique o index.html.');
+            console.error('html2pdf não está definido.');
+        }
 
-        html2canvas(previewClone, {
-            scale: 5,         
-            useCORS: true,     
-            logging: false     
-        }).then(canvas => {
-            console.log("2. html2canvas concluído. Iniciando jspdf."); // TRACE
-            const imgData = canvas.toDataURL('image/png');
-            const { jsPDF } = window.jspdf;
-            
-            // Verifica se o jsPDF foi carregado corretamente
-            if (!jsPDF) {
-                throw new Error("A biblioteca jsPDF não foi carregada corretamente. Verifique o index.html.");
-            }
-
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-            
-            const imgProps = pdf.getImageProperties(imgData);
-            const imgWidth = pdfWidth;
-            const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pdfHeight;
-
-            while (heightLeft >= -1) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pdfHeight;
-            }
-
-            pdf.save('curriculo.pdf');
-            console.log("3. PDF salvo com sucesso."); // TRACE
-        }).catch(error => {
-            console.error("Erro ao gerar PDF:", error);
-            alert("Ocorreu um erro ao gerar o PDF. Por favor, tente novamente. Detalhes no console.");
-        }).finally(() => {
-             console.log("4. Removendo clone do DOM."); // TRACE
-             document.body.removeChild(previewClone); 
-        });
     });
 
-    // 🌟 FUNCIONALIDADE DE EXPANDIR/DIMINUIR (Zoom in/out) - Otimizada 
+    // 🌟 FUNCIONALIDADE DE EXPANDIR/DIMINUIR (Zoom in/out)
     resumePreview.addEventListener('click', function() {
         this.classList.toggle('expanded');
         
