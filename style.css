@@ -15,7 +15,7 @@ body {
     font-family: var(--font-body);
     margin: 0;
     padding: 0;
-    background-color: #f0f0f5; /* Fundo mais suave */
+    background-color: #f0f0f5; 
     color: var(--text-color);
 }
 
@@ -30,7 +30,7 @@ h1 {
     margin: 0;
     font-size: 2.2rem;
     font-family: var(--font-name);
-    font-weight: 700; /* Ajustado para negrito para mais robustez */
+    font-weight: 700; 
 }
 
 main {
@@ -40,7 +40,9 @@ main {
     background-color: #fff;
     padding: 25px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 8px; /* Bordas suaves */
+    border-radius: 8px;
+    /* Garante que o conteúdo expandido do preview não cause rolagem inesperada */
+    overflow-x: hidden; 
 }
 
 /* --- Estilização do Formulário --- */
@@ -105,13 +107,13 @@ button {
 }
 
 button:hover {
-    background-color: #1f2e8a; /* Tom mais escuro */
+    background-color: #1f2e8a;
     transform: translateY(-1px);
 }
 
 /* Botões de Remover */
 .remove-button {
-    background-color: #dc3545; /* Vermelho mais profissional */
+    background-color: #dc3545; 
     margin-top: 10px;
     padding: 8px 12px;
 }
@@ -128,32 +130,33 @@ button:hover {
 }
 
 #generateResumeButton, #downloadPdf, #shareWhatsApp {
-    background-color: var(--primary-color); /* Todos com a cor primária */
+    background-color: var(--primary-color);
     box-shadow: 0 0 5px rgba(42, 62, 177, 0.4);
 }
 
-/* --- Estilo da Prévia (Preview) --- */
+/* --- Estilo da Prévia (Preview) - Desktop --- */
 #resumePreview {
-    /* Mantém as dimensões A4, com overflow na vertical para currículos longos */
+    /* Base style for A4 preview container */
     width: 210mm;
     min-height: 297mm;
     margin: 30px auto;
     background-color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra mais robusta */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: row;
-    border: none;
     box-sizing: border-box;
-    font-size: 11pt; /* Tamanho de fonte ideal para impressão */
+    font-size: 11pt;
     overflow: hidden;
+    transition: all 0.3s ease-in-out; 
+    cursor: default; /* Desktop não precisa de zoom-in */
 }
 
-/* Coluna Esquerda (Dados Pessoais, Contatos, Habilidades) */
+/* Coluna Esquerda */
 .resume-left {
-    flex: 0 0 70mm; /* Aumenta a coluna lateral para 70mm */
+    flex: 0 0 70mm; 
     max-width: 70mm;
     padding: 15mm 8mm;
-    background-color: var(--secondary-color); /* Cinza claro suave */
+    background-color: var(--secondary-color);
     border-right: 1px solid var(--light-border);
     text-align: left;
     box-sizing: border-box;
@@ -167,7 +170,7 @@ button:hover {
     border: 3px solid white;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     margin: 0 auto 10px auto;
-    display: block; /* Centraliza a imagem */
+    display: block; 
 }
 
 .resume-left h2 {
@@ -179,7 +182,6 @@ button:hover {
     line-height: 1.2;
 }
 
-/* Estilo para Títulos das Seções Laterais (Contatos, Habilidades, etc.) */
 .resume-left h3 {
     font-size: 1.05rem;
     margin-top: 20px;
@@ -190,24 +192,7 @@ button:hover {
     font-weight: 700;
 }
 
-.resume-left p, .resume-left ul {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-top: 0;
-}
-
-.resume-left .contact-info p i {
-    width: 15px; /* Alinha os ícones */
-    margin-right: 5px;
-    color: var(--primary-color);
-}
-
-.resume-left ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-/* Coluna Direita (Resumo, Experiência, Educação) */
+/* Coluna Direita */
 .resume-right {
     flex: 1;
     padding: 15mm 15mm 15mm 10mm;
@@ -215,7 +200,6 @@ button:hover {
     min-height: 100%;
 }
 
-/* Estilo para Títulos das Seções Principais (Resumo, Experiência, Educação) */
 .resume-right h3 {
     font-size: 1.3rem;
     font-weight: 700;
@@ -224,15 +208,11 @@ button:hover {
     margin-top: 0;
     margin-bottom: 15px;
     color: var(--primary-color);
-    text-align: left; /* Alinhamento profissional à esquerda */
+    text-align: left; 
 }
 
-/* Novo estilo para o Resumo na coluna direita */
 .summary-section {
     margin-bottom: 30px;
-}
-.summary-section h3 {
-    margin-top: 0;
 }
 .summary-text {
     text-align: justify;
@@ -241,16 +221,12 @@ button:hover {
     color: #555;
     font-size: 0.95rem;
     line-height: 1.6;
-    border-left: none !important; /* Remove o border-left herdado do p */
-    background-color: transparent !important;
-    padding: 0 !important;
 }
 
-/* Item de Experiência/Educação */
 .resume-right section div {
     margin-bottom: 20px;
     padding-left: 10px;
-    border-left: 3px solid var(--light-border); /* Linha vertical sutil */
+    border-left: 3px solid var(--light-border);
 }
 
 .resume-right h4 {
@@ -269,30 +245,9 @@ button:hover {
     font-size: 0.95rem;
 }
 
-/* Lista de Educação/Certificações */
 .resume-right ul {
-    list-style-type: disc; /* Volta ao bullet point padrão */
+    list-style-type: disc; 
     padding-left: 20px;
-}
-
-.resume-right ul li {
-    margin-bottom: 15px;
-    line-height: 1.4;
-}
-
-.resume-right ul li h4 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #444;
-}
-
-/* Outras atividades */
-.other-activities p {
-    border-left: none;
-    background-color: transparent;
-    padding: 0;
-    font-style: italic;
 }
 
 /* --- Responsividade (Mobile) --- */
@@ -310,17 +265,40 @@ button:hover {
         width: 100%;
     }
 
-    /* O #resumePreview mantém o layout de desktop forçando a largura A4 */
+    /* 🌟 NOVO: A4 Preview em Mobile - Ajustado para a largura da tela */
     #resumePreview {
-        width: 210mm;
-        min-width: 210mm;
+        width: 95%; /* Ajusta para a largura do main container */
+        min-height: auto;
+        height: auto;
+        /* Mantém a proporção A4 (210/297) para visualização elegante */
+        aspect-ratio: 210 / 297; 
         margin: 10px auto;
-        overflow-x: auto;
-        box-shadow: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden; /* Esconde o conteúdo que transborda, forçando o ajuste */
+        cursor: zoom-in; /* Indica que é clicável */
+        /* O conteúdo do A4 é escalado internamente para caber */
+        transform-origin: top left;
+        transform: scale(1);
+    }
+    
+    /* 🌟 NOVO: Estilo quando expandido/zoomado (Simula o zoom do PDF) */
+    #resumePreview.expanded {
+        width: 210mm; 
+        max-width: 210mm;
+        height: auto; 
+        min-height: 297mm;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); 
+        cursor: zoom-out; 
+        /* Permite rolagem horizontal/vertical para o A4 real */
+        overflow: auto; 
+        
+        /* Centraliza o preview expandido na tela. */
+        margin-left: 50%;
+        transform: translateX(-50%);
     }
 
     .resume-left {
-        flex: 0 0 60mm; /* Coluna menor no mobile */
+        flex: 0 0 60mm; 
         max-width: 60mm;
         padding: 10mm 5mm;
     }
@@ -347,17 +325,18 @@ button:hover {
         min-height: 297mm;
         margin: 0;
         box-shadow: none;
-        page-break-after: always; /* Garante quebras de página */
+        page-break-after: always;
+        cursor: default !important; /* Remove cursor de zoom na impressão */
+        transform: none !important;
+        overflow: visible !important;
     }
 
-    /* Ajustes específicos para impressão */
     .resume-left, .resume-right {
         padding: 10mm;
         height: auto;
         overflow: visible;
     }
 
-    /* Força a cor preta em alguns elementos para economia de tinta */
     .resume-left h3, .resume-right h3 {
         color: black !important;
         border-bottom-color: black !important;

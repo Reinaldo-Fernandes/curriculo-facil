@@ -359,6 +359,25 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // 🌟 NOVA FUNCIONALIDADE: Expandir/Diminuir o preview A4 em dispositivos móveis 
+    // Garante que só acontece em telas menores
+    if (window.innerWidth <= 950) { 
+        resumePreview.addEventListener('click', function() {
+            // Alterna a classe 'expanded'
+            this.classList.toggle('expanded');
+            
+            // Altera o cursor para indicar a próxima ação
+            if (this.classList.contains('expanded')) {
+                this.style.cursor = 'zoom-out';
+            } else {
+                this.style.cursor = 'zoom-in';
+            }
+            
+            // Opcional: Rolagem para o topo do preview ao expandir
+            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+
     // Inicializa preview
     generateResume();
 });
