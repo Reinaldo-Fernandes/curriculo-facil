@@ -3,8 +3,10 @@
 
 /* Variáveis de Cores (Azul Sóbrio) */
 :root {
-    --primary-color: #2a3eb1; /* Azul Marinho Sóbrio */
-    --secondary-color: #f4f4f9; /* Cinza claro para fundo sutil */
+    /* Estas são as cores dinâmicas controladas pelo JS */
+    --primary-color: #2a3eb1; 
+    --secondary-color: #f4f4f9; 
+    
     --text-color: #333;
     --light-border: #ddd;
     --font-name: 'Playfair Display', serif;
@@ -45,14 +47,21 @@ main {
 }
 
 /* --- Estilização do Formulário --- */
-form section, .summary-container {
+form section, .summary-container, #colorPickerSection {
     margin-bottom: 30px;
     padding: 15px;
     border: 1px solid var(--light-border);
     border-radius: 6px;
 }
+/* Estilo específico para a seção de cor */
+#colorPickerSection {
+    background-color: var(--secondary-color);
+    border: 2px solid var(--primary-color);
+    padding: 20px;
+}
 
-form h2, .summary-container h2 {
+
+form h2, .summary-container h2, #colorPickerSection h3 {
     color: var(--primary-color);
     border-bottom: 2px solid var(--light-border);
     padding-bottom: 5px;
@@ -74,14 +83,14 @@ input, textarea, select {
     margin: 8px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s; /* Adicionado box-shadow na transição */
     font-family: var(--font-body);
 }
 
 input:focus, textarea:focus {
     border-color: var(--primary-color);
     outline: none;
-    box-shadow: 0 0 5px rgba(42, 62, 177, 0.2);
+    box-shadow: 0 0 5px rgba(42, 62, 177, 0.4); /* Sombra mais visível no foco */
 }
 
 .dynamic-item {
@@ -148,16 +157,17 @@ button:hover {
     /* Transições suaves para o zoom */
     transition: all 0.3s ease-in-out; 
     cursor: default; 
-    transform: none; /* Desktop: sem transformação */
-    overflow: hidden; /* Evita barras de rolagem desnecessárias no desktop */
+    transform: none; 
+    overflow: hidden; 
 }
 
-/* Coluna Esquerda */
+/* Coluna Esquerda: Usa a cor dinâmica */
 .resume-left {
     flex: 0 0 70mm; 
     max-width: 70mm;
     padding: 15mm 8mm;
-    background-color: var(--secondary-color);
+    /* Usa a cor secundária (clara) definida no JS */
+    background-color: var(--secondary-color); 
     border-right: 1px solid var(--light-border);
     text-align: left;
     box-sizing: border-box;
@@ -187,11 +197,22 @@ button:hover {
     font-size: 1.05rem;
     margin-top: 20px;
     margin-bottom: 8px;
-    border-bottom: 2px solid var(--primary-color);
+    /* Usa a cor primária dinâmica */
+    border-bottom: 2px solid var(--primary-color); 
     padding-bottom: 3px;
     color: var(--primary-color);
     font-weight: 700;
 }
+
+.resume-left .contact-info p {
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+.resume-left .contact-info i {
+    color: var(--primary-color);
+    margin-right: 5px;
+}
+
 
 /* Coluna Direita */
 .resume-right {
@@ -204,7 +225,8 @@ button:hover {
 .resume-right h3 {
     font-size: 1.3rem;
     font-weight: 700;
-    border-bottom: 3px solid var(--primary-color);
+    /* Usa a cor primária dinâmica */
+    border-bottom: 3px solid var(--primary-color); 
     padding-bottom: 5px;
     margin-top: 0;
     margin-bottom: 15px;
@@ -251,7 +273,48 @@ button:hover {
     padding-left: 20px;
 }
 
-/* --- Responsividade (Mobile) - Otimizado para Performance --- */
+/* 🚩 NOVO: Estilização do Color Picker */
+.color-options {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.color-swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+    border-color: #333;
+}
+
+.custom-swatch {
+    position: relative;
+    padding: 0;
+    border: 1px solid #ccc;
+    background-color: transparent !important;
+}
+
+.custom-swatch input[type="color"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Esconde o input, mantendo a funcionalidade */
+    cursor: pointer;
+}
+
+
+/* --- Responsividade (Mobile) - Mantida/Otimizada --- */
 @media (max-width: 950px) {
     main {
         padding: 15px;
@@ -266,7 +329,7 @@ button:hover {
         width: 100%;
     }
 
-    /* 🌟 FIX: A4 Preview em Mobile - Usa transform: scale() para visualização fluida */
+    /* FIX: A4 Preview em Mobile - Usa transform: scale() para visualização fluida */
     #resumePreview {
         width: 210mm; 
         min-height: 297mm;
@@ -280,16 +343,16 @@ button:hover {
         margin-left: 50%;
         margin-right: 50%;
         
-        cursor: zoom-in; /* Indica que é clicável */
-        overflow: hidden; /* Garante que não aparecem barras de rolagem enquanto está "diminuído" */
+        cursor: zoom-in; 
+        overflow: hidden; 
     }
     
-    /* 🌟 FIX: Estilo quando expandido/zoomado (Escala para 100%) */
+    /* FIX: Estilo quando expandido/zoomado (Escala para 100%) */
     #resumePreview.expanded {
         /* Retorna a escala para 1 (tamanho real de 210mm) */
         transform: translate(-50%, 0) scale(1); 
         cursor: zoom-out; 
-        overflow: auto; /* Permite rolagem horizontal/vertical */
+        overflow: auto; 
     }
 
     .resume-left {
@@ -305,13 +368,14 @@ button:hover {
 
 /* --- Impressão --- */
 @media print {
+    /* ... (CSS para impressão mantido) ... */
     body {
         background-color: white;
         margin: 0;
         padding: 0;
     }
     
-    header, footer, main, .buttons-container, #progressBarContainer, #error-message {
+    header, footer, main, .buttons-container, #progressBarContainer, #error-message, #colorPickerSection {
         display: none !important;
     }
 
