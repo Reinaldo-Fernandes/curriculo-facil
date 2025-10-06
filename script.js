@@ -1,365 +1,174 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const resumeForm = document.getElementById('resumeForm');
-    const resumePreview = document.getElementById('resumePreview');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const downloadPdfBtn = document.getElementById('downloadPdf');
-    const generateResumeButton = document.getElementById('generateResumeButton');
-    const photoInput = document.getElementById('photo');
-    const photoPreview = document.getElementById('photoPreview');
-    const summaryInput = document.getElementById('summary');
-    const summaryCounter = document.getElementById('summaryCounter');
-    const errorMessageDiv = document.getElementById('error-message');
+document.addEventListener('DOMContentLoaded', () => {
+  const resumeForm = document.getElementById('resumeForm');
+  const resumePreview = document.getElementById('resumePreview');
+  const summaryInput = document.getElementById('summary');
+  const summaryCounter = document.getElementById('summaryCounter');
+  const photoInput = document.getElementById('photo');
+  const photoPreview = document.getElementById('photoPreview');
+  const downloadBtn = document.getElementById('downloadPdf');
+  const generateBtn = document.getElementById('generateResumeButton');
 
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const phone1Input = document.getElementById('phone1');
-
-    // Preview da imagem carregada
-    function previewImage() {
-        if (photoInput.files.length > 0) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                photoPreview.src = e.target.result;
-                photoPreview.style.display = "block";
-                generateResume(); // Atualiza o preview após o upload da foto
-            };
-            reader.readAsDataURL(photoInput.files[0]);
-        }
-    }
-    photoInput.addEventListener('change', previewImage);
-
-    // Contador de caracteres do resumo
-    summaryInput.addEventListener('input', function () {
-        const maxLength = 500;
-        const currentLength = summaryInput.value.length;
-
-        if (currentLength > maxLength) {
-            summaryInput.value = summaryInput.value.substring(0, maxLength);
-        }
-        summaryCounter.textContent = `${summaryInput.value.length} / ${maxLength} caracteres`;
-        generateResume(); // Atualiza o preview em tempo real
-    });
-
-    // Função robusta para configurar campos dinâmicos (Experiência, Educação, Certificações)
-    function setupDynamicField(addButtonId, containerId, templateHtml) {
-        const addButton = document.getElementById(addButtonId);
-        const container = document.getElementById(containerId);
-        let itemId = 0;
-
-        if (!addButton || !container) {
-            console.error(`Erro: O botão com ID '${addButtonId}' ou o container com ID '${containerId}' não foi encontrado.`);
-            return;
-        }
-
-        addButton.addEventListener('click', function () {
-            const newItem = document.createElement('div');
-            newItem.classList.add('dynamic-item');
-            newItem.setAttribute('data-id', itemId);
-            newItem.innerHTML = templateHtml;
-            container.appendChild(newItem);
-
-            // Adiciona listener para o botão de remover
-            const removeButton = newItem.querySelector('.remove-button');
-            if (removeButton) {
-                 removeButton.addEventListener('click', function () {
-                    container.removeChild(newItem);
-                    updateProgress();
-                    generateResume(); // Atualiza o preview ao remover
-                });
-            }
-
-            // Adiciona listeners para os inputs dentro do novo item
-            newItem.querySelectorAll('input, textarea').forEach(input => {
-                input.addEventListener('input', function() {
-                    updateProgress();
-                    generateResume(); // Atualiza o preview em tempo real
-                });
-            });
-
-            itemId++;
-            updateProgress();
-            generateResume();
-        });
-    }
-
-    // --- Templates HTML para Campos Dinâmicos ---
-    const experienceTemplate = `
-        <div class="experience-entry entry">
-            <label>Cargo/Título:</label>
-            <input type="text" class="experience-title" placeholder="Ex: Desenvolvedor Front-end">
-            <label>Empresa:</label>
-            <input type="text" class="experience-company" placeholder="Ex: Tech Solutions Ltda">
-            <label>Período:</label>
-            <input type="text" class="experience-duration" placeholder="Ex: Jan 2020 - Dez 2023">
-            <label>Descrição:</label>
-            <textarea class="experience-description" placeholder="Descreva suas responsabilidades e conquistas."></textarea>
-            <button type="button" class="remove-button">Remover Experiência</button>
-        </div>
-    `;
-
-    const educationTemplate = `
-        <div class="education-entry entry">
-            <label>Curso/Grau:</label>
-            <input type="text" class="education-title" placeholder="Ex: Bacharelado em Ciência da Computação">
-            <label>Instituição:</label>
-            <input type="text" class="education-institution" placeholder="Ex: Universidade Federal">
-            <label>Período:</label>
-            <input type="text" class="education-duration" placeholder="Ex: 2016 - 2020">
-            <button type="button" class="remove-button">Remover Educação</button>
-        </div>
-    `;
-
-    const certificationTemplate = `
-        <div class="certification-entry entry">
-            <label>Nome da Certificação:</label>
-            <input type="text" class="certification-name" placeholder="Ex: AWS Certified Cloud Practitioner">
-            <label>Instituição Emissora:</label>
-            <input type="text" class="certification-institution" placeholder="Ex: Amazon Web Services">
-            <label>Descrição:</label>
-            <textarea class="certification-description" placeholder="Ex: Foco em serviços de computação em nuvem."></textarea>
-            <button type="button" class="remove-button">Remover Certificação</button>
-        </div>
-    `;
-
-    // --- Configuração dos Campos Dinâmicos ---
-    setupDynamicField('addExperience', 'experienceContainer', experienceTemplate);
-    setupDynamicField('addEducation', 'educationContainer', educationTemplate);
-    setupDynamicField('addCertification', 'certificationsContainer', certificationTemplate);
-
-
-    // Lógica de Preenchimento da barra de progresso 
-    function updateProgress() {
-        const fields = Array.from(resumeForm.querySelectorAll('input:not([type="file"]):not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]):not([readonly])'));
-        const filledFields = fields.filter(field => field.value.trim() !== '').length;
-        const totalFields = fields.length;
-
-        let progress = 0;
-        if (totalFields > 0) {
-            progress = Math.round((filledFields / totalFields) * 100);
-        }
-
-        progressBar.value = progress;
-        progressText.textContent = `${progress}%`;
-    }
-    resumeForm.addEventListener('input', function(event) {
-        updateProgress();
-        // Garante que o preview é atualizado em tempo real para campos não dinâmicos
-        if (!event.target.closest('.dynamic-item')) {
-            generateResume();
-        }
-    });
-
-    updateProgress();
-
-    // Função para capturar dados dos campos dinâmicos
-    function getDynamicEntries(containerId, fieldClasses) {
-        const container = document.getElementById(containerId);
-        if (!container) return [];
-        const entries = Array.from(container.querySelectorAll('.dynamic-item'));
-        return entries.map(entry => {
-            const data = {};
-            fieldClasses.forEach(cls => {
-                const element = entry.querySelector(`.${cls}`);
-                if (element) {
-                    const key = cls.replace(/-/g, '_');
-                    data[key] = element.value.trim();
-                }
-            });
-            // Filtra entradas vazias no bloco, mas não remove se houver pelo menos um valor
-            return data;
-        }).filter(data => Object.values(data).some(value => value !== ''));
-    }
-
-
-    // Gera dados do currículo e atualiza preview HTML
-    function generateResume() {
-        errorMessageDiv.style.display = "none";
-        resumePreview.style.display = "flex";
-        resumePreview.style.opacity = "1";
-
-        const photoFound = photoPreview.src && photoPreview.src !== window.location.href && photoPreview.style.display !== 'none';
-        let imageUrl = photoFound ? `<img id="previewPhoto" src='${photoPreview.src}' alt='Foto do Candidato' />` : '';
-
-        // --- Coleta de Dados ---
-        const educationEntries = getDynamicEntries('educationContainer', ['education-title', 'education-institution', 'education-duration']);
-        const experienceEntries = getDynamicEntries('experienceContainer', ['experience-title', 'experience-company', 'experience-duration', 'experience-description']);
-        const certificationEntries = getDynamicEntries('certificationsContainer', ['certification-name', 'certification-institution', 'certification-description']);
-
-        const resumeData = {
-            name: nameInput.value.trim() || 'Seu Nome Completo',
-            address: document.getElementById('address').value.trim(),
-            email: emailInput.value.trim() || 'seu.email@exemplo.com',
-            phone1: phone1Input.value.trim() || '(99) 99999-9999',
-            phone2: document.getElementById('phone2').value.trim(),
-            linkedin: document.getElementById('linkedin').value.trim(),
-            summary: summaryInput.value.trim() || 'Escreva aqui um resumo profissional envolvente, destacando suas principais habilidades e objetivos de carreira.',
-            skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(Boolean),
-            languages: document.getElementById('languages').value.split('\n').map(l => l.trim()).filter(Boolean), // Suporta quebra de linha
-            education: educationEntries,
-            experience: experienceEntries,
-            certifications: certificationEntries,
-            activities: document.getElementById('activities').value.trim(),
-        };
-        
-        // --- Montagem dos Blocos HTML ---
-        // Contato simplificado para a coluna lateral
-        let contactInfo = `
-            ${resumeData.email ? `<p><i class="fa-solid fa-envelope"></i> ${resumeData.email}</p>` : ''}
-            ${resumeData.phone1 ? `<p><i class="fa-solid fa-phone"></i> ${resumeData.phone1}</p>` : ''}
-            ${resumeData.phone2 ? `<p><i class="fa-solid fa-mobile-alt"></i> ${resumeData.phone2}</p>` : ''}
-            ${resumeData.linkedin ? `<p><i class="fa-brands fa-linkedin"></i> <a href="${resumeData.linkedin}" target="_blank">${resumeData.linkedin.split('/').pop() || 'LinkedIn'}</a></p>` : ''}
-            ${resumeData.address ? `<p><i class="fa-solid fa-map-marker-alt"></i> ${resumeData.address}</p>` : ''}
-        `;
-
-        let skillsHtml = resumeData.skills.map(s => `<li>${s}</li>`).join('');
-        let languagesHtml = resumeData.languages.map(l => `<li>${l}</li>`).join('');
-        
-        let experiencesHtml = resumeData.experience.map(exp => `
-            <div class="experience-entry">
-                <h4>${exp.experience_title} na ${exp.experience_company}</h4>
-                <p><strong>Período:</strong> ${exp.experience_duration}</p>
-                <p>${exp.experience_description}</p>
-            </div>
-        `).join('');
-
-        let educationHtml = resumeData.education.map(edu => `
-            <li>
-                <h4>${edu.education_title}</h4>
-                <p>${edu.education_institution} (${edu.education_duration})</p>
-            </li>
-        `).join('');
-
-        let certificationsHtml = resumeData.certifications.map(cert => `
-            <div class="certification-entry">
-                <h4>${cert.certification_name}</h4>
-                <p>${cert.certification_institution} (${cert.certification_description})</p>
-            </div>
-        `).join('');
-
-        const certificationsSection = certificationsHtml ? `
-            <section class="certifications-section">
-                <h3><i class="fa-solid fa-award"></i> CERTIFICAÇÕES</h3>
-                ${certificationsHtml}
-            </section>
-        ` : '';
-
-        const activitiesHtml = resumeData.activities ? `
-            <section class="other-activities">
-                <h3><i class="fa-solid fa-school-circle-exclamation"></i> ATIVIDADES EXTRACURRICULARES</h3>
-                <p>${resumeData.activities}</p>
-            </section>
-        ` : '';
-
-
-        // --- Montagem final do HTML no Preview ---
-        resumePreview.innerHTML = `
-            <div class="resume-left custom-bg-color">
-                ${imageUrl}
-                <h2>${resumeData.name}</h2>
-                
-                ${contactInfo.trim() ? `
-                    <h3><i class="fa-solid fa-phone-volume"></i> CONTATO</h3>
-                    <div class="contact-info">${contactInfo}</div>
-                ` : ''}
-
-                ${skillsHtml ? `
-                    <h3><i class="fa-solid fa-tools"></i> HABILIDADES</h3>
-                    <div class="skills-display"><ul>${skillsHtml}</ul></div>
-                ` : ''}
-
-                ${languagesHtml ? `
-                    <h3><i class="fa-solid fa-language"></i> IDIOMAS</h3>
-                    <div class="languages-display"><ul>${languagesHtml}</ul></div>
-                ` : ''}
-            </div>
-            <div class="resume-right">
-                <section class="summary-section">
-                    <h3><i class="fa-solid fa-user"></i> RESUMO PROFISSIONAL</h3>
-                    <p class="summary-text">${resumeData.summary}</p>
-                </section>
-                <section class="experience-section">
-                    <h3><i class="fa-solid fa-briefcase"></i> EXPERIÊNCIA PROFISSIONAL</h3>
-                    ${experiencesHtml || '<p>Preencha sua experiência profissional para esta seção aparecer.</p>'}
-                </section>
-
-                <section class="education-section">
-                    <h3><i class="fa-solid fa-graduation-cap"></i> EDUCAÇÃO</h3>
-                    <ul>${educationHtml || '<li>Preencha sua formação acadêmica para esta seção aparecer.</li>'}</ul>
-                </section>
-                
-                ${certificationsSection} 
-                ${activitiesHtml}
-            </div>
-        `;
-        updateProgress();
-    }
-
-    generateResumeButton.addEventListener('click', function (event) {
-        event.preventDefault();
-        generateResume();
-    });
-
-    // 🚩 CÓDIGO FINAL CORRIGIDO PARA DOWNLOAD DE ALTA QUALIDADE E PAGINAÇÃO A4
-    downloadPdfBtn.addEventListener('click', function (event) {
-        event.preventDefault();
-
-        generateResume(); // Garante que o preview está atualizado
-
-        const element = document.getElementById('resumePreview');
-        
-        // Configurações para html2pdf (Alta Qualidade e Paginação)
-        const options = {
-            margin: [10, 10, 10, 10], // Margem: Top, Right, Bottom, Left (em mm)
-            filename: 'curriculo.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 4, // Resolução alta para qualidade 300 DPI
-                dpi: 300, // Define DPI (Dots per inch)
-                letterRendering: true, // Melhora a renderização de texto
-                useCORS: true 
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            // ESSENCIAL: Garante que as seções não sejam cortadas no meio (depende do CSS)
-            pagebreak: { 
-                mode: ['css', 'avoid-all'], 
-                // A quebra de página ocorre ANTES de cada nova seção principal, se necessário.
-                before: '.experience-section, .education-section, .certifications-section' 
-            } 
-        };
-
-        // Garante que o preview não está "expandido" (zoom) no mobile antes de gerar o PDF
-        const wasExpanded = element.classList.contains('expanded');
-        if (wasExpanded) {
-             element.classList.remove('expanded');
-        }
-
-        // 3. Processa e baixa o PDF
-        if (typeof html2pdf !== 'undefined') {
-            html2pdf().from(element).set(options).save().then(() => {
-                // Restaura o estado 'expanded' (zoom) após o download, se necessário
-                if (wasExpanded) {
-                    element.classList.add('expanded');
-                }
-            }).catch(error => {
-                console.error("Erro ao gerar PDF:", error);
-                alert("Ocorreu um erro ao gerar o PDF. Detalhes no console.");
-            });
-        } else {
-            alert('Erro: A biblioteca html2pdf não foi carregada. Verifique o index.html.');
-        }
-
-    });
-
-    // 🌟 FUNCIONALIDADE DE EXPANDIR/DIMINUIR (Zoom in/out) - MANTIDA
-    resumePreview.addEventListener('click', function() {
-        this.classList.toggle('expanded');
-        
-        if (this.classList.contains('expanded')) {
-            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-
-    // Inicializa preview
+  /* --- Atualiza contador --- */
+  summaryInput.addEventListener('input', () => {
+    const len = summaryInput.value.length;
+    summaryCounter.textContent = `${len} / 500 caracteres`;
     generateResume();
+  });
+
+  /* --- Preview da imagem --- */
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      photoPreview.src = e.target.result;
+      photoPreview.style.display = 'block';
+      generateResume();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  /* --- Campos dinâmicos --- */
+  function setupDynamic(addId, containerId, html) {
+    const addBtn = document.getElementById(addId);
+    const container = document.getElementById(containerId);
+    addBtn.addEventListener('click', () => {
+      const el = document.createElement('div');
+      el.classList.add('dynamic-item');
+      el.innerHTML = html;
+      container.appendChild(el);
+      el.querySelectorAll('input, textarea').forEach(i => i.addEventListener('input', generateResume));
+      const remove = el.querySelector('.remove');
+      if (remove) remove.addEventListener('click', () => { el.remove(); generateResume(); });
+      generateResume();
+    });
+  }
+
+  setupDynamic('addExperience', 'experienceContainer', `
+    <div class="entry">
+      <label>Cargo/Título:</label>
+      <input type="text" class="exp-title" placeholder="Cargo">
+      <label>Empresa:</label>
+      <input type="text" class="exp-company" placeholder="Empresa">
+      <label>Período:</label>
+      <input type="text" class="exp-period" placeholder="2020 - 2023">
+      <label>Descrição:</label>
+      <textarea class="exp-desc" placeholder="Responsabilidades e resultados..."></textarea>
+      <button type="button" class="remove">Remover</button>
+    </div>`);
+
+  setupDynamic('addEducation', 'educationContainer', `
+    <div class="entry">
+      <label>Curso:</label>
+      <input type="text" class="edu-course" placeholder="Curso">
+      <label>Instituição:</label>
+      <input type="text" class="edu-inst" placeholder="Instituição">
+      <label>Período:</label>
+      <input type="text" class="edu-period" placeholder="2016 - 2020">
+      <button type="button" class="remove">Remover</button>
+    </div>`);
+
+  setupDynamic('addCertification', 'certificationsContainer', `
+    <div class="entry">
+      <label>Certificação:</label>
+      <input type="text" class="cert-name" placeholder="Nome da certificação">
+      <label>Instituição:</label>
+      <input type="text" class="cert-inst" placeholder="Instituição emissora">
+      <label>Descrição:</label>
+      <textarea class="cert-desc" placeholder="Descrição curta"></textarea>
+      <button type="button" class="remove">Remover</button>
+    </div>`);
+
+  /* --- Gera o preview --- */
+  function generateResume() {
+    const data = {
+      name: document.getElementById('name').value,
+      address: document.getElementById('address').value,
+      email: document.getElementById('email').value,
+      phone1: document.getElementById('phone1').value,
+      linkedin: document.getElementById('linkedin').value,
+      summary: summaryInput.value,
+      skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(Boolean),
+      languages: document.getElementById('languages').value.split(',').map(s => s.trim()).filter(Boolean),
+      activities: document.getElementById('activities').value,
+      photo: photoPreview.src
+    };
+
+    const exp = [...document.querySelectorAll('#experienceContainer .entry')].map(e => ({
+      title: e.querySelector('.exp-title').value,
+      company: e.querySelector('.exp-company').value,
+      period: e.querySelector('.exp-period').value,
+      desc: e.querySelector('.exp-desc').value
+    }));
+
+    const edu = [...document.querySelectorAll('#educationContainer .entry')].map(e => ({
+      course: e.querySelector('.edu-course').value,
+      inst: e.querySelector('.edu-inst').value,
+      period: e.querySelector('.edu-period').value
+    }));
+
+    const cert = [...document.querySelectorAll('#certificationsContainer .entry')].map(e => ({
+      name: e.querySelector('.cert-name').value,
+      inst: e.querySelector('.cert-inst').value,
+      desc: e.querySelector('.cert-desc').value
+    }));
+
+    resumePreview.innerHTML = `
+      <div class="resume-left">
+        ${data.photo ? `<img src="${data.photo}" alt="Foto">` : ''}
+        <h2>${data.name || 'Seu Nome'}</h2>
+        <h3>Contato</h3>
+        <ul>
+          ${data.email ? `<li><i class="fa-solid fa-envelope"></i> ${data.email}</li>` : ''}
+          ${data.phone1 ? `<li><i class="fa-solid fa-phone"></i> ${data.phone1}</li>` : ''}
+          ${data.linkedin ? `<li><i class="fa-brands fa-linkedin"></i> ${data.linkedin}</li>` : ''}
+          ${data.address ? `<li><i class="fa-solid fa-location-dot"></i> ${data.address}</li>` : ''}
+        </ul>
+
+        ${data.skills.length ? `<h3>Habilidades</h3><ul>${data.skills.map(s=>`<li>${s}</li>`).join('')}</ul>`:''}
+        ${data.languages.length ? `<h3>Idiomas</h3><ul>${data.languages.map(l=>`<li>${l}</li>`).join('')}</ul>`:''}
+      </div>
+      <div class="resume-right">
+        <section>
+          <h3>Resumo Profissional</h3>
+          <p>${data.summary || 'Apresente-se brevemente...'}</p>
+        </section>
+
+        <section>
+          <h3>Experiência Profissional</h3>
+          ${exp.map(e=>`<div><h4>${e.title} - ${e.company}</h4><p><strong>${e.period}</strong></p><p>${e.desc}</p></div>`).join('') || '<p>Sem experiências registradas.</p>'}
+        </section>
+
+        <section>
+          <h3>Educação</h3>
+          ${edu.map(e=>`<div><h4>${e.course}</h4><p>${e.inst} (${e.period})</p></div>`).join('') || '<p>Sem formação registrada.</p>'}
+        </section>
+
+        ${cert.length ? `<section><h3>Certificações</h3>${cert.map(c=>`<div><h4>${c.name}</h4><p>${c.inst} - ${c.desc}</p></div>`).join('')}</section>`:''}
+        ${data.activities ? `<section><h3>Atividades</h3><p>${data.activities}</p></section>`:''}
+      </div>`;
+  }
+
+  generateBtn.addEventListener('click', generateResume);
+
+  /* --- Baixar PDF em alta qualidade --- */
+  downloadBtn.addEventListener('click', () => {
+    generateResume();
+    const el = document.getElementById('resumePreview');
+    const original = el.style.transform;
+    el.style.transform = 'none';
+    const opt = {
+      margin: [10,10,10,10],
+      filename: 'curriculo.pdf',
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { scale: 4, dpi: 300, useCORS: true, scrollY: 0 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css','avoid-all'] }
+    };
+    html2pdf().from(el).set(opt).save().then(()=>{ el.style.transform = original; });
+  });
+
+  resumePreview.addEventListener('click',()=> resumePreview.classList.toggle('expanded'));
+
+  generateResume();
 });
