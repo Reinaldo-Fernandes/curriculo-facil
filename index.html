@@ -1,44 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currículo Fácil</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Currículo Fácil</title>
 
-    <meta name="description" content="Gerador de currículo fácil e simples para você.">
-    <meta name="theme-color" content="#1f2e8a">
+        <link rel="stylesheet" href="./style.css">
 
-    <meta property="og:title" content="Currículo Fácil">
-    <meta property="og:description" content="Crie seu currículo profissional em minutos, de forma fácil e rápida. Gere seu documento pronto para impressão em PDF.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://curriculo-facil.vercel.app/">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "name": "Currículo Fácil",
-      "description": "Gerador de currículo fácil com download em Word e PDF.",
-      "url": "https://curriculofacil.vercel.com",
-      "offers": {
-        "@type": "Offer",
-        "priceCurrency": "BRL",
-        "price": "0.00"
-      }
-    }
-    </script>
+        <script defer src="./script.js"></script>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@700;900&display=swap">
-    
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script defer src="./script.js"></script>
-    
-    <link rel="icon" href="./favicon.ico">
-</head>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+        <link rel="icon" href="./favicon.ico">
+    </head>
     <body>
         <header>
             <h1>Currículo Fácil <i class="fa-solid fa-sheet-plastic"></i></h1>
@@ -53,7 +30,7 @@
                     <label for="address">Endereço</label>
                     <input type="text" id="address" placeholder="Endereço: Logradouro, Número, CEP, Complementos">
 
-                    <label for="phone1">Telefone Principal</label>
+                    <label for="phone1">Telefone</label>
                     <input type="tel" id="phone1" placeholder="(00) 00000-0000" required>
 
                     <label for="phone2">Telefone Alternativo</label>
@@ -62,24 +39,25 @@
                     <label for="email">Email</label>
                     <input type="email" id="email" placeholder="Email" required>
 
-                    <label for="linkedin">LinkedIn (Link)</label>
+                    <label for="linkedin">LinkedIn</label>
                     <input type="url" id="linkedin" placeholder="https://linkedin.com/in/usuario">
 
-                    <label for="photo">Foto de Perfil (Opcional)</label>
+                    <label for="photo">Foto</label>
                     <img id="photoPreview" src="" alt="Prévia da Foto" style="display:none; width: 150px; height: 150px; border-radius: 50%; margin-top: 10px;">
                     <input type="file" id="photo" accept="image/*" aria-label="Carregar foto">
+
+                    <div class="summary-container">
+                        <h2>Resumo <i class="fa-regular fa-address-card"></i>
+                            <span class="info-card" data-text="Uma breve apresentação de suas qualificações mais relevantes.">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                                <span class="tooltip"></span>
+                            </span>
+                        </h2>
+                        <textarea id="summary" class="professional-summary" placeholder="Breve resumo das suas habilidades e experiências mais relevantes."></textarea>
+                        <div id="summaryCounter">0 / 500 caracteres</div>
+                    </div>
                 </section>
 
-                <div class="summary-container">
-                    <h2>Resumo Profissional <i class="fa-regular fa-address-card"></i>
-                        <span class="info-card" data-text="Uma breve apresentação de suas qualificações mais relevantes.">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span class="tooltip"></span>
-                        </span>
-                    </h2>
-                    <textarea id="summary" class="professional-summary" placeholder="Breve resumo das suas habilidades e experiências mais relevantes. (Máx. 600 caracteres)"></textarea>
-                    <div id="summaryCounter">0 / 600 caracteres</div>
-                </div>
                 <section>
                     <h2>Educação <i class="fa-solid fa-book"></i></h2>
                     <div id="educationContainer"></div>
@@ -93,13 +71,13 @@
                 </section>
 
                 <section>
-                    <h2>Habilidades Técnicas e Pessoais <i class="fa-solid fa-cogs"></i></h2>
-                    <textarea id="skills" placeholder="Separe cada habilidade por vírgula ou em uma nova linha. Ex: Comunicação, Liderança, Python..."></textarea>
+                    <h2>Habilidades <i class="fa-solid fa-cogs"></i></h2>
+                    <textarea id="skills" placeholder="Exemplo: Comunicação, Liderança, Programação..."></textarea>
                 </section>
 
                 <section>
                     <h2>Idiomas <i class="fa-solid fa-language"></i></h2>
-                    <textarea id="languages" placeholder="Separe cada idioma por vírgula ou em uma nova linha. Ex: Inglês: Avançado, Espanhol: Intermediário"></textarea>
+                    <textarea id="languages" placeholder="Exemplo: Inglês: Avançado, Espanhol: Intermediário"></textarea>
                 </section>
 
                 <section>
@@ -110,7 +88,7 @@
 
                 <section>
                     <h2>Atividades Extracurriculares <i class="fa-solid fa-school-circle-exclamation"></i></h2>
-                    <textarea id="activities" placeholder="Exemplo: Voluntariado, Hobbies, Projetos Pessoais..."></textarea>
+                    <textarea id="activities" placeholder="Exemplo: Voluntariado, Hobbies..."></textarea>
                 </section>
 
                 <div id="progressBarContainer">
@@ -120,7 +98,7 @@
 
                 <div class="buttons-container">
                     <button id="generateResumeButton" type="button">
-                        <i class="fa-solid fa-file-alt"></i> Atualizar Preview
+                        <i class="fa-solid fa-file-alt"></i> Gerar Currículo
                     </button>
                     <button id="downloadPdf" type="button">
                         <i class="fa-solid fa-file-pdf"></i> Baixar em PDF
@@ -131,17 +109,16 @@
                 </div>
 
             </form>
-            
-            <div id="colorPickerSection"></div>
-            
             <div id="error-message" style="color: red; display: none; margin-top: 10px;"></div>
 
             <div id="resumePreview"></div>
-            
+            <div id="colorPickerSection"></div>
         </main>
 
         <footer style="background-color: #1f2e8a !important; color: white;">
             <p>&copy; 2024 - Currículo Fácil. Todos os direitos reservados.</p>
         </footer>
+
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     </body>
 </html>
