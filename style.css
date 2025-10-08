@@ -1,559 +1,244 @@
-/* Fontes do Usuário: Roboto (texto) e Playfair Display (títulos) */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@700;900&display=swap');
-
-/* Variáveis de Cores (Azul Sóbrio) */
-:root {
-    /* Estas são as cores dinâmicas controladas pelo JS */
-    --primary-color: #2a3eb1; 
-    --secondary-color: #f4f4f9; 
-    
-    --text-color: #333;
-    --light-border: #ddd;
-    --font-name: 'Playfair Display', serif;
-    --font-body: 'Roboto', sans-serif;
-
-    /* Variáveis para o Preview (garantem que a cor é aplicada imediatamente) */
-    --selected-primary-color: var(--primary-color);
-    --selected-secondary-color: #e8f0fe;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
 
 body {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f5; 
-    color: var(--text-color);
+    background-color: #ffffff;
 }
 
 header {
-    background-color: var(--primary-color);
+    background-color: #2a3eb1;
     color: #fff;
-    padding: 15px 0;
+    padding: 10px 0;
     text-align: center;
 }
 
 h1 {
     margin: 0;
-    font-size: 2.2rem;
-    font-family: var(--font-name);
-    font-weight: 700; 
+    font-size: 2rem;
+    font-family: 'Playfair Display', cursive;
+    font-weight: 400;
 }
 
 main {
     width: 90%;
-    max-width: 950px; /* Largura maior para melhor visualização do A4 reduzido */
+    max-width: 800px;
     margin: 20px auto;
     background-color: #fff;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border-radius: 8px;
 }
 
 form section {
-    margin-bottom: 30px;
-    padding: 15px;
-    border: 1px solid var(--light-border);
-    border-radius: 6px;
-}
-
-h2 {
-    color: var(--primary-color);
-    border-bottom: 2px solid var(--light-border);
-    padding-bottom: 10px;
-    margin-top: 0;
-    font-family: var(--font-name);
-    font-size: 1.5rem;
-    font-weight: 700;
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: var(--text-color);
+    margin-top: 10px;
+    font-weight: bold;
 }
 
 input, textarea, select {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--light-border);
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box;
-    font-family: var(--font-body);
-    font-size: 1rem;
-    transition: border-color 0.3s;
+    box-sizing: border-box; 
 }
 
-input:focus, textarea:focus {
-    border-color: var(--primary-color);
-    outline: none;
+input[type="file"] {
+    border: none;
 }
 
 textarea {
     resize: vertical;
-    min-height: 80px;
 }
 
-.char-counter {
+.summary-section textarea {
+    min-height: 100px;
+}
+
+#summaryCounter {
     text-align: right;
-    font-size: 0.8rem;
+    font-size: 0.8em;
     color: #666;
-    margin-top: 5px;
+    margin-top: -5px;
 }
 
-/* Campos Dinâmicos (Experiência, Educação, Certificações) */
-.dynamic-item {
-    padding: 15px 0;
-    border-bottom: 1px dashed var(--light-border);
-    margin-bottom: 15px;
-}
-.dynamic-item:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-.dynamic-item input, .dynamic-item textarea {
-    margin-bottom: 10px;
+.experience-entry, .education-entry, .certification-entry {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
 }
 
-.add-button, .remove-button {
-    background-color: var(--primary-color);
+.input-error {
+    border: 2px solid red !important;
+    background-color: #fee;
+}
+
+button {
+    background-color: #2a3eb1;
     color: white;
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1rem;
     margin-top: 10px;
     transition: background-color 0.3s;
+    font-weight: bold;
 }
 
-.add-button:hover {
+button:hover {
     background-color: #1f2e8a;
 }
 
 .remove-button {
-    background-color: #dc3545; 
-    font-size: 0.9rem;
-    padding: 8px 12px;
+    background-color: #dc3545;
+    float: right;
+    padding: 5px 10px;
+    margin-top: 5px;
 }
+
 .remove-button:hover {
     background-color: #c82333;
 }
 
-/* Botões de Ação */
 .buttons-container {
     display: flex;
-    gap: 15px;
-    margin-top: 30px;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
     flex-wrap: wrap;
 }
 
 .buttons-container button {
-    flex: 1;
-    min-width: 200px;
-    background-color: #28a745;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#downloadPdf {
-    background-color: #007bff; /* Azul para Download */
-}
-#downloadPdf:hover {
-    background-color: #0056b3;
-}
-
-#generateResumeButton {
-    background-color: var(--primary-color);
-}
-#generateResumeButton:hover {
-    background-color: #1f2e8a;
-}
-
-#shareWhatsApp {
-    background-color: #25D366; /* Verde WhatsApp */
-}
-#shareWhatsApp:hover {
-    background-color: #1da851;
-}
-
-.buttons-container button i {
-    margin-right: 8px;
-}
-
-/* Barra de Progresso */
-#progressBarContainer {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#progressBar {
     flex-grow: 1;
-    height: 10px;
-    border-radius: 5px;
+    min-width: 150px;
 }
 
-#progressText {
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-/* Customização de Cores */
-#colorPickerSection {
-    margin-top: 30px;
-    padding: 15px;
-    border: 1px solid var(--light-border);
-    border-radius: 6px;
-}
-.color-options {
-    display: flex;
-    gap: 15px;
+/* NOVO: Estilo para o preview da foto no formulário (Circular e centralizada) */
+.resume-photo-preview {
+    width: 150px; 
+    height: 150px;
+    object-fit: cover; /* ESSENCIAL para centralizar no rosto */
+    border-radius: 50%; /* ESSENCIAL para ser circular */
     margin-top: 10px;
-    flex-wrap: wrap;
-}
-.color-swatch {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: border-color 0.2s;
-}
-.color-swatch:hover {
-    border-color: #555;
-}
-.custom-swatch {
-    position: relative;
-    overflow: hidden;
-}
-#customColorPicker {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
+    border: 3px solid #ccc;
 }
 
-/* --- Estilização do Preview do Currículo (Layout A4) --- */
+
+/* ========================================================= */
+/* ✅ ESTILOS PARA O PREVIEW E PDF (Otimizados para A4) */
+/* ========================================================= */
 
 #resumePreview {
-    display: flex;
-    flex-direction: row;
     margin-top: 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    
-    /* Configuração A4 e Escala de Visualização */
-    width: 210mm; /* Largura A4 real */
-    min-height: 297mm; /* Altura A4 real */
-    max-width: 100%; 
-    
-    /* Centraliza e dimensiona o A4 para caber na tela do desktop/mobile */
-    margin-left: 50%;
-    transform: translateX(-50%) scale(0.9); 
-    transform-origin: top center; 
-    
-    cursor: zoom-in; 
-    overflow: hidden; 
+    padding: 0; 
+    border: 1px solid #ddd;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    min-height: 400px;
+    max-width: 210mm; 
+    min-height: 297mm;
+    box-sizing: border-box; 
 }
 
-/* Estilo quando expandido/zoomado */
-#resumePreview.expanded {
-    transform: translate(-50%, 0) scale(1); 
-    cursor: zoom-out; 
-    overflow: auto; 
+.resume-content-wrapper {
+    display: flex;
+    gap: 0;
+    width: 210mm; 
+    min-height: 297mm; 
+    background-color: #ffffff;
+    color: #000;
+    font-family: 'Roboto', sans-serif;
 }
-
 
 .resume-left {
-    flex: 0 0 35%; 
-    max-width: 35%;
-    /* Utiliza as variáveis setadas pelo JS */
-    background-color: var(--selected-secondary-color, #e8f0fe); 
-    padding: 20px 15px;
-    color: var(--text-color);
+    width: 70mm; 
+    min-width: 70mm;
+    max-width: 70mm;
+    padding: 15mm 5mm 15mm 15mm; 
+    background-color: var(--selected-bg-color, #e8f0fe); 
+    border-radius: 0; 
+    box-sizing: border-box;
+    align-content: flex-start;
 }
-
-/* 🚩 Estilização do Nome em Duas Linhas (Corrigido) */
-.resume-left .name-line-1 { /* Nome Sobrenome */
-    font-family: var(--font-name);
-    font-size: 1.8rem;
-    color: var(--selected-primary-color);
-    margin: 0;
-    line-height: 1.1; 
-    font-weight: 700;
-}
-
-.resume-left .name-line-2 { /* restante do nome */
-    font-family: var(--font-name);
-    font-size: 1.2rem; 
-    color: var(--text-color);
-    margin: 0 0 15px 0; 
-    font-weight: 400; 
-    line-height: 1.2;
-}
-
-
-.resume-left img#previewPhoto {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 15px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    border: 3px solid var(--selected-primary-color);
-}
-
-.resume-left h3 {
-    font-size: 1.1rem;
-    color: var(--selected-primary-color);
-    border-bottom: 2px solid var(--selected-primary-color);
-    padding-bottom: 5px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-.resume-left p {
-    font-size: 0.9rem;
-    margin: 5px 0;
-    display: flex;
-    align-items: center;
-}
-.resume-left p i {
-    margin-right: 8px;
-    color: var(--selected-primary-color);
-    font-size: 1.1em;
-    min-width: 18px; 
-}
-.resume-left a {
-    color: inherit;
-    text-decoration: none;
-    word-break: break-word; 
-}
-
 
 .resume-right {
-    flex: 0 0 65%; 
-    max-width: 65%;
-    padding: 20px;
+    width: 140mm; 
+    flex: none; 
+    padding: 15mm 15mm 15mm 5mm; 
+    box-sizing: border-box;
 }
 
-.resume-right section {
-    margin-bottom: 25px;
-}
-
-.resume-right h3 {
-    font-size: 1.3rem;
-    color: var(--selected-primary-color);
-    border-bottom: 2px solid var(--light-border);
+/* Estilos de Conteúdo */
+#resumePreview h2, #resumePreview h3, #resumePreview h4 {
+    color: #2a3eb1;
+    border-bottom: 2px solid #ddd;
     padding-bottom: 5px;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-weight: 700;
-    font-family: var(--font-name);
-}
-.resume-right h3 i {
-    margin-right: 8px;
-    font-size: 1.1em;
+    margin-top: 15px;
+    font-family: 'Playfair Display', cursive;
+    font-weight: 400;
 }
 
-.summary-text {
-    font-style: italic;
-    line-height: 1.5;
-}
-
-/* Estilo para itens de experiência e educação */
-.entry-item h4 {
-    margin: 0 0 3px 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text-color);
-}
-.entry-item p {
-    margin: 3px 0;
-    font-size: 0.9rem;
-    line-height: 1.4;
-}
-
-.experience-section .entry-item {
-    margin-bottom: 15px;
-    border-left: 3px solid var(--selected-primary-color);
-    padding-left: 10px;
-}
-.education-section ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-.education-section li {
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px dashed var(--light-border);
-}
-.education-section li:last-child {
+#resumePreview h2 {
+    font-size: 1.5rem;
+    color: black;
     border-bottom: none;
+    /* NOVO: Linha de altura para a quebra de linha <br> ficar limpa */
+    line-height: 1.2; 
 }
 
-/* Habilidades e Idiomas na Coluna Esquerda */
-.skills-display ul, .languages-display ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-.skills-display li, .languages-display li {
-    background-color: var(--selected-primary-color);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    margin: 5px 5px 0 0;
-    font-size: 0.85rem;
+#resumePreview p, #resumePreview li {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 5px 0;
 }
 
-/* Footer */
+#resumePreview ul {
+    list-style: disc;
+    padding-left: 20px;
+    margin-top: 5px;
+}
+
+.resume-photo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover; /* ESSENCIAL para centralizar no rosto no currículo */
+    border-radius: 50%; /* ESSENCIAL para ser circular */
+    margin-bottom: 15px;
+    border: 3px solid white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.resume-left p:empty, .resume-right p:empty, 
+.resume-left ul:empty, .resume-right ul:empty,
+.resume-right div:empty {
+    display: none;
+}
+
+
 footer {
     padding: 10px 0;
     text-align: center;
+    font-size: 0.8em;
+}
+
+#progressBarContainer {
     margin-top: 20px;
 }
-footer p {
-    margin: 0;
-    font-size: 0.9rem;
+
+#progressBar {
+    width: 100%;
+    height: 15px;
 }
 
-
-/* --- Responsividade (Ajustes para telas menores) --- */
-@media (max-width: 950px) {
-    main {
-        max-width: 95%;
-        padding: 15px;
-    }
-    
-    #resumePreview {
-        flex-direction: column;
-        width: 100%;
-        max-width: 100%;
-        margin-left: 0;
-        transform: none; /* Desativa a escala para telas menores */
-        cursor: default; /* Desativa o zoom-in/out */
-    }
-
-    /* Estilo para o modo de visualização A4 em telas menores (quando não expandido) */
-    #resumePreview:not(.expanded) {
-        /* Garante que o A4 se encaixe na largura da tela */
-        transform: scale(0.6) translateX(-33%); /* Ajuste a escala conforme necessário */
-        transform-origin: top center;
-        width: 210mm;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        overflow: hidden;
-        cursor: zoom-in; 
-    }
-    
-    #resumePreview.expanded {
-        transform: none !important;
-        transform-origin: top center;
-        width: 100%;
-        box-shadow: none;
-        overflow: auto;
-        cursor: zoom-out;
-    }
-
-    .resume-left, .resume-right {
-        max-width: 100%;
-        flex: 1 1 100%;
-        padding: 15px; 
-    }
-    .resume-left {
-        order: -1; /* Coloca a coluna lateral no topo */
-    }
-
-    .buttons-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .buttons-container button {
-        width: 100%;
-    }
-}
-
-
-/* --- Impressão e PDF (Corrigido) --- */
-
-@media print {
-    body {
-        background-color: white;
-        margin: 0;
-        padding: 0;
-    }
-    
-    /* Esconde a interface de usuário */
-    header, footer, main, .buttons-container, #progressBarContainer, #error-message, #colorPickerSection, #tutorial-alert, form {
-        display: none !important;
-    }
-
-    /* Otimiza o Preview para a impressão A4 */
-    #resumePreview {
-        width: 210mm;
-        min-height: 297mm;
-        margin: 0;
-        box-shadow: none;
-        page-break-after: always;
-        cursor: default !important;
-        transform: none !important; 
-        overflow: visible !important;
-        display: flex;
-        flex-direction: row;
-        font-size: 10pt; /* Tamanho de fonte ajustado para impressão */
-    }
-
-    .resume-left, .resume-right {
-        /* Ajuste de tamanho em milímetros para controle preciso do PDF */
-        flex: 0 0 70mm; /* Coluna esquerda (aprox. 33%) */
-        max-width: 70mm;
-        padding: 10mm 5mm;
-        height: auto;
-        overflow: visible;
-        box-sizing: border-box;
-    }
-    
-    .resume-right {
-        flex: 1;
-        padding: 10mm;
-    }
-    
-    /* Regras de quebra de página */
-    .resume-right section, 
-    .summary-section,
-    .experience-section .entry-item, 
-    .education-section .entry-item,
-    .certifications-section .entry-item {
-        page-break-inside: avoid !important;
-    }
-
-    /* Remove estilos visuais desnecessários na impressão */
-    .resume-left h3, .resume-right h3 {
-        color: black !important;
-        border-bottom-color: black !important;
-    }
-    
-    .resume-left .name-line-1 {
-        color: black !important;
-    }
+.custom-bg-color {
+    background-color: var(--selected-bg-color, #e8f0fe);
 }

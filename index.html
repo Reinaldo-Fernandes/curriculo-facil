@@ -1,152 +1,111 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Currículo Fácil</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Currículo Fácil</title>
 
-        <meta name="description" content="Gerador de currículo fácil e simples para você.">
-        <meta name="theme-color" content="#1f2e8a">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="icon" href="./favicon.ico">
 
-        <meta property="og:title" content="Currículo Fácil">
-        <meta property="og:description" content="Crie seu currículo profissional em minutos, de forma fácil e rápida. Gere seu documento pronto para impressão em PDF.">
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://curriculo-facil.vercel.app/">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-        <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "Service",
-          "name": "Currículo Fácil",
-          "description": "Gerador de currículo fácil com download em Word e PDF.",
-          "url": "https://curriculofacil.vercel.com",
-          "offers": {
-            "@type": "Offer",
-            "priceCurrency": "BRL",
-            "price": "0.00"
-          }
-        }
-        </script>
+  <script defer src="./script.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Currículo Fácil <i class="fa-solid fa-sheet-plastic"></i></h1>
+  </header>
 
-        <link rel="stylesheet" href="./style.css">
+  <main>
+    <form id="resumeForm">
+      <section>
+        <h2>Informações Pessoais <i class="fa-regular fa-user"></i></h2>
+        <label for="name">Nome Completo</label>
+        <input type="text" id="name" placeholder="Nome Completo" required>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+        <label for="address">Endereço</label>
+        <input type="text" id="address" placeholder="Rua, Número, Complemento, Cidade - Estado">
 
-        <script defer src="./script.js"></script>
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="email@exemplo.com" required>
 
-        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-        
-        <link rel="icon" href="./favicon.ico">
-    </head>
-    <body>
-        <header>
-            <h1>Currículo Fácil <i class="fa-solid fa-sheet-plastic"></i></h1>
-        </header>
-        <main>
-            <form id="resumeForm">
-                <section>
-                    <h2>Informações Pessoais <i class="fa-regular fa-user"></i></h2>
-                    <label for="name">Nome Completo</label>
-                    <input type="text" id="name" placeholder="Nome Completo" required>
+        <label for="phone1">Telefone Principal</label>
+        <input type="tel" id="phone1" placeholder="(00) 00000-0000" required>
 
-                    <label for="address">Endereço</label>
-                    <input type="text" id="address" placeholder="Rua, Número, Cidade - Estado">
+        <label for="phone2">Telefone Secundário (Opcional)</label>
+        <input type="tel" id="phone2" placeholder="(00) 00000-0000">
 
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" placeholder="email@exemplo.com" required>
-                    
-                    <label for="phone1">Telefone Principal</label>
-                    <input type="tel" id="phone1" placeholder="(00) 00000-0000" required>
-                    
-                    <label for="phone2">Telefone Secundário (Opcional)</label>
-                    <input type="tel" id="phone2" placeholder="(00) 00000-0000">
+        <label for="linkedin">LinkedIn</label>
+        <input type="url" id="linkedin" placeholder="URL do seu perfil do LinkedIn">
+      </section>
 
-                    <label for="linkedin">LinkedIn</label>
-                    <input type="url" id="linkedin" placeholder="URL do seu perfil do LinkedIn">
-                  
-                </section>
+      <section>
+        <h2>Foto (Opcional) <i class="fa-solid fa-camera"></i></h2>
+        <input type="file" id="photo" accept="image/*">
+        <img id="photoPreview" class="resume-photo-preview" style="display:none;" alt="Preview da foto"> 
+      </section>
 
-                <section>
-                    <h2>Foto (Opcional) <i class="fa-solid fa-camera"></i></h2>
-                    <input type="file" id="photo" accept="image/*">
-                    <img id="photoPreview" style="display:none; max-width: 150px; margin-top: 10px; border-radius: 50%;">
-                </section>
+      <section class="summary-section">
+        <h2>Resumo Profissional <i class="fa-solid fa-file-lines"></i></h2>
+        <textarea id="summary" maxlength="600" placeholder="Escreva um resumo conciso..." ></textarea>
+        <p id="summaryCounter">0 / 600 caracteres</p>
+      </section>
 
-                <section class="summary-section">
-                    <h2>Resumo Profissional <i class="fa-solid fa-file-lines"></i></h2>
-                    <textarea id="summary" placeholder="Escreva um resumo conciso sobre sua carreira e objetivos." maxlength="600" required></textarea>
-                    <p id="summaryCounter">0 / 600 caracteres</p>
-                </section>
+      <section>
+        <h2>Experiência</h2>
+        <div id="experienceContainer"></div>
+        <button type="button" id="addExperienceBtn">Adicionar Experiência</button>
+      </section>
 
-                <section class="experience-section">
-                    <h2>Experiência Profissional <i class="fa-solid fa-briefcase"></i></h2>
-                    <div id="experienceContainer">
-                        </div>
-                    <button type="button" id="addExperienceBtn">Adicionar Experiência</button>
-                </section>
+      <section>
+        <h2>Formação</h2>
+        <div id="educationContainer"></div>
+        <button type="button" id="addEducationBtn">Adicionar Formação</button>
+      </section>
 
-                <section class="education-section">
-                    <h2>Formação Acadêmica <i class="fa-solid fa-graduation-cap"></i></h2>
-                    <div id="educationContainer">
-                        </div>
-                    <button type="button" id="addEducationBtn">Adicionar Formação</button>
-                </section>
+      <section>
+        <h2>Certificações</h2>
+        <div id="certificationContainer"></div>
+        <button type="button" id="addCertificationBtn">Adicionar Certificação</button>
+      </section>
 
-                <section class="skills-section">
-                    <h2>Habilidades <i class="fa-solid fa-star"></i></h2>
-                    <div id="skillsContainer">
-                        </div>
-                    <button type="button" id="addSkillBtn">Adicionar Habilidade</button>
-                </section>
-                
-                <section class="language-section">
-                    <h2>Idiomas <i class="fa-solid fa-language"></i></h2>
-                    <div id="languageContainer">
-                        </div>
-                    <button type="button" id="addLanguageBtn">Adicionar Idioma</button>
-                </section>
+      <section>
+        <h2>Habilidades</h2>
+        <input type="text" id="skills" placeholder="Ex: HTML, CSS, JavaScript (separadas por vírgula)">
+      </section>
 
-                <section class="certification-section">
-                    <h2>Certificações <i class="fa-solid fa-certificate"></i></h2>
-                    <div id="certificationContainer">
-                        </div>
-                    <button type="button" id="addCertificationBtn">Adicionar Certificação</button>
-                </section>
+      <section>
+        <h2>Idiomas</h2>
+        <input type="text" id="languages" placeholder="Ex: Português (Nativo), Inglês (Avançado)">
+      </section>
 
-                <section>
-                    <h2>Atividades Extracurriculares <i class="fa-solid fa-school-circle-exclamation"></i></h2>
-                    <textarea id="activities" placeholder="Exemplo: Voluntariado, Hobbies, Projetos Pessoais..."></textarea>
-                </section>
+      <section>
+        <h2>Atividades</h2>
+        <textarea id="activities" placeholder="Voluntariado, hobbies..."></textarea>
+      </section>
 
-                <div id="progressBarContainer">
-                    <progress id="progressBar" value="0" max="100"></progress>
-                    <span id="progressText">0%</span>
-                </div>
+      <div id="progressBarContainer">
+        <progress id="progressBar" value="0" max="100"></progress>
+        <span id="progressText">0%</span>
+      </div>
 
-                <div class="buttons-container">
-                    <button id="generateResumeButton" type="button">
-                        <i class="fa-solid fa-file-alt"></i> Atualizar Preview
-                    </button>
-                    <button id="downloadPdf" type="button">
-                        <i class="fa-solid fa-file-pdf"></i> Baixar em PDF
-                    </button>
-                    <button id="shareWhatsApp" type="button">
-                        <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
-                    </button>
-                </div>
+      <div class="buttons-container">
+        <button id="generateResumeButton" type="button">Atualizar Preview</button>
+        <button id="downloadPdf" type="button">Baixar em PDF</button>
+        <button id="shareWhatsApp" type="button">Compartilhar no WhatsApp</button>
+      </div>
+    </form>
 
-            </form>
-            
-            <div id="colorPickerSection"></div>
-            
-            <div id="error-message" style="color: red; display: none; margin-top: 10px;"></div>
+    <div id="error-message" style="color:red; display:none; margin-top:10px;"></div>
 
-            <div id="resumePreview"></div>
-            
-        </main>
+    <div id="resumePreview" style="min-height:200px;"></div>
+  </main>
 
-        <footer style="background-color: #1f2e8a !important; color: white;">
-            <p>&copy; 2024 - Currículo Fácil. Todos os direitos reservados.</p>
-        </footer>
-    </body>
+  <footer style="background-color:#1f2e8a; color:white;">
+    <p>&copy; 2025 - Currículo Fácil</p>
+  </footer>
+</body>
 </html>
