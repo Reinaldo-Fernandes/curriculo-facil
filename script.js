@@ -18,9 +18,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const phone1Input = document.getElementById('phone1');
     const skillsInput = document.getElementById('skills');
     const languagesInput = document.getElementById('languages');
+    
+    // Campo de Atividades Adicionais e seu contador
+    const activitiesInput = document.getElementById('activities');
+    const activitiesCounter = document.getElementById('activitiesCounter'); 
 
+    // CONSTANTES DE LIMITE DE CARACTERES
     const MAX_SUMMARY_LENGTH = 600;
+    const MAX_DESCRIPTION_LENGTH = 250; 
+
     summaryInput.setAttribute('maxlength', MAX_SUMMARY_LENGTH);
+    
+    if (activitiesInput) {
+        activitiesInput.setAttribute('maxlength', MAX_DESCRIPTION_LENGTH);
+    }
 
     // Variável para armazenar base64 da foto (garante render correto)
     let photoBase64 = '';
@@ -29,47 +40,36 @@ document.addEventListener('DOMContentLoaded', function () {
     
     /**
      * Formata o telefone para (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.
-     * @param {string} phone - O número de telefone.
-     * @returns {string} - O número formatado.
      */
     function formatPhoneNumber(phone) {
         if (!phone) return '';
-        const digits = phone.replace(/\D/g, ''); // Remove tudo que não for dígito
+        const digits = phone.replace(/\D/g, ''); 
         
-        // Formato (XX) XXXXX-XXXX (11 dígitos, ex: 9XXXX)
         if (digits.length === 11) {
             return `(${digits.substring(0, 2)}) ${digits.substring(2, 7)}-${digits.substring(7, 11)}`;
         } 
-        // Formato (XX) XXXX-XXXX (10 dígitos)
         if (digits.length === 10) {
             return `(${digits.substring(0, 2)}) ${digits.substring(2, 6)}-${digits.substring(6, 10)}`;
         }
-        // Retorna o original se não tiver um formato reconhecido
         return phone; 
     }
 
     /**
      * Tenta formatar o endereço para 'Rua: XXX N: XX, Complemento: YYY'
-     * @param {string} address - O endereço completo (ex: Rua Exemplo, 123, Apto 404).
-     * @returns {string} - O endereço formatado.
      */
     function formatAddress(address) {
         if (!address) return '';
         
-        // Divide o endereço por vírgula para tentar identificar as partes
         const parts = address.split(',').map(p => p.trim()).filter(Boolean);
         
         let rua = parts[0] || address;
         let numero = '';
         let complemento = '';
 
-        // Tenta encontrar o número.
         if (parts.length > 1) {
-            // Se o segundo elemento contiver apenas dígitos e até 5 caracteres (heurística para número), ele é o número.
             if (parts[1].match(/^\d{1,5}$/)) {
                 numero = parts[1];
             } else {
-                // Caso contrário, tenta encontrar um padrão 'N: XX' ou 'n XX'
                 const numMatch = parts[1].match(/(\d+)$/);
                 if (numMatch) {
                     numero = numMatch[1];
@@ -78,23 +78,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
         if (parts.length > 2) {
-            // O restante é o complemento
             complemento = parts.slice(numero ? 2 : 1).join(', ');
         }
         
-        // Ajustando a lógica de saída para garantir o formato desejado (Rua: XXX N: XX, se tiver complemento: XXX)
         let output = `Rua: ${rua}`;
         if (numero) {
             output += ` N: ${numero}`;
         }
         if (complemento) {
-            // Usamos a vírgula para separar o número do complemento e 'Complemento: ' para o rótulo
             output += `, Complemento: ${complemento}`;
         }
         
         return output;
     }
     // --- FIM FUNÇÕES DE FORMATAÇÃO ---
+
+    // --- FUNÇÃO DE CONTADOR ---
+    /**
+     * Configura o evento de 'input' para atualizar um contador de caracteres.
+     */
+    function setupCounter(textarea, counterElement, maxLength) {
+        if (textarea && counterElement) {
+            // Contagem inicial
+            counterElement.textContent = `${textarea.value.length} / ${maxLength} caracteres`;
+
+            // Atualização a cada entrada
+            textarea.addEventListener('input', () => {
+                counterElement.textContent = `${textarea.value.length} / ${maxLength} caracteres`;
+            });
+        }
+    }
+
 
     // --- Preview da foto (com conversão para base64) ---
     photoInput.addEventListener('change', () => {
@@ -110,20 +124,24 @@ document.addEventListener('DOMContentLoaded', function () {
             photoBase64 = e.target.result;
             photoPreview.src = photoBase64;
             photoPreview.style.display = 'block';
-            // atualiza preview já com imagem
             generateResume();
         };
         reader.readAsDataURL(file);
     });
 
-    // --- contador de caracteres ---
+    // --- contador de caracteres para o RESUMO (EXISTENTE) ---
     summaryInput.addEventListener('input', () => {
         summaryCounter.textContent = `${summaryInput.value.length} / ${MAX_SUMMARY_LENGTH} caracteres`;
     });
+    
+    // Contador de caracteres para ATIVIDADES
+    if (activitiesInput && activitiesCounter) {
+        setupCounter(activitiesInput, activitiesCounter, MAX_DESCRIPTION_LENGTH);
+    }
+
 
     // --- progresso ---
     function updateProgress() {
-        // CORREÇÃO: Certificando-se de que a barra de progresso e o texto existem
         if (!progressBar || !progressText) return; 
 
         const fields = Array.from(resumeForm.querySelectorAll('input:not([type="file"]), textarea, select'));
@@ -138,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- campos dinâmicos ---
     function addField(containerId, html) {
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container) return null;
         const entry = document.createElement('div');
         entry.className = 'entry';
         entry.innerHTML = html;
@@ -146,21 +164,27 @@ document.addEventListener('DOMContentLoaded', function () {
         const removeBtn = entry.querySelector('.remove-button');
         if (removeBtn) removeBtn.addEventListener('click', () => { container.removeChild(entry); updateProgress(); });
         updateProgress();
+        return entry;
     }
 
-    // CORREÇÃO: Substituindo o uso de '?.addEventListener' por checagem de IF para evitar erro de execução.
     const addExperienceBtn = document.getElementById('addExperienceBtn');
     if (addExperienceBtn) {
         addExperienceBtn.addEventListener('click', () => {
-            addField('experienceContainer', `
+            const newEntry = addField('experienceContainer', `
                 <div class="experience-entry">
                     <label>Cargo</label><input type="text" class="experience-title" placeholder="Cargo">
                     <label>Empresa</label><input type="text" class="experience-company" placeholder="Empresa">
                     <label>Período</label><input type="text" class="experience-duration" placeholder="Data de Início - Data de Término">
-                    <label>Descrição</label><textarea class="experience-description" placeholder="Descrição"></textarea>
+                    <label>Descrição</label><textarea class="experience-description" placeholder="Descrição" maxlength="${MAX_DESCRIPTION_LENGTH}"></textarea>
+                    <div class="description-counter">0 / ${MAX_DESCRIPTION_LENGTH} caracteres</div>
                     <button type="button" class="remove-button">Remover</button>
                 </div>
             `);
+            if (newEntry) {
+                const newTextArea = newEntry.querySelector('.experience-description');
+                const newCounter = newEntry.querySelector('.description-counter');
+                setupCounter(newTextArea, newCounter, MAX_DESCRIPTION_LENGTH);
+            }
         });
     }
 
@@ -181,14 +205,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const addCertificationBtn = document.getElementById('addCertificationBtn');
     if (addCertificationBtn) {
         addCertificationBtn.addEventListener('click', () => {
-            addField('certificationContainer', `
+            const newEntry = addField('certificationContainer', `
                 <div class="certification-entry">
                     <label>Nome</label><input type="text" class="certification-name" placeholder="Nome da Certificação">
                     <label>Instituição</label><input type="text" class="certification-institution" placeholder="Instituição">
-                    <label>Descrição</label><textarea class="certification-description" placeholder="Descrição"></textarea>
+                    <label>Descrição</label><textarea class="certification-description" placeholder="Descrição" maxlength="${MAX_DESCRIPTION_LENGTH}"></textarea>
+                    <div class="description-counter">0 / ${MAX_DESCRIPTION_LENGTH} caracteres</div>
                     <button type="button" class="remove-button">Remover</button>
                 </div>
             `);
+             if (newEntry) {
+                const newTextArea = newEntry.querySelector('.certification-description');
+                const newCounter = newEntry.querySelector('.description-counter');
+                setupCounter(newTextArea, newCounter, MAX_DESCRIPTION_LENGTH);
+            }
         });
     }
 
@@ -209,11 +239,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Gera o preview HTML ---
     function generateResume() {
-        if (!nameInput || !emailInput || !phone1Input) return false; // Fail safe
+        if (!nameInput || !emailInput || !phone1Input) return false;
 
-        // validação mínima
         if (!nameInput.value.trim() || !emailInput.value.trim() || !phone1Input.value.trim()) {
-            // Apenas exibe erro se o usuário tentar atualizar ou baixar
             return false;
         }
         
@@ -222,25 +250,30 @@ document.addEventListener('DOMContentLoaded', function () {
         emailInput.classList.remove('input-error');
         phone1Input.classList.remove('input-error');
 
-        // coletar entradas dinâmicas
         const experience = collectDynamic('experienceContainer', ['experience-title','experience-company','experience-duration','experience-description']);
         const education = collectDynamic('educationContainer', ['education-title','education-institution','education-duration']);
         const certifications = collectDynamic('certificationContainer', ['certification-name','certification-institution','certification-description']);
 
-        // --- PROCESSAMENTO DE DADOS COM AS NOVAS REGRAS ---
-        // 1. Nome com quebra de linha (quebra no último espaço)
         let formattedName = nameInput.value.trim();
-        const lastSpaceIndex = formattedName.lastIndexOf(' ');
-        if (lastSpaceIndex !== -1) {
-            // Insere um <br> antes do último nome/sobrenome para forçar a quebra de linha
-            formattedName = formattedName.substring(0, lastSpaceIndex) + '<br>' + formattedName.substring(lastSpaceIndex + 1);
+        const nameParts = formattedName.split(/\s+/).filter(Boolean); 
+        const numWords = nameParts.length;
+
+        if (numWords > 2) {
+            const firstLine = nameParts.slice(0, 2).join(' ');
+            let remainingParts = nameParts.slice(2);
+
+            if (remainingParts.length > 2) {
+                const lastWord = remainingParts.pop(); 
+                const middleLine = remainingParts.join(' ');
+                formattedName = `${firstLine}<br>${middleLine}<br>${lastWord}`;
+            } else {
+                const secondLine = remainingParts.join(' ');
+                formattedName = `${firstLine}<br>${secondLine}`;
+            }
         }
 
-        // 2. Formato de telefone
         const formattedPhone1 = formatPhoneNumber(phone1Input.value.trim());
         const formattedPhone2 = formatPhoneNumber(document.getElementById('phone2').value.trim());
-        
-        // 3. Formato de endereço
         const formattedAddress = formatAddress(document.getElementById('address').value.trim());
 
 
@@ -258,10 +291,9 @@ document.addEventListener('DOMContentLoaded', function () {
             experience,
             education,
             certifications,
-            activities: document.getElementById('activities').value.trim()
+            activities: activitiesInput ? activitiesInput.value.trim() : ''
         };
 
-        // A classe 'resume-photo' em style.css garante o formato circular e o corte centralizado (object-fit: cover)
         const imageHtml = photoBase64 ? `<img src="${photoBase64}" alt="Foto do candidato" class="resume-photo">` : '';
 
         resumePreview.innerHTML = `
@@ -293,7 +325,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     generateResumeButton.addEventListener('click', (e) => { 
         e.preventDefault(); 
-        // Adiciona validação ao clicar em atualizar preview
         if (!generateResume()) {
             errorMessageDiv.style.display = 'block';
             errorMessageDiv.textContent = '⚠️ Preencha Nome, Email e Telefone para gerar o currículo.';
@@ -303,7 +334,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Compartilhar no WhatsApp ---
     shareWhatsAppBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        // Apenas compartilha se o currículo for válido
         if (!generateResume()) {
              errorMessageDiv.style.display = 'block';
              errorMessageDiv.textContent = '⚠️ Preencha Nome, Email e Telefone para compartilhar.';
@@ -319,7 +349,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Função robusta para gerar PDF (clona o preview e captura via html2canvas) ---
     downloadPdfBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-        // Apenas gera o PDF se o currículo for válido
         if (!generateResume()) {
              errorMessageDiv.style.display = 'block';
              errorMessageDiv.textContent = '⚠️ Preencha Nome, Email e Telefone para baixar o PDF.';
@@ -327,30 +356,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
 
-        // 1) Cria clone do preview e coloca fora da tela (mantendo estilos inline simples)
+        // 1) Cria clone do preview e coloca fora da tela
         const clone = resumePreview.cloneNode(true);
         clone.style.position = 'absolute';
         clone.style.left = '-9999px';
         clone.style.top = '0';
-        clone.style.width = '794px'; // Largura A4 em px aproximada
+        clone.style.width = '794px'; 
         clone.style.background = '#ffffff';
         clone.style.color = '#000';
         document.body.appendChild(clone);
 
-        // 2) Aguarda imagens dentro do clone carregarem (inclui base64 imgs)
+        // 2) Aguarda imagens
         const imgs = Array.from(clone.querySelectorAll('img'));
         await Promise.all(imgs.map(img => {
             if (img.complete) return Promise.resolve();
             return new Promise(res => { img.onload = img.onerror = res; });
         }));
 
-        // 3) Aguarda um pequeno delay para o browser processar layout
+        // 3) Aguarda um pequeno delay
         await new Promise(r => setTimeout(r, 200));
 
         try {
-            // 4) Gera canvas a partir do clone
+            // 4) Gera canvas a partir do clone (SCALE 4 para alta qualidade)
             const canvas = await html2canvas(clone, {
-                scale: 2,            // aumenta resolução
+                scale: 4, 
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false
@@ -362,33 +391,71 @@ document.addEventListener('DOMContentLoaded', function () {
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+            
+            // NOVO: Tolerância para evitar páginas em branco. 10mm é um valor seguro.
+            const BLANK_PAGE_TOLERANCE_MM = 10; 
 
             const imgWidth = pdfWidth;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-            let position = 0;
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            let heightLeft = imgHeight; // Altura total do conteúdo
+            let position = 0; // Posição vertical da imagem no PDF
 
-            let heightLeft = imgHeight - pdfHeight;
-            while (heightLeft > 0) {
-                position -= pdfHeight;
+            // Adiciona a primeira parte da imagem na primeira página
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            
+            // Loop para adicionar páginas extras SOMENTE SE NECESSÁRIO
+            // O loop continua enquanto a altura total for maior que a altura de uma página cheia.
+            while (heightLeft > pdfHeight) {
+                // Se o conteúdo que transbordou para a próxima página for menor que a tolerância (10mm),
+                // o loop é interrompido para evitar a página em branco.
+                if (heightLeft - pdfHeight < BLANK_PAGE_TOLERANCE_MM) {
+                    break; 
+                }
+                
+                position -= pdfHeight; // Move a posição para "baixo" na próxima página
                 pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pdfHeight;
+                heightLeft -= pdfHeight; // Atualiza a altura restante
             }
 
             pdf.save('curriculo.pdf');
         } catch (err) {
             console.error('Erro ao gerar PDF:', err);
-            alert('Ocorreu um erro ao gerar o PDF. O problema de ERR_CONTENT_LENGTH_MISMATCH nas bibliotecas de PDF pode ser causado pela rede. Tente novamente mais tarde.');
+            alert('Ocorreu um erro ao gerar o PDF. Tente novamente mais tarde.');
         } finally {
             // 6) Remove o clone (limpeza)
             document.body.removeChild(clone);
         }
     });
 
-    // CORREÇÃO: Chama as funções de inicialização para que o preview e a barra funcionem imediatamente.
+    // --- Inicialização ---
+
+    function initializeAllDescriptionCounters() {
+        // Inicializa Atividades (campo fixo)
+        if (activitiesInput && activitiesCounter) {
+            setupCounter(activitiesInput, activitiesCounter, MAX_DESCRIPTION_LENGTH);
+        }
+        
+        // Inicializa Experiência e Certificação (campos dinâmicos)
+        const descriptionTextareas = document.querySelectorAll('.experience-description, .certification-description');
+        descriptionTextareas.forEach(textarea => {
+            textarea.setAttribute('maxlength', MAX_DESCRIPTION_LENGTH);
+            
+            let counter = textarea.nextElementSibling;
+            if (!counter || !counter.classList.contains('description-counter')) {
+                counter = document.createElement('div');
+                counter.className = 'description-counter';
+                textarea.parentNode.insertBefore(counter, textarea.nextSibling);
+            }
+            setupCounter(textarea, counter, MAX_DESCRIPTION_LENGTH);
+        });
+    }
+
+    // Chama as funções de inicialização
+    summaryCounter.textContent = `${summaryInput.value.length} / ${MAX_SUMMARY_LENGTH} caracteres`;
+    initializeAllDescriptionCounters();
     updateProgress();
     generateResume();
 });
