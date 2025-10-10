@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // --- Variáveis de Tema ---
+    let selectedPrimaryColor = '#2a3eb1'; 
+    let selectedSecondaryColor = '#e8f0fe'; 
+
     // --- elementos DOM ---
     const resumeForm = document.getElementById('resumeForm');
     const resumePreview = document.getElementById('resumePreview');
@@ -7,7 +11,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const downloadPdfBtn = document.getElementById('downloadPdf');
     const generateResumeButton = document.getElementById('generateResumeButton');
     const photoInput = document.getElementById('photo');
-    const photoPreview = document.getElementById('photoPreview');
+    // REMOVIDO: const photoPreview = document.getElementById('photoPreview');
+    // NOVO: Elementos para o Croppie e Color Picker
+    const croppieContainer = document.getElementById('croppie-container');
+    const colorPickerSection = document.getElementById('colorPickerSection');
+
     const summaryInput = document.getElementById('summary');
     const summaryCounter = document.getElementById('summaryCounter');
     const errorMessageDiv = document.getElementById('error-message');
@@ -35,8 +43,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Variável para armazenar base64 da foto (garante render correto)
     let photoBase64 = '';
+    // NOVO: Instância do Croppie
+    let croppieInstance = null;
 
-    // --- FUNÇÕES DE FORMATAÇÃO (REGRAS DO CLIENTE) ---
+    // --- FUNÇÕES DE FORMATAÇÃO ---
     
     /**
      * Formata o telefone para (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.
@@ -55,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Tenta formatar o endereço para 'Rua: XXX N: XX, Complemento: YYY'
+     * Tenta formatar o endereço.
      */
     function formatAddress(address) {
         if (!address) return '';
@@ -81,12 +91,12 @@ document.addEventListener('DOMContentLoaded', function () {
             complemento = parts.slice(numero ? 2 : 1).join(', ');
         }
         
-        let output = `Rua: ${rua}`;
+        let output = `${rua}`;
         if (numero) {
-            output += ` N: ${numero}`;
+            output += `, N: ${numero}`;
         }
         if (complemento) {
-            output += `, Complemento: ${complemento}`;
+            output += `, ${complemento}`;
         }
         
         return output;
@@ -94,15 +104,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- FIM FUNÇÕES DE FORMATAÇÃO ---
 
     // --- FUNÇÃO DE CONTADOR ---
-    /**
-     * Configura o evento de 'input' para atualizar um contador de caracteres.
-     */
+    
     function setupCounter(textarea, counterElement, maxLength) {
         if (textarea && counterElement) {
-            // Contagem inicial
             counterElement.textContent = `${textarea.value.length} / ${maxLength} caracteres`;
 
-            // Atualização a cada entrada
             textarea.addEventListener('input', () => {
                 counterElement.textContent = `${textarea.value.length} / ${maxLength} caracteres`;
             });
@@ -110,37 +116,81 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // --- Preview da foto (com conversão para base64) ---
-    photoInput.addEventListener('change', () => {
-        const file = photoInput.files && photoInput.files[0];
+    // ----------------------------------------------------
+    // --- Lógica do Croppie (Corte da Imagem) ---
+    // ----------------------------------------------------
+    photoInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
         if (!file) {
             photoBase64 = '';
-            photoPreview.src = '';
-            photoPreview.style.display = 'none';
+            croppieContainer.style.display = 'none';
+            if (croppieInstance) {
+                croppieInstance.destroy();
+                croppieInstance = null;
+            }
+            generateResume();
             return;
         }
+
         const reader = new FileReader();
-        reader.onload = function (e) {
-            photoBase64 = e.target.result;
-            photoPreview.src = photoBase64;
-            photoPreview.style.display = 'block';
-            generateResume();
+        reader.onload = function (event) {
+            // Se já existe uma instância, destrói para evitar duplicidade
+            if (croppieInstance) {
+                croppieInstance.destroy();
+            }
+
+            // Inicializa o Croppie no container
+            croppieContainer.style.display = 'block';
+            croppieInstance = new Croppie(croppieContainer, {
+                // Configura o visualizador como um círculo
+                viewport: { width: 150, height: 150, type: 'circle' }, 
+                boundary: { width: 250, height: 250 },
+                enableZoom: true,
+                showZoomer: true,
+            });
+
+            // Carrega a imagem no Croppie
+            croppieInstance.bind({
+                url: event.target.result
+            });
         };
         reader.readAsDataURL(file);
     });
 
-    // --- contador de caracteres para o RESUMO (EXISTENTE) ---
+    /**
+     * Pega o Base64 da imagem cortada/ajustada pelo Croppie.
+     */
+    async function getCroppedImage() {
+        if (!croppieInstance) return '';
+
+        try {
+            // Captura o resultado do crop em alta resolução
+            const result = await croppieInstance.result({
+                type: 'base64',
+                size: { width: 300, height: 300 }, // Resolução maior para melhor qualidade no PDF
+                format: 'png',
+                quality: 1
+            });
+            return result;
+        } catch (error) {
+            console.error('Erro ao gerar imagem cortada:', error);
+            return '';
+        }
+    }
+    // ----------------------------------------------------
+    // --- Fim Lógica Croppie ---
+    // ----------------------------------------------------
+
+
+    // --- contadores e progresso ---
     summaryInput.addEventListener('input', () => {
         summaryCounter.textContent = `${summaryInput.value.length} / ${MAX_SUMMARY_LENGTH} caracteres`;
     });
     
-    // Contador de caracteres para ATIVIDADES
     if (activitiesInput && activitiesCounter) {
         setupCounter(activitiesInput, activitiesCounter, MAX_DESCRIPTION_LENGTH);
     }
 
-
-    // --- progresso ---
     function updateProgress() {
         if (!progressBar || !progressText) return; 
 
@@ -223,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // --- Geração do objeto de dados (para montar o preview) ---
     function collectDynamic(containerId, classes) {
         const container = document.getElementById(containerId);
         if (!container) return [];
@@ -237,8 +286,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }).filter(obj => Object.values(obj).some(v => v !== ''));
     }
 
-    // --- Gera o preview HTML ---
-    function generateResume() {
+    // --- Gera o preview HTML (AGORA É ASYNC!) ---
+    async function generateResume() { 
         if (!nameInput || !emailInput || !phone1Input) return false;
 
         if (!nameInput.value.trim() || !emailInput.value.trim() || !phone1Input.value.trim()) {
@@ -249,6 +298,10 @@ document.addEventListener('DOMContentLoaded', function () {
         nameInput.classList.remove('input-error');
         emailInput.classList.remove('input-error');
         phone1Input.classList.remove('input-error');
+
+        // COLETANDO A IMAGEM CORTADA ANTES DE GERAR O PREVIEW
+        photoBase64 = await getCroppedImage();
+
 
         const experience = collectDynamic('experienceContainer', ['experience-title','experience-company','experience-duration','experience-description']);
         const education = collectDynamic('educationContainer', ['education-title','education-institution','education-duration']);
@@ -296,9 +349,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const imageHtml = photoBase64 ? `<img src="${photoBase64}" alt="Foto do candidato" class="resume-photo">` : '';
 
+        // Aplica as cores dinâmicas
         resumePreview.innerHTML = `
             <div class="resume-content-wrapper">
-                <aside class="resume-left custom-bg-color">
+                <aside class="resume-left" style="background-color: ${selectedSecondaryColor};">
                     <div>${imageHtml}</div>
                     <h2>${resumeData.formattedName}</h2>
                     ${resumeData.address ? `<p><strong>Endereço:</strong> ${resumeData.address}</p>` : ''}
@@ -319,22 +373,27 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
 
+        // Aplica a cor do tema nos títulos da seção direita
+        document.querySelector('#resumePreview .resume-right').querySelectorAll('h2, h3, h4').forEach(el => {
+            el.style.color = selectedPrimaryColor;
+        });
+
         updateProgress();
         return true;
     }
 
-    generateResumeButton.addEventListener('click', (e) => { 
+    generateResumeButton.addEventListener('click', async (e) => { 
         e.preventDefault(); 
-        if (!generateResume()) {
+        if (! await generateResume()) {
             errorMessageDiv.style.display = 'block';
             errorMessageDiv.textContent = '⚠️ Preencha Nome, Email e Telefone para gerar o currículo.';
         }
     });
 
-    // --- Compartilhar no WhatsApp ---
-    shareWhatsAppBtn.addEventListener('click', (e) => {
+    // --- Compartilhar no WhatsApp (AGORA É ASYNC!) ---
+    shareWhatsAppBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-        if (!generateResume()) {
+        if (! await generateResume()) {
              errorMessageDiv.style.display = 'block';
              errorMessageDiv.textContent = '⚠️ Preencha Nome, Email e Telefone para compartilhar.';
              return;
@@ -346,10 +405,10 @@ document.addEventListener('DOMContentLoaded', function () {
         window.open(`https://wa.me/?text=${msg}`, '_blank');
     });
 
-    // --- Função robusta para gerar PDF (clona o preview e captura via html2canvas) ---
+    // --- Função robusta para gerar PDF (permanece async) ---
     downloadPdfBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-        if (!generateResume()) {
+        if (! await generateResume()) {
              errorMessageDiv.style.display = 'block';
              errorMessageDiv.textContent = '⚠️ Preencha Nome, Email e Telefone para baixar o PDF.';
              return;
@@ -366,18 +425,24 @@ document.addEventListener('DOMContentLoaded', function () {
         clone.style.color = '#000';
         document.body.appendChild(clone);
 
-        // 2) Aguarda imagens
+        // 2) Garante que as cores do tema sejam aplicadas no clone para o PDF
+        clone.querySelector('.resume-left').style.backgroundColor = selectedSecondaryColor;
+        clone.querySelector('.resume-right').querySelectorAll('h2, h3, h4').forEach(el => {
+            el.style.color = selectedPrimaryColor;
+        });
+
+        // 3) Aguarda imagens
         const imgs = Array.from(clone.querySelectorAll('img'));
         await Promise.all(imgs.map(img => {
             if (img.complete) return Promise.resolve();
             return new Promise(res => { img.onload = img.onerror = res; });
         }));
 
-        // 3) Aguarda um pequeno delay
+        // 4) Aguarda um pequeno delay
         await new Promise(r => setTimeout(r, 200));
 
         try {
-            // 4) Gera canvas a partir do clone (SCALE 4 para alta qualidade)
+            // 5) Gera canvas a partir do clone (SCALE 4 para alta qualidade)
             const canvas = await html2canvas(clone, {
                 scale: 4, 
                 useCORS: true,
@@ -387,37 +452,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const imgData = canvas.toDataURL('image/png');
 
-            // 5) Cria PDF com jsPDF e adiciona a imagem (com suporte a múltiplas páginas)
+            // 6) Cria PDF com jsPDF e adiciona a imagem (com suporte a múltiplas páginas)
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+            const pdfHeight = pdf.internal.pageSize.getHeight(); 
             
-            // NOVO: Tolerância para evitar páginas em branco. 10mm é um valor seguro.
             const BLANK_PAGE_TOLERANCE_MM = 10; 
 
             const imgWidth = pdfWidth;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-            let heightLeft = imgHeight; // Altura total do conteúdo
-            let position = 0; // Posição vertical da imagem no PDF
+            let heightLeft = imgHeight;
+            let position = 0;
 
-            // Adiciona a primeira parte da imagem na primeira página
             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             
-            // Loop para adicionar páginas extras SOMENTE SE NECESSÁRIO
-            // O loop continua enquanto a altura total for maior que a altura de uma página cheia.
             while (heightLeft > pdfHeight) {
-                // Se o conteúdo que transbordou para a próxima página for menor que a tolerância (10mm),
-                // o loop é interrompido para evitar a página em branco.
                 if (heightLeft - pdfHeight < BLANK_PAGE_TOLERANCE_MM) {
                     break; 
                 }
                 
-                position -= pdfHeight; // Move a posição para "baixo" na próxima página
+                position -= pdfHeight; 
                 pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pdfHeight; // Atualiza a altura restante
+                heightLeft -= pdfHeight; 
             }
 
             pdf.save('curriculo.pdf');
@@ -425,20 +484,79 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Erro ao gerar PDF:', err);
             alert('Ocorreu um erro ao gerar o PDF. Tente novamente mais tarde.');
         } finally {
-            // 6) Remove o clone (limpeza)
+            // 7) Remove o clone (limpeza)
             document.body.removeChild(clone);
         }
     });
 
+    // ----------------------------------------------------
+    // --- Lógica de Cores e Temas ---
+    // ----------------------------------------------------
+
+    function initializeColorPicker() {
+        const colors = ['#2a3eb1', '#2196f3', '#009688', '#e91e63', '#ff9800', '#607d8b']; // Paleta de cores
+        let pickerHtml = '<p>Selecione um tema:</p><div style="display: flex; gap: 10px; margin-top: 10px;">';
+        
+        colors.forEach(color => {
+            const isSelected = color === selectedPrimaryColor ? ' selected' : '';
+            pickerHtml += `<div class="color-option${isSelected}" style="background-color: ${color}; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" data-color="${color}"></div>`;
+        });
+        
+        pickerHtml += '</div>';
+        colorPickerSection.innerHTML = pickerHtml;
+
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const newPrimaryColor = this.getAttribute('data-color');
+                applyNewColor(newPrimaryColor);
+            });
+        });
+        
+        // Aplica a cor padrão na inicialização
+        applyNewColor(selectedPrimaryColor); 
+    }
+
+    function applyNewColor(newPrimaryColor) {
+        selectedPrimaryColor = newPrimaryColor;
+        selectedSecondaryColor = getLightVariant(newPrimaryColor); // Calcula uma variante mais clara para a lateral
+
+        // Remove a classe 'selected' de todos e adiciona ao clicado
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.classList.remove('selected');
+            if (option.getAttribute('data-color') === newPrimaryColor) {
+                option.classList.add('selected');
+            }
+        });
+
+        // Atualiza as variáveis CSS para todo o documento (afeta header, botões)
+        document.documentElement.style.setProperty('--primary-color', selectedPrimaryColor);
+        document.documentElement.style.setProperty('--secondary-color', selectedSecondaryColor);
+        
+        // Força a atualização do preview com as novas cores
+        generateResume();
+    }
+    
+    // Calcula uma variante clara de uma cor hexadecimal
+    function getLightVariant(hex) {
+        const bigint = parseInt(hex.slice(1), 16);
+        let r = (bigint >> 16) & 255;
+        let g = (bigint >> 8) & 255;
+        let b = bigint & 255;
+        const factor = 0.9; 
+        r = Math.round(r + (255 - r) * factor);
+        g = Math.round(g + (255 - g) * factor);
+        b = Math.round(b + (255 - b) * factor);
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+    }
+
+
     // --- Inicialização ---
 
     function initializeAllDescriptionCounters() {
-        // Inicializa Atividades (campo fixo)
         if (activitiesInput && activitiesCounter) {
             setupCounter(activitiesInput, activitiesCounter, MAX_DESCRIPTION_LENGTH);
         }
         
-        // Inicializa Experiência e Certificação (campos dinâmicos)
         const descriptionTextareas = document.querySelectorAll('.experience-description, .certification-description');
         descriptionTextareas.forEach(textarea => {
             textarea.setAttribute('maxlength', MAX_DESCRIPTION_LENGTH);
@@ -457,5 +575,5 @@ document.addEventListener('DOMContentLoaded', function () {
     summaryCounter.textContent = `${summaryInput.value.length} / ${MAX_SUMMARY_LENGTH} caracteres`;
     initializeAllDescriptionCounters();
     updateProgress();
-    generateResume();
+    initializeColorPicker(); 
 });

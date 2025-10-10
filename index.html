@@ -7,10 +7,15 @@
 
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
+  
   <link rel="icon" href="./favicon.ico">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 
   <script defer src="./script.js"></script>
 </head>
@@ -27,42 +32,42 @@
         <input type="text" id="name" placeholder="Nome Completo" required>
 
         <label for="address">Endereço</label>
-        <input type="text" id="address" placeholder="Rua, Número, Complemento, Cidade - Estado">
+        <input type="text" id="address" placeholder="Ex: Rua das Flores, 123">
 
-        <label for="email">E-mail</label>
+        <label for="email">Email </label>
         <input type="email" id="email" placeholder="email@exemplo.com" required>
-
+        
         <label for="phone1">Telefone Principal</label>
-        <input type="tel" id="phone1" placeholder="(00) 00000-0000" required>
+        <input type="tel" id="phone1" placeholder="(XX) XXXXX-XXXX" required>
 
         <label for="phone2">Telefone Secundário (Opcional)</label>
-        <input type="tel" id="phone2" placeholder="(00) 00000-0000">
-
-        <label for="linkedin">LinkedIn</label>
-        <input type="url" id="linkedin" placeholder="URL do seu perfil do LinkedIn">
+        <input type="tel" id="phone2" placeholder="(XX) XXXXX-XXXX">
+        
+        <label for="linkedin">Link do LinkedIn (Opcional)</label>
+        <input type="url" id="linkedin" placeholder="https://linkedin.com/in/seu-perfil">
       </section>
 
       <section>
-        <h2>Foto (Opcional) <i class="fa-solid fa-camera"></i></h2>
+        <h2>Foto (Ajuste o foco) <i class="fa-solid fa-camera"></i></h2>
         <input type="file" id="photo" accept="image/*">
-        <img id="photoPreview" class="resume-photo-preview" style="display:none;" alt="Preview da foto"> 
         
+        <div id="croppie-container" style="display:none; width: 300px; height: 300px; margin-top: 10px;"></div>
       </section>
 
       <section class="summary-section">
-        <h2>Resumo Profissional <i class="fa-solid fa-file-lines"></i></h2>
-        <textarea id="summary" maxlength="600" placeholder="Escreva um resumo conciso..." ></textarea>
-        <p id="summaryCounter">0 / 600 caracteres</p>
+        <h2>Resumo Profissional <i class="fa-solid fa-briefcase"></i></h2>
+        <textarea id="summary" placeholder="Apresentação breve e objetiva (máx. 600 caracteres)"></textarea>
+        <div id="summaryCounter">0 / 600 caracteres</div>
       </section>
 
       <section>
-        <h2>Experiência</h2>
+        <h2>Experiência Profissional <i class="fa-solid fa-clock-rotate-left"></i></h2>
         <div id="experienceContainer"></div>
         <button type="button" id="addExperienceBtn">Adicionar Experiência</button>
       </section>
 
       <section>
-        <h2>Formação</h2>
+        <h2>Educação <i class="fa-solid fa-graduation-cap"></i></h2>
         <div id="educationContainer"></div>
         <button type="button" id="addEducationBtn">Adicionar Formação</button>
       </section>
@@ -87,6 +92,11 @@
         <h2>Atividades</h2>
         <textarea id="activities" placeholder="Voluntariado, hobbies..."></textarea>
       </section>
+      
+      <section>
+        <h2>Tema do Currículo <i class="fa-solid fa-palette"></i></h2>
+        <div id="colorPickerSection"></div>
+      </section>
 
       <div id="progressBarContainer">
         <progress id="progressBar" value="0" max="100"></progress>
@@ -106,7 +116,7 @@
   </main>
 
   <footer style="background-color:#1f2e8a; color:white;">
-    <p>&copy; Reinaldo Fernandes 2025 -  Currículo Fácil</p>
+    <p>&copy; 2025 - Currículo Fácil</p>
   </footer>
 </body>
 </html>

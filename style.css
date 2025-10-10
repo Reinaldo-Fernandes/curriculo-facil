@@ -1,17 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
 
+/* NOVO: Variáveis CSS para o tema */
+:root {
+    --primary-color: #2a3eb1; /* Cor padrão */
+    --secondary-color: #e8f0fe; /* Cor secundária padrão (lateral) */
+}
+
+
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #ffffff;
-    /* MELHORIA DE QUALIDADE DE TEXTO */
     -webkit-font-smoothing: antialiased; 
     -moz-osx-font-smoothing: grayscale; 
 }
 
 header {
-    background-color: #2a3eb1;
+    background-color: var(--primary-color); 
     color: #fff;
     padding: 10px 0;
     text-align: center;
@@ -86,7 +92,7 @@ textarea {
 }
 
 button {
-    background-color: #2a3eb1;
+    background-color: var(--primary-color); 
     color: white;
     padding: 10px 15px;
     border: none;
@@ -98,7 +104,7 @@ button {
 }
 
 button:hover {
-    background-color: #1f2e8a;
+    background-color: #1f2e8a; 
 }
 
 .remove-button {
@@ -125,14 +131,16 @@ button:hover {
     min-width: 150px;
 }
 
-/* Estilo para o preview da foto no formulário */
-.resume-photo-preview {
-    width: 150px; 
-    height: 150px;
-    object-fit: cover; 
-    border-radius: 50%; 
-    margin-top: 10px;
-    border: 3px solid #ccc;
+/* NOVO: Estilo para a opção de cor */
+.color-option {
+    /* Ajustado para ser apenas um círculo colorido */
+    border: 2px solid transparent !important; 
+    transition: border-color 0.2s;
+}
+
+.color-option.selected {
+    border-color: #000 !important; /* Borda preta para indicar seleção */
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
 
 
@@ -166,9 +174,9 @@ button:hover {
     width: 70mm; 
     min-width: 70mm;
     max-width: 70mm;
-    /* AJUSTE DE ESPAÇAMENTO: Padding-left reduzido para 5mm */
+    border-right: 1px solid #000; 
     padding: 15mm 5mm 15mm 5mm; 
-    background-color: var(--selected-bg-color, #e8f0fe); 
+    /* Cor de fundo será aplicada inline no JS usando selectedSecondaryColor */
     border-radius: 0; 
     box-sizing: border-box;
     align-content: flex-start;
@@ -183,7 +191,7 @@ button:hover {
 
 /* Estilos de Conteúdo */
 #resumePreview h2, #resumePreview h3, #resumePreview h4 {
-    color: #2a3eb1;
+    /* Cor será aplicada inline no JS usando selectedPrimaryColor */
     border-bottom: 2px solid #ddd;
     padding-bottom: 5px;
     margin-top: 10px;
@@ -216,7 +224,7 @@ button:hover {
     object-fit: cover; 
     border-radius: 50%; 
     display: block; 
-    margin: 0 auto 15px auto; 
+    margin: 0 auto 25px auto; 
     border: 3px solid white;
     image-rendering: high-quality;
     image-rendering: -webkit-optimize-contrast; 
@@ -233,6 +241,8 @@ footer {
     padding: 10px 0;
     text-align: center;
     font-size: 1em;
+    background-color: var(--primary-color) !important; 
+    color:white;
 }
 
 #progressBarContainer {
@@ -244,14 +254,10 @@ footer {
     height: 15px;
 }
 
-.custom-bg-color {
-    background-color: var(--selected-bg-color, #e8f0fe);
-}
-
-/* NOVO: Estilo para os contadores de Descrição (Experiência e Certificação) */
+/* Estilo para os contadores de Descrição (Experiência e Certificação) */
 .description-counter {
     text-align: right;
     font-size: 0.8em;
     color: #666;
-    margin-top: -5px; /* Ajusta o espaçamento para ficar mais próximo da caixa de texto */
+    margin-top: -5px;
 }
