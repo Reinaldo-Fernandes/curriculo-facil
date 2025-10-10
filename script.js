@@ -46,6 +46,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // NOVO: Instância do Croppie
     let croppieInstance = null;
 
+    // --- FUNÇÕES AUXILIARES ---
+
+    /**
+     * Verifica se o dispositivo é mobile.
+     */
+    function isMobile() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        // Verifica User Agent para mobile (iOS, Android, etc.)
+        if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) {
+            return true;
+        }
+        // Fallback: considera mobile se a largura da tela for pequena (opcional)
+        if (window.matchMedia("(max-width: 768px)").matches) {
+            return true;
+        }
+        return false;
+    }
+    
     // --- FUNÇÕES DE FORMATAÇÃO ---
     
     /**
@@ -483,7 +501,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 heightLeft -= pdfHeight; 
             }
 
-            pdf.save('curriculo.pdf');
+            // CORREÇÃO PARA MOBILE:
+            if (isMobile()) {
+                // Abre em uma nova janela como blob URL. O usuário salva pelo menu do navegador.
+                const blobUrl = pdf.output('bloburl'); 
+                window.open(blobUrl, '_blank');
+            } else {
+                // Para desktop, usa o método padrão
+                pdf.save('curriculo.pdf');
+            }
+
         } catch (err) {
             console.error('Erro ao gerar PDF:', err);
             alert('Ocorreu um erro ao gerar o PDF. Tente novamente mais tarde.');
