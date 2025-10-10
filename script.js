@@ -307,23 +307,27 @@ document.addEventListener('DOMContentLoaded', function () {
         const education = collectDynamic('educationContainer', ['education-title','education-institution','education-duration']);
         const certifications = collectDynamic('certificationContainer', ['certification-name','certification-institution','certification-description']);
 
+        // 🟢 LÓGICA DE QUEBRA DE LINHA DO NOME ATUALIZADA 
         let formattedName = nameInput.value.trim();
         const nameParts = formattedName.split(/\s+/).filter(Boolean); 
         const numWords = nameParts.length;
 
         if (numWords > 2) {
-            const firstLine = nameParts.slice(0, 2).join(' ');
-            let remainingParts = nameParts.slice(2);
+            // Tenta colocar no máximo 3 palavras por linha, dividindo o restante.
+            const firstLineWords = nameParts.slice(0, 3);
+            const remainingWords = nameParts.slice(3);
+            
+            let lines = [firstLineWords.join(' ')];
 
-            if (remainingParts.length > 2) {
-                const lastWord = remainingParts.pop(); 
-                const middleLine = remainingParts.join(' ');
-                formattedName = `${firstLine}<br>${middleLine}<br>${lastWord}`;
-            } else {
-                const secondLine = remainingParts.join(' ');
-                formattedName = `${firstLine}<br>${secondLine}`;
+            if (remainingWords.length > 0) {
+                lines.push(remainingWords.join(' '));
             }
+            
+            formattedName = lines.join('<br>');
+
         }
+        // ⬆️ FIM DA LÓGICA ATUALIZADA
+
 
         const formattedPhone1 = formatPhoneNumber(phone1Input.value.trim());
         const formattedPhone2 = formatPhoneNumber(document.getElementById('phone2').value.trim());
