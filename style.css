@@ -166,8 +166,7 @@ button:hover {
     width: 70mm; 
     min-width: 70mm;
     max-width: 70mm;
-    /* Linha preta: Adiciona uma borda direita preta de 1px */
-    border-right: 1px solid #000; 
+    /* AJUSTE DE ESPAÇAMENTO: Padding-left reduzido para 5mm */
     padding: 15mm 5mm 15mm 5mm; 
     background-color: var(--selected-bg-color, #e8f0fe); 
     border-radius: 0; 
@@ -217,8 +216,7 @@ button:hover {
     object-fit: cover; 
     border-radius: 50%; 
     display: block; 
-    /* Aumenta o espaço ABAIXO da foto (originalmente 15px) para 25px */
-    margin: 0 auto 25px auto; 
+    margin: 0 auto 15px auto; 
     border: 3px solid white;
     image-rendering: high-quality;
     image-rendering: -webkit-optimize-contrast; 
@@ -250,10 +248,10 @@ footer {
     background-color: var(--selected-bg-color, #e8f0fe);
 }
 
-/* Estilo para os contadores de Descrição (Experiência e Certificação) */
+/* NOVO: Estilo para os contadores de Descrição (Experiência e Certificação) */
 .description-counter {
     text-align: right;
     font-size: 0.8em;
     color: #666;
-    margin-top: -5px;
+    margin-top: -5px; /* Ajusta o espaçamento para ficar mais próximo da caixa de texto */
 }
