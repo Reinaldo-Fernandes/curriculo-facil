@@ -11,183 +11,103 @@ document.addEventListener('DOMContentLoaded', function () {
     const downloadPdfBtn = document.getElementById('downloadPdf');
     const generateResumeButton = document.getElementById('generateResumeButton');
     const photoInput = document.getElementById('photo');
-    // REMOVIDO: const photoPreview = document.getElementById('photoPreview');
-    // NOVO: Elementos para o Croppie e Color Picker
     const croppieContainer = document.getElementById('croppie-container');
     const colorPickerSection = document.getElementById('colorPickerSection');
-
     const summaryInput = document.getElementById('summary');
     const summaryCounter = document.getElementById('summaryCounter');
     const errorMessageDiv = document.getElementById('error-message');
     const shareWhatsAppBtn = document.getElementById('shareWhatsApp');
-
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
     const phone1Input = document.getElementById('phone1');
     const skillsInput = document.getElementById('skills');
     const languagesInput = document.getElementById('languages');
-    
-    // Campo de Atividades Adicionais e seu contador
     const activitiesInput = document.getElementById('activities');
     const activitiesCounter = document.getElementById('activitiesCounter'); 
 
-    // CONSTANTES DE LIMITE DE CARACTERES
     const MAX_SUMMARY_LENGTH = 600;
     const MAX_DESCRIPTION_LENGTH = 250; 
-
     summaryInput.setAttribute('maxlength', MAX_SUMMARY_LENGTH);
-    
-    if (activitiesInput) {
-        activitiesInput.setAttribute('maxlength', MAX_DESCRIPTION_LENGTH);
-    }
+    if (activitiesInput) activitiesInput.setAttribute('maxlength', MAX_DESCRIPTION_LENGTH);
 
-    // Variável para armazenar base64 da foto (garante render correto)
     let photoBase64 = '';
-    // NOVO: Instância do Croppie
     let croppieInstance = null;
 
-    // --- FUNÇÕES AUXILIARES ---
-
-    /**
-     * Verifica se o dispositivo é mobile.
-     */
     function isMobile() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        // Verifica User Agent para mobile (iOS, Android, etc.)
-        if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) {
-            return true;
-        }
-        // Fallback: considera mobile se a largura da tela for pequena (opcional)
-        if (window.matchMedia("(max-width: 768px)").matches) {
-            return true;
-        }
+        if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) return true;
+        if (window.matchMedia("(max-width: 768px)").matches) return true;
         return false;
     }
-    
-    // --- FUNÇÕES DE FORMATAÇÃO ---
-    
-    /**
-     * Formata o telefone para (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.
-     */
+
     function formatPhoneNumber(phone) {
         if (!phone) return '';
         const digits = phone.replace(/\D/g, ''); 
-        
-        if (digits.length === 11) {
+        if (digits.length === 11)
             return `(${digits.substring(0, 2)}) ${digits.substring(2, 7)}-${digits.substring(7, 11)}`;
-        } 
-        if (digits.length === 10) {
+        if (digits.length === 10)
             return `(${digits.substring(0, 2)}) ${digits.substring(2, 6)}-${digits.substring(6, 10)}`;
-        }
         return phone; 
     }
 
-    /**
-     * Tenta formatar o endereço.
-     */
     function formatAddress(address) {
         if (!address) return '';
-        
         const parts = address.split(',').map(p => p.trim()).filter(Boolean);
-        
-        let rua = parts[0] || address;
-        let numero = '';
-        let complemento = '';
-
+        let rua = parts[0] || address, numero = '', complemento = '';
         if (parts.length > 1) {
-            if (parts[1].match(/^\d{1,5}$/)) {
-                numero = parts[1];
-            } else {
+            if (parts[1].match(/^\d{1,5}$/)) numero = parts[1];
+            else {
                 const numMatch = parts[1].match(/(\d+)$/);
-                if (numMatch) {
-                    numero = numMatch[1];
-                }
+                if (numMatch) numero = numMatch[1];
             }
         }
-        
-        if (parts.length > 2) {
-            complemento = parts.slice(numero ? 2 : 1).join(', ');
-        }
-        
+        if (parts.length > 2) complemento = parts.slice(numero ? 2 : 1).join(', ');
         let output = `${rua}`;
-        if (numero) {
-            output += `, N: ${numero}`;
-        }
-        if (complemento) {
-            output += `, ${complemento}`;
-        }
-        
+        if (numero) output += `, N: ${numero}`;
+        if (complemento) output += `, ${complemento}`;
         return output;
     }
-    // --- FIM FUNÇÕES DE FORMATAÇÃO ---
 
-    // --- FUNÇÃO DE CONTADOR ---
-    
     function setupCounter(textarea, counterElement, maxLength) {
         if (textarea && counterElement) {
             counterElement.textContent = `${textarea.value.length} / ${maxLength} caracteres`;
-
             textarea.addEventListener('input', () => {
                 counterElement.textContent = `${textarea.value.length} / ${maxLength} caracteres`;
             });
         }
     }
 
-
-    // ----------------------------------------------------
-    // --- Lógica do Croppie (Corte da Imagem) ---
-    // ----------------------------------------------------
+    // --- Lógica do Croppie ---
     photoInput.addEventListener('change', (e) => {
         const file = e.target.files && e.target.files[0];
         if (!file) {
             photoBase64 = '';
             croppieContainer.style.display = 'none';
-            if (croppieInstance) {
-                croppieInstance.destroy();
-                croppieInstance = null;
-            }
+            if (croppieInstance) { croppieInstance.destroy(); croppieInstance = null; }
             generateResume();
             return;
         }
 
         const reader = new FileReader();
         reader.onload = function (event) {
-            // Se já existe uma instância, destrói para evitar duplicidade
-            if (croppieInstance) {
-                croppieInstance.destroy();
-            }
-
-            // Inicializa o Croppie no container
+            if (croppieInstance) croppieInstance.destroy();
             croppieContainer.style.display = 'block';
             croppieInstance = new Croppie(croppieContainer, {
-                // Configura o visualizador como um círculo
                 viewport: { width: 150, height: 150, type: 'circle' }, 
                 boundary: { width: 250, height: 250 },
                 enableZoom: true,
                 showZoomer: true,
             });
-
-            // Carrega a imagem no Croppie
-            croppieInstance.bind({
-                url: event.target.result
-            });
+            croppieInstance.bind({ url: event.target.result });
         };
         reader.readAsDataURL(file);
     });
 
-    /**
-     * Pega o Base64 da imagem cortada/ajustada pelo Croppie.
-     */
     async function getCroppedImage() {
         if (!croppieInstance) return '';
-
         try {
-            // Captura o resultado do crop em alta resolução
             const result = await croppieInstance.result({
-                type: 'base64',
-                size: { width: 300, height: 300 }, // Resolução maior para melhor qualidade no PDF
-                format: 'png',
-                quality: 1
+                type: 'base64', size: { width: 300, height: 300 }, format: 'png', quality: 1
             });
             return result;
         } catch (error) {
@@ -195,23 +115,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return '';
         }
     }
-    // ----------------------------------------------------
-    // --- Fim Lógica Croppie ---
-    // ----------------------------------------------------
 
-
-    // --- contadores e progresso ---
     summaryInput.addEventListener('input', () => {
         summaryCounter.textContent = `${summaryInput.value.length} / ${MAX_SUMMARY_LENGTH} caracteres`;
     });
-    
-    if (activitiesInput && activitiesCounter) {
-        setupCounter(activitiesInput, activitiesCounter, MAX_DESCRIPTION_LENGTH);
-    }
+    if (activitiesInput && activitiesCounter) setupCounter(activitiesInput, activitiesCounter, MAX_DESCRIPTION_LENGTH);
 
     function updateProgress() {
         if (!progressBar || !progressText) return; 
-
         const fields = Array.from(resumeForm.querySelectorAll('input:not([type="file"]), textarea, select'));
         const filled = fields.filter(f => f.value && f.value.trim() !== '').length;
         const total = fields.length || 1;
@@ -221,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     resumeForm.addEventListener('input', updateProgress);
 
-    // --- campos dinâmicos ---
+    // --- Campos dinâmicos ---
     function addField(containerId, html) {
         const container = document.getElementById(containerId);
         if (!container) return null;
@@ -282,14 +193,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button type="button" class="remove-button">Remover</button>
                 </div>
             `);
-             if (newEntry) {
+            if (newEntry) {
                 const newTextArea = newEntry.querySelector('.certification-description');
                 const newCounter = newEntry.querySelector('.description-counter');
                 setupCounter(newTextArea, newCounter, MAX_DESCRIPTION_LENGTH);
             }
         });
     }
-
 
     function collectDynamic(containerId, classes) {
         const container = document.getElementById(containerId);
@@ -304,57 +214,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }).filter(obj => Object.values(obj).some(v => v !== ''));
     }
 
-    // --- Gera o preview HTML (AGORA É ASYNC!) ---
+    // --- Gera preview ---
     async function generateResume() { 
         if (!nameInput || !emailInput || !phone1Input) return false;
-
-        if (!nameInput.value.trim() || !emailInput.value.trim() || !phone1Input.value.trim()) {
-            return false;
-        }
+        if (!nameInput.value.trim() || !emailInput.value.trim() || !phone1Input.value.trim()) return false;
         
         errorMessageDiv.style.display = 'none';
-        nameInput.classList.remove('input-error');
-        emailInput.classList.remove('input-error');
-        phone1Input.classList.remove('input-error');
-
-        // COLETANDO A IMAGEM CORTADA ANTES DE GERAR O PREVIEW
         photoBase64 = await getCroppedImage();
-
-
         const experience = collectDynamic('experienceContainer', ['experience-title','experience-company','experience-duration','experience-description']);
         const education = collectDynamic('educationContainer', ['education-title','education-institution','education-duration']);
         const certifications = collectDynamic('certificationContainer', ['certification-name','certification-institution','certification-description']);
-
-        // 🟢 LÓGICA DE QUEBRA DE LINHA DO NOME ATUALIZADA 
         let formattedName = nameInput.value.trim();
         const nameParts = formattedName.split(/\s+/).filter(Boolean); 
-        const numWords = nameParts.length;
-
-        if (numWords > 2) {
-            // Tenta colocar no máximo 3 palavras por linha, dividindo o restante.
+        if (nameParts.length > 2) {
             const firstLineWords = nameParts.slice(0, 3);
             const remainingWords = nameParts.slice(3);
-            
-            let lines = [firstLineWords.join(' ')];
-
-            if (remainingWords.length > 0) {
-                lines.push(remainingWords.join(' '));
-            }
-            
-            formattedName = lines.join('<br>');
-
+            formattedName = [firstLineWords.join(' '), remainingWords.join(' ')].filter(Boolean).join('<br>');
         }
-        // ⬆️ FIM DA LÓGICA ATUALIZADA
-
 
         const formattedPhone1 = formatPhoneNumber(phone1Input.value.trim());
         const formattedPhone2 = formatPhoneNumber(document.getElementById('phone2').value.trim());
         const formattedAddress = formatAddress(document.getElementById('address').value.trim());
 
-
         const resumeData = {
             name: nameInput.value.trim(),
-            formattedName: formattedName, 
+            formattedName,
             address: formattedAddress, 
             email: emailInput.value.trim(),
             phone1: formattedPhone1, 
@@ -370,8 +254,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         const imageHtml = photoBase64 ? `<img src="${photoBase64}" alt="Foto do candidato" class="resume-photo">` : '';
-
-        // Aplica as cores dinâmicas
         resumePreview.innerHTML = `
             <div class="resume-content-wrapper">
                 <aside class="resume-left" style="background-color: ${selectedSecondaryColor};">
@@ -394,12 +276,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 </section>
             </div>
         `;
-
-        // Aplica a cor do tema nos títulos da seção direita
         document.querySelector('#resumePreview .resume-right').querySelectorAll('h2, h3, h4').forEach(el => {
             el.style.color = selectedPrimaryColor;
         });
-
         updateProgress();
         return true;
     }
@@ -412,22 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // --- Compartilhar no WhatsApp (AGORA É ASYNC!) ---
-    shareWhatsAppBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        if (! await generateResume()) {
-             errorMessageDiv.style.display = 'block';
-             errorMessageDiv.textContent = '⚠️ Preencha Nome, Email e Telefone para compartilhar.';
-             return;
-        }
-
-        const name = nameInput.value.trim();
-        const summary = summaryInput.value.trim().substring(0,150) + '...';
-        const msg = encodeURIComponent(`Olá! Confira meu currículo:\nNome: ${name}\nEmail: ${emailInput.value.trim()}\nResumo: ${summary}`);
-        window.open(`https://wa.me/?text=${msg}`, '_blank');
-    });
-
-    // --- Função robusta para gerar PDF (permanece async) ---
+    // --- DOWNLOAD PDF (corrigido p/ mobile) ---
     downloadPdfBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         if (! await generateResume()) {
@@ -436,8 +300,6 @@ document.addEventListener('DOMContentLoaded', function () {
              return;
         }
 
-
-        // 1) Cria clone do preview e coloca fora da tela
         const clone = resumePreview.cloneNode(true);
         clone.style.position = 'absolute';
         clone.style.left = '-9999px';
@@ -447,151 +309,96 @@ document.addEventListener('DOMContentLoaded', function () {
         clone.style.color = '#000';
         document.body.appendChild(clone);
 
-        // 2) Garante que as cores do tema sejam aplicadas no clone para o PDF
         clone.querySelector('.resume-left').style.backgroundColor = selectedSecondaryColor;
-        clone.querySelector('.resume-right').querySelectorAll('h2, h3, h4').forEach(el => {
-            el.style.color = selectedPrimaryColor;
-        });
+        clone.querySelector('.resume-right').querySelectorAll('h2, h3, h4').forEach(el => el.style.color = selectedPrimaryColor);
 
-        // 3) Aguarda imagens
         const imgs = Array.from(clone.querySelectorAll('img'));
-        await Promise.all(imgs.map(img => {
-            if (img.complete) return Promise.resolve();
-            return new Promise(res => { img.onload = img.onerror = res; });
-        }));
-
-        // 4) Aguarda um pequeno delay
+        await Promise.all(imgs.map(img => img.complete ? null : new Promise(res => img.onload = img.onerror = res)));
         await new Promise(r => setTimeout(r, 200));
 
         try {
-            // 5) Gera canvas a partir do clone (SCALE 4 para alta qualidade)
-            const canvas = await html2canvas(clone, {
-                scale: 4, 
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: false
-            });
-
+            const canvas = await html2canvas(clone, { scale: 4, useCORS: true, backgroundColor: '#ffffff', logging: false });
             const imgData = canvas.toDataURL('image/png');
-
-            // 6) Cria PDF com jsPDF e adiciona a imagem (com suporte a múltiplas páginas)
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight(); 
-            
-            const BLANK_PAGE_TOLERANCE_MM = 10; 
-
+            const pdfHeight = pdf.internal.pageSize.getHeight();
             const imgWidth = pdfWidth;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-            let heightLeft = imgHeight;
-            let position = 0;
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
 
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            
-            while (heightLeft > pdfHeight) {
-                if (heightLeft - pdfHeight < BLANK_PAGE_TOLERANCE_MM) {
-                    break; 
-                }
-                
-                position -= pdfHeight; 
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pdfHeight; 
-            }
-
-            // CORREÇÃO PARA MOBILE:
+            // 🔧 Correção: download funcional no mobile
             if (isMobile()) {
-                // Abre em uma nova janela como blob URL. O usuário salva pelo menu do navegador.
-                const blobUrl = pdf.output('bloburl'); 
-                window.open(blobUrl, '_blank');
+                const blob = pdf.output('blob');
+                const blobUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = 'curriculo.pdf';
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(blobUrl);
+                }, 1000);
             } else {
-                // Para desktop, usa o método padrão
                 pdf.save('curriculo.pdf');
             }
-
         } catch (err) {
             console.error('Erro ao gerar PDF:', err);
             alert('Ocorreu um erro ao gerar o PDF. Tente novamente mais tarde.');
         } finally {
-            // 7) Remove o clone (limpeza)
             document.body.removeChild(clone);
         }
     });
 
-    // ----------------------------------------------------
-    // --- Lógica de Cores e Temas ---
-    // ----------------------------------------------------
-
+    // --- Temas e cores ---
     function initializeColorPicker() {
-        const colors = ['#2a3eb1', '#2196f3', '#009688', '#e91e63', '#ff9800', '#607d8b']; // Paleta de cores
+        const colors = ['#2a3eb1', '#2196f3', '#009688', '#e91e63', '#ff9800', '#607d8b'];
         let pickerHtml = '<p>Selecione um tema:</p><div style="display: flex; gap: 10px; margin-top: 10px;">';
-        
         colors.forEach(color => {
             const isSelected = color === selectedPrimaryColor ? ' selected' : '';
             pickerHtml += `<div class="color-option${isSelected}" style="background-color: ${color}; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" data-color="${color}"></div>`;
         });
-        
         pickerHtml += '</div>';
         colorPickerSection.innerHTML = pickerHtml;
-
         document.querySelectorAll('.color-option').forEach(option => {
             option.addEventListener('click', function() {
                 const newPrimaryColor = this.getAttribute('data-color');
                 applyNewColor(newPrimaryColor);
             });
         });
-        
-        // Aplica a cor padrão na inicialização
         applyNewColor(selectedPrimaryColor); 
     }
 
     function applyNewColor(newPrimaryColor) {
         selectedPrimaryColor = newPrimaryColor;
-        selectedSecondaryColor = getLightVariant(newPrimaryColor); // Calcula uma variante mais clara para a lateral
-
-        // Remove a classe 'selected' de todos e adiciona ao clicado
+        selectedSecondaryColor = getLightVariant(newPrimaryColor);
         document.querySelectorAll('.color-option').forEach(option => {
             option.classList.remove('selected');
-            if (option.getAttribute('data-color') === newPrimaryColor) {
-                option.classList.add('selected');
-            }
+            if (option.getAttribute('data-color') === newPrimaryColor) option.classList.add('selected');
         });
-
-        // Atualiza as variáveis CSS para todo o documento (afeta header, botões)
         document.documentElement.style.setProperty('--primary-color', selectedPrimaryColor);
         document.documentElement.style.setProperty('--secondary-color', selectedSecondaryColor);
-        
-        // Força a atualização do preview com as novas cores
         generateResume();
     }
-    
-    // Calcula uma variante clara de uma cor hexadecimal
+
     function getLightVariant(hex) {
         const bigint = parseInt(hex.slice(1), 16);
-        let r = (bigint >> 16) & 255;
-        let g = (bigint >> 8) & 255;
-        let b = bigint & 255;
-        const factor = 0.9; 
+        let r = (bigint >> 16) & 255, g = (bigint >> 8) & 255, b = bigint & 255;
+        const factor = 0.9;
         r = Math.round(r + (255 - r) * factor);
         g = Math.round(g + (255 - g) * factor);
         b = Math.round(b + (255 - b) * factor);
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
     }
 
-
-    // --- Inicialização ---
-
+    // Inicialização
     function initializeAllDescriptionCounters() {
-        if (activitiesInput && activitiesCounter) {
-            setupCounter(activitiesInput, activitiesCounter, MAX_DESCRIPTION_LENGTH);
-        }
-        
+        if (activitiesInput && activitiesCounter) setupCounter(activitiesInput, activitiesCounter, MAX_DESCRIPTION_LENGTH);
         const descriptionTextareas = document.querySelectorAll('.experience-description, .certification-description');
         descriptionTextareas.forEach(textarea => {
             textarea.setAttribute('maxlength', MAX_DESCRIPTION_LENGTH);
-            
             let counter = textarea.nextElementSibling;
             if (!counter || !counter.classList.contains('description-counter')) {
                 counter = document.createElement('div');
@@ -602,7 +409,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Chama as funções de inicialização
     summaryCounter.textContent = `${summaryInput.value.length} / ${MAX_SUMMARY_LENGTH} caracteres`;
     initializeAllDescriptionCounters();
     updateProgress();
