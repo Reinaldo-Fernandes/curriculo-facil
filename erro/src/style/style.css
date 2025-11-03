@@ -1,0 +1,245 @@
+/* ---------------------------
+   ESTILO GERAL DA PÁGINA
+--------------------------- */
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #282c34;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    text-align: center;
+    overflow-x: hidden;
+
+}
+
+/* ---------------------------
+   CENA 3D DO CUBO
+--------------------------- */
+.scene {
+    width: 180px;
+    height: 180px;
+    perspective: 1000px;
+    margin-bottom: 20px;
+}
+
+/* ---------------------------
+   CUBO 3D
+--------------------------- */
+.cube {
+    width: 180px;
+    height: 180px;
+    transform-style: preserve-3d;
+    transition: transform 1s;
+}
+
+/* ---------------------------
+   FACES DO CUBO
+--------------------------- */
+.cube .face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #3498db;
+    border: 2px solid #fff;
+    text-align: center;
+    font-size: 3rem;
+}
+
+.cube .face i {
+    font-size: 2.5rem;
+    margin-top: 40px; 
+}
+
+/* CORES DOS ÍCONES */
+.cube .face.front i { color: #e34c26; }
+.cube .face.back i { color: #f12929; }
+.cube .face.left i { color: #f7df1e; }
+.cube .face.right i { color: #61dafb; }
+.cube .face.top i { color: #8cc84b; }
+.cube .face.bottom i { color: #333; }
+
+/* ---------------------------
+   TRANSFORMAÇÕES 3D DAS FACES (DESKTOP)
+--------------------------- */
+.front  { transform: rotateY(0deg) translateZ(90px); }
+.back   { transform: rotateY(180deg) translateZ(90px); }
+.right  { transform: rotateY(90deg) translateZ(90px); }
+.left   { transform: rotateY(-90deg) translateZ(90px); }
+.top    { transform: rotateX(90deg) translateZ(90px); }
+.bottom { transform: rotateX(-90deg) translateZ(90px); }
+
+/* ---------------------------
+   MENSAGEM DE ERRO
+--------------------------- */
+.message {
+    margin-top: 30px;
+}
+
+.message h1 {
+    font-size: 5rem;
+    margin: 0;
+}
+
+.message p {
+    margin: 10px 0;
+    font-size: 1.2rem;
+}
+
+.back-home {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #3498db;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.back-home:hover {
+    background: #217dbb;
+}
+
+/* ---------------------------
+   IMAGEM DECORATIVA
+--------------------------- */
+.img img {
+    width: 700px;
+    margin-left: 820px;
+    margin-top: -600px;
+    transition: all 0.3s ease;
+}
+
+/* ---------------------------
+   RESPONSIVIDADE
+--------------------------- */
+
+/* Tablets */
+@media (max-width: 1024px) {
+    body {
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 80px;
+    }
+
+    .scene {
+        width: 140px;
+        height: 140px;
+    }
+
+    .cube {
+        width: 140px;
+        height: 140px;
+    }
+
+    /* Faces proporcionais */
+    .front  { transform: rotateY(0deg) translateZ(70px); }
+    .back   { transform: rotateY(180deg) translateZ(70px); }
+    .right  { transform: rotateY(90deg) translateZ(70px); }
+    .left   { transform: rotateY(-90deg) translateZ(70px); }
+    .top    { transform: rotateX(90deg) translateZ(70px); }
+    .bottom { transform: rotateX(-90deg) translateZ(70px); }
+
+    .cube .face {
+        font-size: 2rem;
+    }
+
+    .cube .face i {
+        font-size: 1.5rem;
+    }
+
+    .message h1 {
+        font-size: 3.5rem;
+    }
+
+    .img img {
+        position: relative;
+        width: 250px;
+        margin: 40px auto 0;
+        display: block;
+    }
+}
+
+/* Smartphones */
+@media (max-width: 600px) {
+    body {
+        padding-top: 60px;
+    }
+
+    .scene {
+        width: 100px;
+        height: 100px;
+    }
+
+    .cube {
+        width: 100px;
+        height: 100px;
+    }
+
+    /* Faces mais próximas do centro */
+    .front  { transform: rotateY(0deg) translateZ(50px); }
+    .back   { transform: rotateY(180deg) translateZ(50px); }
+    .right  { transform: rotateY(90deg) translateZ(50px); }
+    .left   { transform: rotateY(-90deg) translateZ(50px); }
+    .top    { transform: rotateX(90deg) translateZ(50px); }
+    .bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+    .cube .face {
+        font-size: 1.5rem;
+    }
+
+    .cube .face i {
+        font-size: 1rem;
+    }
+
+    .message h1 {
+        font-size: 2.5rem;
+    }
+
+    .message p {
+        font-size: 1rem;
+    }
+
+    .img img {
+        width: 180px;
+        margin: 30px auto 0;
+        display: block;
+    }
+}
+
+/* Telas muito pequenas */
+@media (max-width: 400px) {
+    .scene {
+        width: 80px;
+        height: 80px;
+    }
+
+    .cube {
+        width: 80px;
+        height: 80px;
+    }
+
+    /* Ajuste fino do translateZ */
+    .front  { transform: rotateY(0deg) translateZ(40px); }
+    .back   { transform: rotateY(180deg) translateZ(40px); }
+    .right  { transform: rotateY(90deg) translateZ(40px); }
+    .left   { transform: rotateY(-90deg) translateZ(40px); }
+    .top    { transform: rotateX(90deg) translateZ(40px); }
+    .bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+    .message h1 {
+        font-size: 2rem;
+    }
+
+    .img img {
+        width: 150px;
+        margin-top: 20px;
+    }
+}
