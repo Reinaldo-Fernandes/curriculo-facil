@@ -1,28 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&family=Playfair+Display:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Playfair+Display:wght@400&family=Inter:wght@400;700;800&display=swap');
 
-/* NOVO: Variáveis CSS para o tema */
+/* Variáveis de tema (CORREÇÃO: Espaços padrão e sintaxe rigorosa) */
 :root {
-    --primary-color: #2a3eb1; /* Cor padrão */
-    --secondary-color: #e8f0fe; /* Cor secundária padrão (lateral) */
+    --primary-color: #2a3eb1;
+    --secondary-color: #e8f0fe;
+    --cor-texto-escuro: #000000;
+    --cor-linha: #dddddd;
+    --cor-linha-sutil: #eeeeee;
+    --page-padding-mm: 15mm;
 }
 
-
+/* Reset/Global */
+* {
+    box-sizing: border-box;
+}
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
-    -webkit-font-smoothing: antialiased; 
-    -moz-osx-font-smoothing: grayscale; 
+    background: #f4f4f4;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
+/* Layout do app */
 header {
-    background-color: var(--primary-color); 
+    background: var(--primary-color);
     color: #fff;
     padding: 10px 0;
     text-align: center;
 }
-
 h1 {
     margin: 0;
     font-size: 2rem;
@@ -32,45 +39,38 @@ h1 {
 
 main {
     width: 90%;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 20px auto;
-    background-color: #fff;
+    background: #fff;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Form controls */
 form section {
     margin-bottom: 20px;
 }
-
 label {
     display: block;
     margin-top: 10px;
     font-weight: bold;
 }
-
-input, textarea, select {
+input,
+textarea,
+select {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; 
 }
-
-input[type="file"] {
-    border: none;
-}
-
 textarea {
     resize: vertical;
 }
-
 .summary-section textarea {
     min-height: 100px;
 }
-
 #summaryCounter {
     text-align: right;
     font-size: 0.8em;
@@ -78,186 +78,427 @@ textarea {
     margin-top: -5px;
 }
 
-.experience-entry, .education-entry, .certification-entry {
+/* Boxes */
+.experience-entry,
+.education-entry,
+.certification-entry {
     border: 1px solid #eee;
     padding: 15px;
     margin-top: 10px;
     border-radius: 4px;
-    background-color: #f9f9f9;
-}
-
-.input-error {
-    border: 2px solid red !important;
-    background-color: #fee;
+    background: #f9f9f9;
+    position: relative; /* Para posicionamento do botão remover */
 }
 
 button {
-    background-color: var(--primary-color); 
-    color: white;
+    background: var(--primary-color);
+    color: #fff;
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     margin-top: 10px;
-    transition: background-color 0.3s;
-    font-weight: bold;
+    transition: background-color 0.25s;
+    font-weight: 700;
 }
-
 button:hover {
-    background-color: #1f2e8a; 
+    background-color: var(--primary-color);
+    opacity: 0.9;
 }
 
 .remove-button {
-    background-color: #dc3545;
+    background: #dc3545;
     float: right;
     padding: 5px 10px;
     margin-top: 5px;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
-
 .remove-button:hover {
-    background-color: #c82333;
+    background: #c82333;
+}
+.add-responsibility-btn {
+    background: #6c757d;
+    padding: 5px 10px;
+    font-size: 0.9em;
+}
+.add-responsibility-btn:hover {
+    background: #5a6268;
 }
 
-.buttons-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
 
-.buttons-container button {
-    flex-grow: 1;
-    min-width: 150px;
-}
-
-/* NOVO: Estilo para a opção de cor */
+/* Thumbnails / color options */
 .color-option {
-    /* Ajustado para ser apenas um círculo colorido */
-    border: 2px solid transparent !important; 
+    border: 2px solid transparent !important;
     transition: border-color 0.2s;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
 }
-
 .color-option.selected {
-    border-color: #000 !important; /* Borda preta para indicar seleção */
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    border-color: #000 !important;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+}
+.template-thumbnail {
+    width: 150px;
+    height: 212px;
+    border: 3px solid #ddd;
+    padding: 5px;
+    background: #fff;
+    margin-top: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    transition: border-color 0.25s;
 }
 
 
-/* ========================================================= */
-/* ✅ ESTILOS PARA O PREVIEW E PDF (Otimizados para A4) */
-/* ========================================================= */
-
+/* Preview (A4) */
 #resumePreview {
     margin-top: 30px;
-    padding: 0; 
+    padding: 0;
     border: 1px solid #ddd;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-    display: flex;
-    min-height: 400px;
-    max-width: 210mm; 
-    min-height: 297mm;
-    box-sizing: border-box; 
+    max-width: 210mm; /* Largura A4 */
+    min-height: 297mm; /* Altura A4 */
+    background: #fff;
 }
 
-.resume-content-wrapper {
+/* ========================================================= */
+/* ESTILOS DO MODELO 1: BARRA LATERAL (Padrão) */
+/* ========================================================= */
+.template-modelo1 .resume-content-wrapper {
     display: flex;
-    gap: 0;
-    width: 210mm; 
-    min-height: 297mm; 
-    background-color: #ffffff;
-    color: #000;
+    height: 297mm;
     font-family: 'Roboto', sans-serif;
+    color: var(--cor-texto-escuro);
 }
 
-.resume-left {
-    width: 70mm; 
-    min-width: 70mm;
-    max-width: 70mm;
-    border-right: 1px solid #000; 
-    padding: 15mm 5mm 15mm 5mm; 
-    /* Cor de fundo será aplicada inline no JS usando selectedSecondaryColor */
-    border-radius: 0; 
-    box-sizing: border-box;
-    align-content: flex-start;
+/* Coluna Esquerda (Sidebar) */
+.template-modelo1 .resume-left {
+    width: 35%;
+    background: var(--secondary-color);
+    padding: var(--page-padding-mm) 10mm;
+    flex-shrink: 0;
 }
-
-.resume-right {
-    width: 140mm; 
-    flex: none; 
-    padding: 15mm 15mm 15mm 5mm; 
-    box-sizing: border-box;
+.template-modelo1 .resume-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 20px;
+    border: 3px solid var(--primary-color);
 }
-
-/* Estilos de Conteúdo */
-#resumePreview h2, #resumePreview h3, #resumePreview h4 {
-    /* Cor será aplicada inline no JS usando selectedPrimaryColor */
-    border-bottom: 2px solid #ddd;
+.template-modelo1 .resume-left h3 {
+    font-size: 1.1em;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
     padding-bottom: 5px;
-    margin-top: 10px;
-    font-family: 'Playfair Display', cursive;
-    font-weight: 400;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
 }
-
-#resumePreview h2 {
-    font-size: 1.2rem;
-    color: black;
-    border-bottom: none;
-    line-height: 1.2; 
-}
-
-#resumePreview p, #resumePreview li {
-    font-size: 0.95rem;
-    line-height: 1.5;
+.template-modelo1 .contact-info p {
+    font-size: 0.9em;
     margin: 5px 0;
 }
-
-#resumePreview ul {
-    list-style: disc;
-    padding-left: 20px;
-    margin-top: 5px;
+.template-modelo1 .contact-info i {
+    margin-right: 8px;
+    color: var(--primary-color);
 }
-
-.resume-photo {
-    width: 150px;
-    height: 150px;
-    object-fit: cover; 
-    border-radius: 50%; 
-    display: block; 
-    margin: 0 auto 25px auto; 
-    border: 3px solid white;
-    image-rendering: high-quality;
-    image-rendering: -webkit-optimize-contrast; 
+.template-modelo1 .contact-info a {
+    color: var(--cor-texto-escuro);
+    text-decoration: none;
+    word-break: break-all;
 }
-
-.resume-left p:empty, .resume-right p:empty, 
-.resume-left ul:empty, .resume-right ul:empty,
-.resume-right div:empty {
-    display: none;
+.template-modelo1 .skills-section ul,
+.template-modelo1 .languages-section ul {
+    list-style: none;
+    padding: 0;
+}
+.template-modelo1 .skills-section li,
+.template-modelo1 .languages-section li {
+    font-size: 0.9em;
+    padding: 3px 0;
+    border-bottom: 1px dotted #ccc;
 }
 
 
-footer {
-    padding: 10px 0;
-    text-align: center;
+/* Coluna Direita (Main Content) */
+.template-modelo1 .resume-right {
+    width: 65%;
+    padding: var(--page-padding-mm) 5mm;
+    line-height: 1.3;
+}
+.template-modelo1 .resume-right h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 2em;
+    color: var(--cor-texto-escuro);
+    font-weight: 800;
+    margin-bottom: 2px;
+}
+.template-modelo1 .titulo-profissional {
+    font-size: 1.2em;
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+.template-modelo1 .secao-box h3 {
+    font-size: 1.2em;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--cor-linha);
+    padding-bottom: 5px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+.template-modelo1 .summary-section p {
+    font-style: italic;
+    font-size: 0.95em;
+}
+
+/* Experiência/Formação/Certificações - Conteúdo */
+.template-modelo1 .experiencia-item,
+.template-modelo1 .education-entry,
+.template-modelo1 .certification-entry {
+    margin-bottom: 15px;
+}
+.template-modelo1 .experiencia-item h4,
+.template-modelo1 .education-entry h4,
+.template-modelo1 .certification-entry h4 {
     font-size: 1em;
-    background-color: var(--primary-color) !important; 
-    color:white;
+    font-weight: 700;
+    color: var(--cor-texto-escuro);
+    margin: 0 0 4px 0;
+}
+.template-modelo1 .experiencia-item p,
+.template-modelo1 .education-entry p,
+.template-modelo1 .certification-entry p {
+    font-size: 0.9em;
+    margin: 0 0 6px 0;
+}
+.template-modelo1 .experiencia-item ul {
+    padding-left: 20px;
+    margin: 6px 0 0 0;
+}
+.template-modelo1 .experiencia-item li {
+    font-size: 0.9em;
+    margin-bottom: 4px;
 }
 
-#progressBarContainer {
-    margin-top: 20px;
-}
 
-#progressBar {
+/* ========================================================= */
+/* ESTILOS DO MODELO 2: DUAS COLUNAS */
+/* ========================================================= */
+.template-modelo2 {
+    font-family: 'Inter', sans-serif;
+    width: 210mm;
+    padding: 0;
+    box-shadow: none;
+    min-height: 297mm;
+    display: block;
+}
+.template-modelo2 .curriculo-container {
     width: 100%;
-    height: 15px;
+    background: #fff;
+    color: var(--cor-texto-escuro);
+    line-height: 1.5;
 }
 
-/* Estilo para os contadores de Descrição (Experiência e Certificação) */
-.description-counter {
-    text-align: right;
-    font-size: 0.8em;
-    color: #666;
-    margin-top: -5px;
+/* Cabeçalho - AGORA SÓ TEM NOME E FOTO */
+.template-modelo2 .cabecalho {
+    display: flex;
+    justify-content: center; /* Centraliza o perfil */
+    align-items: center;
+    padding: 15mm var(--page-padding-mm) 10mm;
+    border-bottom: 1px solid var(--cor-linha-sutil);
+    background: #fff;
+}
+.template-modelo2 .perfil {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.template-modelo2 .resume-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 3px solid var(--primary-color);
+}
+.template-modelo2 .nome-e-titulo h1 {
+    font-size: 1.7rem;
+    margin: 0;
+    font-weight: 800;
+    color: #000000;
+    line-height: 1.1;
+}
+.template-modelo2 .titulo-profissional {
+    font-size: 1.4em;
+    color: var(--primary-color);
+    margin-top: 5px;
+    font-weight: 700;
+}
+
+/* Conteúdo Principal (Colunas) */
+.template-modelo2 .conteudo-principal {
+    display: flex;
+    gap: 10mm;
+    padding: 10mm var(--page-padding-mm);
+}
+.template-modelo2 .coluna-esquerda {
+    width: 30%;
+    flex-shrink: 0;
+}
+.template-modelo2 .coluna-direita {
+    width: 70%;
+}
+
+/* Estilos de Seção */
+.template-modelo2 .secao-box {
+    margin-bottom: 20px;
+}
+.template-modelo2 .secao-box h3 {
+    font-size: 1.2em;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--cor-linha);
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* NOVO BLOCO DE CONTATO REMANESCENTE (Coluna Direita) */
+.template-modelo2 .contato-remanescente {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-bottom: 20px;
+}
+.template-modelo2 .contato-remanescente p {
+    margin: 0;
+    font-size: 0.9em;
+}
+.template-modelo2 .contato-remanescente i {
+    color: var(--primary-color);
+    margin-right: 5px;
+}
+.template-modelo2 .contato-remanescente a {
+    color: var(--cor-texto-escuro);
+    text-decoration: none;
+    word-break: break-all;
+}
+
+/* Habilidades/Idiomas (Coluna Esquerda) */
+.template-modelo2 .skills-section ul,
+.template-modelo2 .languages-section ul {
+    list-style: none;
+    padding: 0;
+}
+.template-modelo2 .skills-section li,
+.template-modelo2 .languages-section li {
+    font-size: 0.9em;
+    padding: 3px 0;
+}
+
+/* Experiência/Formação/Certificações - Conteúdo (Coluna Direita) */
+.template-modelo2 .experiencia-item,
+.template-modelo2 .education-entry,
+.template-modelo2 .certification-entry {
+    margin-bottom: 20px;
+}
+.template-modelo2 .experiencia-item h4,
+.template-modelo2 .education-entry h4,
+.template-modelo2 .certification-entry h4 {
+    font-size: 1em;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0 0 6px 0;
+}
+.template-modelo2 .experiencia-item p,
+.template-modelo2 .education-entry p,
+.template-modelo2 .certification-entry p {
+    font-size: 0.9em;
+    margin: 0 0 6px 0;
+}
+.template-modelo2 .experiencia-item ul {
+    list-style: none;
+    padding-left: 16px;
+    margin: 6px 0 0 0;
+}
+.template-modelo2 .experiencia-item li {
+    position: relative;
+    padding-left: 10px;
+    margin-bottom: 6px;
+}
+.template-modelo2 .experiencia-item li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--cor-texto-escuro);
+}
+
+/* Resumo: garante que o texto quebre corretamente */
+.template-modelo2 .secao-box p {
+    font-size: 0.95em;
+    line-height: 1.5;
+    margin: 0;
+    max-height: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 12;
+    line-clamp: 12;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+/* Estilo para a nova seção de Endereço na Coluna Esquerda */
+.template-modelo2 .secao-endereco {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+
+/* Impressão: Oculta a interface de edição e prepara o preview para o A4 */
+@media print {
+    body > header,
+    body > main > form,
+    body > .seo-intro-text {
+        display: none !important;
+    }
+    body {
+        background: none;
+    }
+    main {
+        box-shadow: none;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    #resumePreview {
+        box-shadow: none;
+        border: none;
+        margin: 0 auto;
+    }
+
+    /* Corrige o layout de 2 colunas para impressão (Modelo 2) */
+    #resumePreview.template-modelo2 .conteudo-principal {
+        display: block;
+        padding: 0;
+    }
+    .template-modelo2 .coluna-esquerda,
+    .template-modelo2 .coluna-direita {
+        width: 100%;
+        padding: 10mm var(--page-padding-mm);
+        display: block;
+    }
+    .template-modelo2 .coluna-esquerda {
+        border-bottom: 1px solid var(--cor-linha-sutil);
+    }
 }
