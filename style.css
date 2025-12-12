@@ -231,7 +231,7 @@ button:hover {
 .template-modelo1 .resume-right {
     width: 65%;
     padding: var(--page-padding-mm) 5mm;
-    line-height: 1.3;
+    line-height: 1.3 ;
 }
 .template-modelo1 .resume-right h1 {
     font-family: 'Inter', sans-serif;

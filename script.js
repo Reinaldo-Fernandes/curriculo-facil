@@ -1,17 +1,10 @@
 /**
  * script.js - Versão corrigida e completa
  * - Proteções contra null/undefined
- * - CORREÇÕES SOLICITADAS (Rodada 1):
- * 1. Removido 'Título Profissional' e 'GitHub'.
- * 2. LinkedIn exibe apenas o nome de usuário.
- * 3. Contato do Modelo 2 movido inteiramente para a coluna esquerda.
- * 4. Tamanho da foto padronizado para 120px.
- * 5. Lógica de PDF garante multipágina apenas se necessário.
- * - CORREÇÕES SOLICITADAS (Rodada 2):
- * 1. Link do LinkedIn exibe apenas o texto 'linkedin' e é condicional.
- * 2. Corrigida a lógica de PDF para evitar página em branco.
- * - CORREÇÕES SOLICITADAS (Rodada 3):
- * 1. Corrigida a lógica de renderização da seção 'Atividades' no Modelo 1.
+ * - CORREÇÕES SOLICITADAS:
+ * 1. Otimizada a lógica de download de PDF para eliminar a página em branco (versão do usuário).
+ * 2. Corrigida a lógica de renderização da seção 'Contato' (e seu cabeçalho) para que não apareça se todos os campos estiverem vazios.
+ * 3. Aplicados limites de caracteres (500 para resumo, 200 para atividades e responsabilidades).
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -58,13 +51,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     let photoDataURL = null;
 
     /* -------------------- Funções de Ajuda -------------------- */
+    
+    // NOVO: Função para limitar o número de caracteres
+    function limitCharacterCount(inputElement, maxChars) {
+        if (inputElement && inputElement.value.length > maxChars) {
+            inputElement.value = inputElement.value.substring(0, maxChars);
+        }
+    }
+
 
     function updateSummaryCounter() {
         if (summaryInput) {
+            limitCharacterCount(summaryInput, 500); // NOVO LIMITE DE 500
             const text = summaryInput.value;
             const count = text.length;
             if (summaryCounter) {
-                summaryCounter.textContent = `${count} caracteres`;
+                summaryCounter.textContent = `${count} caracteres (Máx: 500)`; // ATUALIZAÇÃO DO TEXTO
             }
         }
     }
@@ -100,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function getFormData() {
         const experience = [];
         experienceContainer?.querySelectorAll('.experience-entry').forEach(entry => {
+            // Garante que só responsabilidades preenchidas sejam incluídas
             const responsibilities = Array.from(entry.querySelectorAll('textarea[name="responsibility"]')).map(t => t.value).filter(v => v.trim() !== '');
             experience.push({
                 jobTitle: entry.querySelector('input[name="jobTitle"]')?.value,
@@ -135,6 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             endereco: addressInput?.value,
             linkedin: linkedinInput?.value,
             summary: summaryInput?.value,
+            // Filtra strings vazias resultantes do split
             skills: skillsInput?.value.split(',').map(s => s.trim()).filter(s => s !== '') || [],
             languages: languagesInput?.value.split(',').map(l => l.trim()).filter(l => l !== '') || [],
             activities: activitiesInput?.value,
@@ -148,11 +152,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function updateInput() {
         updateSummaryCounter();
+        // NOVO: Limite de atividades aplicado aqui
+        if (activitiesInput) limitCharacterCount(activitiesInput, 200);
+        
+        // Atualiza responsabilidades, se existirem (limitCharacterCount é aplicado no addExperienceEntry)
+        experienceContainer?.querySelectorAll('textarea[name="responsibility"]').forEach(textarea => {
+             limitCharacterCount(textarea, 200);
+        });
+
         generateResume(); // Chamada de atualização
     }
 
     /* -------------------- Funções Dinâmicas (Adicionar/Remover) -------------------- */
-    // Funções de adicionar/remover entries omitidas por brevidade
+    
     function addExperienceEntry(data = {}) {
         const entry = document.createElement('div');
         entry.className = 'experience-entry';
@@ -174,7 +186,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
         experienceContainer?.appendChild(entry);
         entry.querySelector('.remove-button')?.addEventListener('click', () => { entry.remove(); updateInput(); });
-        entry.querySelectorAll('input, textarea').forEach(input => input.addEventListener('input', updateInput));
+        
+        // Aplica o evento de INPUT e LIMITE de 200 caracteres para responsabilidades existentes
+        entry.querySelectorAll('input, textarea').forEach(input => {
+             input.addEventListener('input', () => {
+                 if (input.name === 'responsibility') {
+                     limitCharacterCount(input, 200); // NOVO LIMITE DE 200
+                 }
+                 updateInput();
+             });
+        });
 
         const addResponsibilityBtn = entry.querySelector('.add-responsibility-btn');
         const responsibilitiesContainer = entry.querySelector('.responsibilities-container');
@@ -182,7 +203,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const newTextarea = document.createElement('textarea');
             newTextarea.name = 'responsibility';
             newTextarea.placeholder = 'Descrição da responsabilidade';
-            newTextarea.addEventListener('input', updateInput);
+            newTextarea.addEventListener('input', () => {
+                limitCharacterCount(newTextarea, 200); // NOVO LIMITE DE 200
+                updateInput();
+            });
             responsibilitiesContainer?.appendChild(newTextarea);
         });
     }
@@ -223,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     /* -------------------- Renderização de Seções -------------------- */
-    // Funções de renderização de seções omitidas por brevidade
+    
     function renderSkills(data) {
         if (!data.skills || data.skills.length === 0) return '';
         const skillsList = data.skills.map(skill => skill ? `<li>${skill}</li>` : '').join('');
@@ -247,8 +271,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function renderExperience(data) {
-        if (!data.experience || data.experience.length === 0) return '';
-        const experienceList = data.experience.map(exp => {
+        // Filtra entradas vazias para não renderizar o cabeçalho se todas as experiências estiverem vazias
+        const validExperience = data.experience.filter(exp => 
+            exp.jobTitle || exp.company || exp.startDate || exp.endDate || (exp.responsibilities && exp.responsibilities.length > 0)
+        );
+        
+        if (!validExperience || validExperience.length === 0) return '';
+        
+        const experienceList = validExperience.map(exp => {
             const responsibilities = (exp.responsibilities || []).map(resp => resp ? `<li>${resp}</li>` : '').join('');
             return `
                 <div class="experiencia-item">
@@ -267,8 +297,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function renderEducation(data) {
-        if (!data.education || data.education.length === 0) return '';
-        const educationList = data.education.map(edu => {
+        // Filtra entradas vazias
+        const validEducation = data.education.filter(edu => 
+            edu.course || edu.institution || edu.conclusionYear
+        );
+
+        if (!validEducation || validEducation.length === 0) return '';
+
+        const educationList = validEducation.map(edu => {
             return `
                 <div class="education-entry">
                     <h4>${edu.course || ''}</h4>
@@ -285,21 +321,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function renderCertifications(data) {
-        if (!data.certifications || data.certifications.length === 0) return '';
-        const certificationsList = data.certifications.map(cert => {
+        // Filtra entradas vazias
+        const validCertifications = data.certifications.filter(cert => 
+            cert.name || cert.issuer || cert.year
+        );
+
+        if (!validCertifications || validCertifications.length === 0) return '';
+        
+        const certificationsList = validCertifications.map(cert => {
             return `<div class="certification-entry">
                         <h4>${cert.name || ''}</h4>
                         <p><strong>${cert.issuer || ''}</strong>, ${cert.year || ''}</p>
                     </div>`;
         }).join('');
         return `<div class="secao-box certification-section">
-                    <h3>Certificações</h3>
-                    ${certificationsList}
-                </div>`;
+                        <h3>Certificações</h3>
+                        ${certificationsList}
+                    </div>`;
     }
 
     function renderSummary(data) {
-        if (!data.summary) return '';
+        if (!data.summary || data.summary.trim() === '') return '';
         // No Modelo 2, o resumo é a primeira coisa na coluna direita
         return `
             <div class="secao-box summary-section">
@@ -312,22 +354,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     /* -------------------- Modelos de Currículo -------------------- */
 
     function renderModelo1(data) {
-        const contatoInfoHTML = `
+        // NOVO: Verifica se há qualquer informação de contato
+        const hasContact = data.telefone || data.email || data.linkedin || data.endereco;
+
+        const contatoInfoHTML = hasContact ? `
             <div class="contact-info">
                 ${data.telefone ? `<p><i class="fa-solid fa-phone"></i> ${data.telefone}</p>` : ''}
                 ${data.email ? `<p><i class="fa-solid fa-envelope"></i> ${data.email}</p>` : ''}
                 ${data.linkedin ? `<p><i class="fa-brands fa-linkedin"></i> <a href="${data.linkedin}" target="_blank">linkedin</a></p>` : ''}
                 ${data.endereco ? `<p><i class="fa-solid fa-location-dot"></i> ${data.endereco}</p>` : ''}
                 </div>
-        `;
+        ` : '';
+        
+        // CORREÇÃO: A seção Contato só aparece se houver dados
+        const contactSectionHTML = hasContact ? `
+            <div class="secao-box">
+                <h3>Contato</h3>
+                ${contatoInfoHTML}
+            </div>
+        ` : '';
 
         const leftColumnHTML = `
             <div class="resume-left">
                 ${data.photoURL ? `<img src="${data.photoURL}" class="resume-photo" alt="Foto de perfil">` : ''}
-                <div class="secao-box">
-                    <h3>Contato</h3>
-                    ${contatoInfoHTML}
-                </div>
+                ${contactSectionHTML}
                 ${renderSkills(data)}
                 ${renderLanguages(data)}
                 ${data.activities ? `<div class="secao-box activities-section"><h3>Atividades</h3><p>${data.activities}</p></div>` : ''}
@@ -348,15 +398,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function renderModelo2(data) {
+        // NOVO: Verifica se há qualquer informação de contato
+        const hasContact = data.telefone || data.email || data.linkedin || data.endereco;
+
         // Contato unificado na coluna esquerda
-        const contatoInfoHTML = `
+        const contatoInfoHTML = hasContact ? `
             <div class="contact-info">
                 ${data.telefone ? `<p><i class="fa-solid fa-phone"></i> ${data.telefone}</p>` : ''}
                 ${data.email ? `<p><i class="fa-solid fa-envelope"></i> ${data.email}</p>` : ''}
                 ${data.linkedin ? `<p><i class="fa-brands fa-linkedin"></i> <a href="${data.linkedin}" target="_blank">linkedin</a></p>` : ''}
                 ${data.endereco ? `<p><i class="fa-solid fa-location-dot"></i> ${data.endereco}</p>` : ''}
             </div>
-        `;
+        ` : '';
+
+        // CORREÇÃO: A seção Contato só aparece se houver dados
+        const contactSectionHTML = hasContact ? `
+            <div class="secao-box">
+                <h3>Contato</h3>
+                ${contatoInfoHTML}
+            </div>
+        ` : '';
 
         const cabecalhoHTML = `
             <div class="cabecalho">
@@ -371,10 +432,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const colunaEsquerdaHTML = `
             <div class="coluna-esquerda">
                 ${data.photoURL ? `<div class="secao-box photo-box-modelo2"><img src="${data.photoURL}" class="resume-photo-modelo2" alt="Foto de perfil"></div>` : ''}
-                <div class="secao-box">
-                    <h3>Contato</h3>
-                    ${contatoInfoHTML}
-                </div>
+                ${contactSectionHTML}
                 ${renderSkills(data)}
                 ${renderLanguages(data)}
                 ${data.activities ? `<div class="secao-box activities-section"><h3>Atividades</h3><p>${data.activities}</p></div>` : ''}
@@ -421,7 +479,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     /* -------------------- Funções de Foto/Croppie -------------------- */
-    // Funções omitidas por brevidade
+    
     function initCroppie() {
         if (croppieInstance) {
             croppieInstance.destroy();
@@ -466,53 +524,64 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     /* -------------------- Funções de Download -------------------- */
-    // Função omitida por brevidade
-
+    /**
+     * FUNÇÃO REVISADA E OTIMIZADA PARA ELIMINAR A PÁGINA EM BRANCO.
+     * Incorpora as melhorias propostas para controle de padding/margin e epsilon.
+     */
     async function downloadPdf() {
         if (!resumePreview) return console.error("Elemento de pré-visualização não encontrado.");
 
         // 1. Garante que a foto esteja cortada e o preview atualizado
-        await cropAndSetPhoto(); 
+        await cropAndSetPhoto();
         await generateResume(); // Garante o conteúdo mais recente
 
         const element = resumePreview;
-
-        // Guarda o estado de visibilidade e garante que esteja visível para o html2canvas
+        
+        // Guarda o estado de visibilidade
         const previewWasHidden = element.style.display === 'none';
-        if (previewWasHidden) {
-            element.style.display = 'block';
-        }
+        if (previewWasHidden) element.style.display = 'block';
 
-        // 2. Configura o clone para renderização A4
+        // 2. Ajustes temporários no elemento para exportação (210mm = Largura A4)
         const originalStyle = element.style.cssText;
         element.style.width = '210mm';
-        element.style.minHeight = '297mm';
-
+        element.style.minHeight = 'auto';
+        element.style.height = 'auto';
+        
+        // 3. Clona e garante estilos que evitam overflow por padding/margem
         const clone = element.cloneNode(true);
         clone.style.position = 'absolute';
         clone.style.top = '-9999px';
         clone.style.left = '-9999px';
         clone.style.width = '210mm';
-        clone.style.height = '297mm';
-        document.body.appendChild(clone);
+        clone.style.height = 'auto';
+        clone.style.padding = '0'; // Otimização
+        clone.style.margin = '0';   // Otimização
+        clone.style.boxSizing = 'border-box';
+        clone.style.overflow = 'visible';
 
-        // 3. Renderiza o canvas
-        const canvas = await html2canvas(clone, {
-            scale: 3, 
-            useCORS: true,
-            allowTaint: true
+        // Zera margens internas (h1, p, etc.) para prevenir empurrões de página
+        clone.querySelectorAll('*').forEach(el => {
+            el.style.boxSizing = 'border-box';
+            el.style.marginTop = el.style.marginTop || '0';
+            el.style.marginBottom = el.style.marginBottom || '0';
         });
 
-        // 4. Remove o clone e restaura o estilo original
+        document.body.appendChild(clone);
+
+        // 4. Renderiza o canvas
+        const canvas = await html2canvas(clone, {
+            scale: 3,
+            useCORS: true,
+            allowTaint: true,
+            scrollY: -window.scrollY // ajuda em páginas com scroll
+        });
+
+        // 5. Remove o clone e restaura o estilo original
         document.body.removeChild(clone);
         element.style.cssText = originalStyle;
-        
-        // 5. Restaura o estado de visibilidade
-        if (previewWasHidden) {
-            element.style.display = 'none';
-        }
+        if (previewWasHidden) element.style.display = 'none';
 
-        // 6. Gera o PDF - A lógica do while abaixo garante multi-página APENAS se houver overflow.
+        // 6. Gera o PDF - Lógica Otimizada (evita página em branco)
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
         const pdf = new window.jspdf.jsPDF({
             orientation: 'portrait',
@@ -520,21 +589,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             format: 'a4'
         });
 
-        const imgWidth = 210;
-        const pageHeight = 297;
+        const imgWidth = 210; 
+        const pageHeight = 297; 
         const imgHeight = canvas.height * imgWidth / canvas.width;
-        let heightLeft = imgHeight;
-        let position = 0;
+        
+        // CORREÇÃO ROBUSTA PARA PÁGINA EM BRANCO: Usa um epsilon maior
+        const epsilon = 0.01; 
+        let totalPages = Math.ceil((imgHeight / pageHeight) - epsilon);
+        
+        if (totalPages === 0 && imgHeight > 0) {
+            totalPages = 1;
+        }
 
-        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        // CORREÇÃO 2: Apenas adiciona nova página se houver conteúdo restante (heightLeft > 0)
-        while (heightLeft > 0.01) { // 0.01mm para margem de erro
-            position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+        for (let i = 0; i < totalPages; i++) {
+            if (i > 0) {
+                pdf.addPage();
+            }
+            // Calcula o offset negativo para rolar a imagem para cima
+            const yPosition = -(pageHeight * i);
+            pdf.addImage(imgData, 'JPEG', 0, yPosition, imgWidth, imgHeight);
         }
 
         const data = getFormData();
@@ -544,9 +617,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     /* -------------------- Funções de Cor/Estilo -------------------- */
-    // Funções omitidas por brevidade
+    
     function applyNewColor(color) {
         selectedPrimaryColor = color;
+        // Aplica uma transparência de 13.3% ao secundário (hex '22')
         selectedSecondaryColor = color + '22'; 
 
         document.documentElement.style.setProperty('--primary-color', selectedPrimaryColor);
@@ -584,15 +658,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     /* -------------------- Eventos iniciais (MAIN) -------------------- */
 
-    // Eventos de mudança nos inputs
+    // Eventos de mudança nos inputs (para campos não dinâmicos)
     document.querySelectorAll('input, textarea').forEach(input => {
         if (input.type !== 'radio' && input.type !== 'checkbox' && !input.closest('.experience-entry') && !input.closest('.education-entry') && !input.closest('.certification-entry')) {
              input.addEventListener('input', updateInput);
         }
     });
 
-    // Eventos de campos específicos
+    // Eventos de campos específicos com contadores/limites
     summaryInput?.addEventListener('input', updateSummaryCounter);
+    // Limite de atividades
+    activitiesInput?.addEventListener('input', () => { limitCharacterCount(activitiesInput, 200); updateInput(); }); 
     updateSummaryCounter();
 
     // Eventos de botões dinâmicos
@@ -618,9 +694,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         previewButton.addEventListener('click', async () => {
             // 1. Aplica o corte da foto (se houver)
             await cropAndSetPhoto(); 
-            // 2. Gera o currículo com os dados mais recentes (já chamado em cropAndSetPhoto ou updateInput)
-            // await generateResume(); 
-            // 3. Exibe a pré-visualização
+            // 2. Exibe a pré-visualização
             if (resumePreview) {
                 resumePreview.style.display = 'block'; 
             }
@@ -639,7 +713,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Inicialização
     initializeColorPicker();
 
-    // Adiciona entradas vazias iniciais (se necessário)
+    // Adiciona entradas vazias iniciais (se necessário, para ter campos a serem preenchidos)
     if (experienceContainer?.children.length === 0) addExperienceEntry({});
     if (educationContainer?.children.length === 0) addEducationEntry({});
     if (certificationContainer?.children.length === 0) addCertificationEntry({});
