@@ -62,14 +62,14 @@
                         <div style="padding: 5px;">
                             <div class="thumbnail-main-title" style="height: 10px; background-color: var(--primary-color); margin-bottom: 5px;"></div>
                             <div style="display: flex; gap: 5px; height: calc(100% - 15px);">
-                                <div style="width: 40%; padding-top: 5px;">
-                                    <div style="height: 5px; background-color: #ccc; margin: 3px 0;"></div>
+                                <div style="width: 40%;">
+                                    <div style="height: 5px; border-bottom: 1px solid #ccc; margin: 3px 0;"></div>
                                     <div style="height: 5px; background-color: #ccc; margin: 3px 0;"></div>
                                     <div style="height: 5px; border-bottom: 1px solid #ccc; margin: 3px 0;"></div>
                                 </div>
-                                <div style="width: 60%; padding-top: 5px;">
+                                <div style="width: 60%;">
                                     <div style="height: 5px; border-bottom: 1px solid #ccc; margin: 3px 0;"></div>
-                                    <div style="height: 5px; border-bottom: 1px solid #ccc; margin: 3px 0;"></div>
+                                    <div style="height: 5px; background-color: #ccc; margin: 3px 0;"></div>
                                     <div style="height: 5px; border-bottom: 1px solid #ccc; margin: 3px 0;"></div>
                                 </div>
                             </div>
@@ -77,37 +77,51 @@
                     </div>
                 </label>
             </div>
-            <div id="colorPickerSection"></div>
+        </section>
+
+        <section id="colorPickerSection">
+            <h2>Cores do Tema <i class="fa-solid fa-palette"></i></h2>
+            <div id="colorOptions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                </div>
         </section>
 
         <section>
-            <h2>Informações Pessoais <i class="fa-regular fa-user"></i></h2>
-            <label for="name">Nome Completo</label>
-            <input type="text" id="name" placeholder="Nome Completo" required>
-            <label for="address">Endereço</label>
-            <input type="text" id="address" placeholder="Ex: Rua das Flores, 123">
-            <label for="email">Email </label>
-            <input type="email" id="email" placeholder="email@exemplo.com" required>
-            <label for="phone1">Telefone/WhatsApp</label>
-            <input type="tel" id="phone1" placeholder="Ex: (99) 99999-9999">
-            <label for="linkedin">LinkedIn (URL)</label>
-            <input type="url" id="linkedin" placeholder="https://linkedin.com/in/seuperfil">
-        </section>
+            <h2>Informações Pessoais <i class="fa-solid fa-user-circle"></i></h2>
+            <label for="name">Nome Completo:</label>
+            <input type="text" id="name" required placeholder="Seu Nome Completo">
 
-        <section>
-            <h2>Resumo Profissional <i class="fa-regular fa-clipboard"></i></h2>
-            <textarea id="summary" placeholder="Escreva um resumo conciso sobre sua experiência e objetivos. Limite recomendado de 500 caracteres."></textarea>
-            <p id="summaryCounter">0 caracteres</p>
-        </section>
-        
-        <section>
-            <h2>Foto de Perfil <i class="fa-regular fa-image"></i></h2>
-            <input type="file" id="photo" accept="image/*">
-            <div id="croppie-container" style="display: none; margin-top: 10px;"></div>
-            <div>
-                <input type="checkbox" id="hidePhoto" style="width: auto; margin-right: 5px;">
-                <label for="hidePhoto" style="display: inline; font-weight: normal;">Ocultar foto no currículo</label>
+            <div style="display: flex; gap: 20px; align-items: flex-end; margin-bottom: 10px;">
+                <div style="flex-grow: 1;">
+                    <label for="photo">Foto (Opcional):</label>
+                    <input type="file" id="photo" accept="image/*" style="margin-bottom: 0;">
+                </div>
+                <div style="flex-shrink: 0;">
+                    <input type="checkbox" id="hidePhoto" style="width: auto;">
+                    <label for="hidePhoto" style="display: inline; font-weight: normal;">Ocultar Foto</label>
+                </div>
             </div>
+            
+            <div id="croppie-container" style="display: none; height: 300px; margin-bottom: 15px;"></div>
+
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required placeholder="seu.email@exemplo.com">
+
+            <label for="phone1">Telefone/WhatsApp:</label>
+            <input type="text" id="phone1" placeholder="Ex: (11) 98765-4321">
+
+            <label for="linkedin">Link do LinkedIn:</label>
+            <input type="url" id="linkedin" placeholder="https://linkedin.com/in/seu-perfil">
+
+            <label for="address">Endereço (Cidade, Estado):</label>
+            <input type="text" id="address" placeholder="Ex: São Paulo, SP">
+
+        </section>
+
+        <section class="summary-section">
+            <h2>Resumo Profissional/Objetivo <i class="fa-solid fa-bullseye"></i></h2>
+            <textarea id="summary" placeholder="Escreva um breve resumo destacando suas qualidades e objetivos. Máximo 500 caracteres."></textarea>
+            <p id="summaryCounter"></p>
         </section>
 
         <section>
@@ -115,7 +129,7 @@
             <div id="experienceContainer"></div>
             <button type="button" id="addExperienceBtn">Adicionar Experiência</button>
         </section>
-
+        
         <section>
             <h2>Formação Acadêmica <i class="fa-solid fa-graduation-cap"></i></h2>
             <div id="educationContainer"></div>
@@ -152,8 +166,16 @@
         </form>
         
         <h3>Pré-visualização do Currículo (Tamanho A4)</h3>
-        <div id="resumePreview" class="template-modelo1" style="display: none;">
+        <div id="resumePreview">
             </div>
     </main>
+
+    <div id="ai-assistant" data-status="neutro">
+        <img id="avatar-img" src="./assets/avatar/neutro.png" alt="Assistente Virtual"> 
+        
+        <div id="speech-bubble">
+            <p id="assistant-message">Tudo certo. Estou aqui se precisar de dicas!</p>
+        </div>
+    </div>
 </body>
 </html>
