@@ -1,0 +1,162 @@
+/* ----------------------------------------------------------- */
+/* style-mobile.css: Estilos Otimizados para Dispositivos Móveis */
+/* ----------------------------------------------------------- */
+
+/* Usamos uma media query para aplicar regras apenas em telas menores (até 768px de largura) */
+@media (max-width: 768px) {
+    
+    /* 1. LAYOUT PRINCIPAL E FORMULÁRIO */
+    body {
+        padding: 0;
+        overflow-x: hidden; 
+    }
+
+    main {
+        width: 100%;
+        margin: 0;
+        padding: 15px;
+        box-shadow: none;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .seo-intro-text {
+        padding: 0 15px !important;
+        margin: 10px auto !important;
+        font-size: 0.9rem;
+    }
+
+    /* Formulário - Elementos de Bloco */
+    form section h2 {
+        font-size: 1.2em;
+        margin-top: 15px;
+    }
+
+    /* Layout de Templates e Cores */
+    #templateSelection {
+        flex-direction: column;
+        gap: 15px !important;
+    }
+    .template-label {
+        width: 100%;
+        padding: 10px;
+    }
+    .template-thumbnail {
+        width: 100px; 
+        height: 140px;
+        margin: 5px 0 0 10px;
+    }
+    #colorOptions {
+        gap: 8px !important;
+    }
+
+    /* Ajuste para inputs com elementos adjacentes (Foto/Ocultar) */
+    div[style*="display: flex; gap: 20px;"] {
+        flex-direction: column;
+        gap: 0 !important;
+        align-items: flex-start !important;
+    }
+    div[style*="flex-shrink: 0;"] {
+        margin-top: 5px;
+    }
+
+    /* Croppie */
+    #croppie-container {
+        height: 250px !important;
+    }
+    
+    /* Botões de Ação */
+    .action-buttons {
+        flex-direction: column;
+    }
+    .action-buttons button {
+        margin-right: 0 !important;
+        margin-bottom: 10px;
+    }
+
+
+    /* -------------------- 2. PRÉ-VISUALIZAÇÃO DO CURRÍCULO (ESCALADA) -------------------- */
+    
+    #resumePreview {
+        /* Garante que o container da pré-visualização não tenha largura limitada */
+        max-width: 100%;
+        /* Centraliza o conteúdo */
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        margin-bottom: 50px; 
+        padding: 0; /* Remove padding que pode atrapalhar a escala */
+        border: none;
+        box-shadow: none;
+    }
+
+    /* Aplica a escala na folha A4 interna (que tem as classes de template) */
+    #resumePreview > div[class*="template-"] {
+        /* Largura base da folha A4 */
+        width: 210mm; 
+        min-height: 297mm; 
+
+        /* NOVO AJUSTE DE ESCALA: 50% para melhor visualização */
+        transform-origin: top center;
+        transform: scale(0.5); /* Aumenta a escala para preencher melhor a tela */
+        
+        /* Ajusta as margens para garantir a centralização (largura real = 210mm * 0.5 = 105mm) */
+        margin: 0; 
+        
+        /* Otimizações de texto para a visualização escalada, SEM afetar o PDF final */
+        
+        /* Reduz o tamanho das fontes de base para dar mais espaço */
+        font-size: 10px !important; 
+        
+        /* Permite quebra de linha em palavras longas em qualquer lugar */
+        word-wrap: break-word; 
+        overflow-wrap: break-word;
+        
+        /* Ajuste fino de fontes */
+        h1, h2, h3, h4, p, li, span, a, label {
+            font-size: 0.9em; 
+            line-height: 1.3; /* Mais espaçamento para evitar embolamento */
+        }
+        
+        /* Sobrescreve especificamente o nome/título principal */
+        .resume-header h1, .cabecalho h1 {
+            font-size: 2.1rem !important; 
+            line-height: 1.1;
+        }
+
+        /* Garante que o layout A4 original seja mantido (flex-direction: row) */
+        .template-modelo1 .resume-content-wrapper,
+        .template-modelo2 .conteudo-principal {
+            flex-direction: row; 
+            height: 297mm;
+        }
+
+        /* Remove qualquer restrição de altura que possa cortar o texto na visualização */
+        .summary-section p {
+            max-height: none !important;
+            overflow: visible !important;
+            -webkit-line-clamp: unset !important;
+            line-clamp: unset !important;
+        }
+    }
+
+
+    /* -------------------- 3. ASSISTENTE IA -------------------- */
+    #ai-assistant {
+        right: 10px;
+        bottom: 10px;
+    }
+    #speech-bubble {
+        max-width: 90%;
+        left: 10px;
+        right: auto;
+        bottom: 70px;
+        border-radius: 15px 15px 15px 0;
+    }
+    
+    .responsibilities-container textarea {
+        min-height: 50px;
+    }
+}
