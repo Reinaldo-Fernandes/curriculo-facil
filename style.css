@@ -1,13 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Playfair+Display:wght@400&family=Inter:wght@400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Playfair+Display:wght@400&family=Inter:wght@400;700;800;900&display=swap');
 
-/* Variáveis de tema (CORREÇÃO: Espaços padrão e sintaxe rigorosa) */
+/* Variáveis de tema */
 :root {
     --primary-color: #2a3eb1;
     --secondary-color: #e8f0fe;
     --cor-texto-escuro: #000000;
     --cor-linha: #dddddd;
     --cor-linha-sutil: #eeeeee;
-    --page-padding-mm: 15mm;
+    /* --- AJUSTE PARA DIMINUIR CABEÇALHOS (De 15mm para 10mm) --- */
+    --page-padding-mm: 10mm; 
+    --cor-destaque-linha: var(--primary-color);
+    --espacamento-vertical: 25px; 
+    --padding-entrada-vertical: 12px;
 }
 
 /* Reset/Global */
@@ -23,7 +27,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Layout do app */
+/* Layout do app - Manter */
 header {
     background: var(--primary-color);
     color: #fff;
@@ -46,7 +50,7 @@ main {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Form controls */
+/* Form controls (Manter) */
 form section {
     margin-bottom: 20px;
 }
@@ -78,7 +82,7 @@ textarea {
     margin-top: -5px;
 }
 
-/* Boxes */
+/* Boxes (Manter) */
 .experience-entry,
 .education-entry,
 .certification-entry {
@@ -87,7 +91,7 @@ textarea {
     margin-top: 10px;
     border-radius: 4px;
     background: #f9f9f9;
-    position: relative; /* Para posicionamento do botão remover */
+    position: relative; 
 }
 
 button {
@@ -129,7 +133,7 @@ button:hover {
 }
 
 
-/* Thumbnails / color options */
+/* Thumbnails / color options (Manter) */
 .color-option {
     border: 2px solid transparent !important;
     transition: border-color 0.2s;
@@ -161,8 +165,8 @@ button:hover {
     padding: 0;
     border: 1px solid #ddd;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-    max-width: 210mm; /* Largura A4 */
-    min-height: 297mm; /* Altura A4 */
+    max-width: 210mm;
+    min-height: 297mm;
     background: #fff;
 }
 
@@ -174,13 +178,15 @@ button:hover {
     height: 297mm;
     font-family: 'Roboto', sans-serif;
     color: var(--cor-texto-escuro);
+    min-height: 297mm;
 }
 
 /* Coluna Esquerda (Sidebar) */
 .template-modelo1 .resume-left {
     width: 35%;
     background: var(--secondary-color);
-    padding: var(--page-padding-mm) 10mm;
+    /* Usa a nova variável e mantém o ajuste lateral de 12mm */
+    padding: var(--page-padding-mm) 12mm; 
     flex-shrink: 0;
 }
 .template-modelo1 .resume-photo {
@@ -189,31 +195,36 @@ button:hover {
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    margin: 0 auto 20px;
-    border: 3px solid var(--primary-color);
+    /* --- AJUSTE: Reduzindo o margin-bottom para subir a foto --- */
+    margin: 0 auto 15px; 
+    border: 4px solid var(--primary-color); 
+    box-shadow: 0 0 10px rgba(42, 62, 177, 0.3);
+    background-color: #fff;
 }
 .template-modelo1 .resume-left h3 {
-    font-size: 1.1em;
+    font-size: 1.15em;
     color: var(--primary-color);
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 3px solid var(--cor-destaque-linha);
     padding-bottom: 5px;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin-top: var(--espacamento-vertical); 
+    margin-bottom: 12px;
     text-transform: uppercase;
+    font-weight: 700;
 }
 .template-modelo1 .contact-info p {
     font-size: 0.9em;
-    margin: 5px 0;
+    margin: 6px 0; 
 }
 .template-modelo1 .contact-info i {
     margin-right: 8px;
     color: var(--primary-color);
+    font-size: 1.1em;
 }
 .template-modelo1 .contact-info a {
     color: var(--cor-texto-escuro);
     text-decoration: none;
-    word-break: break-word; /* CORREÇÃO QUEBRA DE LINHA (Sidebar Links) */
-    overflow-wrap: break-word; /* CORREÇÃO QUEBRA DE LINHA */
+    word-break: break-word; 
+    overflow-wrap: break-word; 
 }
 .template-modelo1 .skills-section ul,
 .template-modelo1 .languages-section ul {
@@ -223,84 +234,99 @@ button:hover {
 .template-modelo1 .skills-section li,
 .template-modelo1 .languages-section li {
     font-size: 0.9em;
-    padding: 3px 0;
-    border-bottom: 1px dotted #ccc;
-    word-break: break-word; /* CORREÇÃO QUEBRA DE LINHA (Sidebar Items) */
-    overflow-wrap: break-word; /* CORREÇÃO QUEBRA DE LINHA */
+    padding: 5px 0; 
+    border-bottom: 1px solid var(--cor-linha-sutil); 
+    word-break: break-word; 
+    overflow-wrap: break-word; 
 }
-/* REMOVIDO: Bloco específico do Modelo 1 Activities. Regra unificada abaixo. */
 
 
 /* Coluna Direita (Main Content) */
 .template-modelo1 .resume-right {
     width: 65%;
+    /* Usa a nova variável de padding superior/inferior */
     padding: var(--page-padding-mm) 5mm;
-    line-height: 1.3 ;
+    line-height: 1.5;
 }
 .template-modelo1 .resume-right h1 {
     font-family: 'Inter', sans-serif;
-    font-size: 2em;
+    font-size: 2.2em;
     color: var(--cor-texto-escuro);
-    font-weight: 800;
-    margin-bottom: 15px;
-    border-bottom: 3px solid var(--primary-color);
-    padding-bottom: 5px;
-    /* CORREÇÃO APLICADA: Quebra de linha para Nome/Título no topo */
+    font-weight: 900;
+    /* --- AJUSTE: Reduzindo o margin-bottom para subir o nome --- */
+    margin-bottom: 5px; 
+    border-bottom: 5px solid var(--cor-destaque-linha);
+    padding-bottom: 8px;
     word-break: break-word; 
     overflow-wrap: break-word;
 }
+/* --- MELHORIA DE DESIGN --- */
+.template-modelo1 .resume-right h2.title { 
+    font-family: 'Inter', sans-serif;
+    font-size: 1.3em;
+    font-weight: 400;
+    color: #444;
+    margin-top: 0; /* Remove o margin-top negativo */
+    margin-bottom: 15px; /* Reduz de 20px para 15px */
+}
 .template-modelo1 .resume-right h3 {
     font-family: 'Inter', sans-serif;
-    font-size: 1.2em;
+    font-size: 1.3em; 
     color: var(--primary-color);
-    margin-top: 25px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--cor-linha);
+    margin-top: var(--espacamento-vertical); 
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--cor-linha); 
     padding-bottom: 5px;
     text-transform: uppercase;
+    font-weight: 800;
 }
 .template-modelo1 .summary-section p {
     font-size: 1em;
-    line-height: 1.5;
+    line-height: 1.6; 
     margin-top: 0;
-    white-space: pre-wrap; /* Para preservar quebras de linha do textarea */
-    /* CORREÇÃO APLICADA: Quebra de linha para texto longo no Resumo */
+    margin-bottom: var(--espacamento-vertical);
+    white-space: pre-wrap; 
     word-break: break-word; 
     overflow-wrap: break-word; 
 }
 
-/* Estilos de Experiência/Formação/Certificações */
+/* Estilos de Experiência/Formação/Certificações - Manter espaçamento */
 .template-modelo1 .experience-entry,
 .template-modelo1 .education-entry,
 .template-modelo1 .certification-entry {
-    margin-bottom: 15px;
+    margin-bottom: calc(var(--espacamento-vertical) * 0.8); 
     line-height: 1.4;
+    padding-left: 0;
+    padding-top: var(--padding-entrada-vertical); 
+    padding-bottom: var(--padding-entrada-vertical);
+    border-left: 3px solid var(--cor-linha-sutil); 
 }
 .template-modelo1 .experience-entry h4,
 .template-modelo1 .education-entry h4,
 .template-modelo1 .certification-entry h4 {
-    font-size: 1.05em;
+    font-size: 1.05em; 
     margin: 0;
-    color: #333;
+    color: var(--cor-texto-escuro); 
+    font-weight: 700;
 }
 .template-modelo1 .experience-entry p,
 .template-modelo1 .education-entry p,
 .template-modelo1 .certification-entry p {
-    font-size: 0.9em;
+    font-size: 0.95em;
     margin: 2px 0;
-    color: #666;
+    color: #444;
 }
 .template-modelo1 .experience-entry ul {
-    margin-top: 5px;
+    margin-top: 8px; 
     padding-left: 20px;
-    font-size: 0.9em;
-    word-break: break-word; /* CORREÇÃO QUEBRA DE LINHA (Lista de responsabilidades) */
-    overflow-wrap: break-word; /* CORREÇÃO QUEBRA DE LINHA */
+    font-size: 0.95em;
+    word-break: break-word; 
+    overflow-wrap: break-word; 
 }
 .template-modelo1 .experience-entry li {
     margin-bottom: 5px;
-    word-break: break-word; /* CORREÇÃO QUEBRA DE LINHA (Item de responsabilidade) */
-    overflow-wrap: break-word; /* CORREÇÃO QUEBRA DE LINHA */
+    word-break: break-word; 
+    overflow-wrap: break-word; 
 }
 
 
@@ -310,13 +336,15 @@ button:hover {
 
 .template-modelo2 .cabecalho {
     background-color: var(--secondary-color);
-    padding: var(--page-padding-mm);
-    border-bottom: 5px solid var(--primary-color);
+    /* Usa a nova variável para diminuir o padding do cabeçalho */
+    padding: var(--page-padding-mm); 
+    border-bottom: 7px solid var(--primary-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 .template-modelo2 .perfil {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px; 
 }
 .template-modelo2 .resume-photo-modelo2 {
     width: 100px;
@@ -324,21 +352,36 @@ button:hover {
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    border: 3px solid var(--primary-color);
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 0 10px rgba(42, 62, 177, 0.3);
+    background-color: #fff;
 }
 .template-modelo2 .nome-e-titulo h1 {
-    font-size: 1.7rem;
-    margin: 0;
-    font-weight: 800;
+    font-size: 2.1rem; 
+    /* --- AJUSTE: Subindo o nome --- */
+    margin: 0; 
+    font-weight: 900; 
     color: #000000;
     line-height: 1.1;
+    font-family: 'Inter', sans-serif;
 }
+/* --- MELHORIA DE DESIGN --- */
+.template-modelo2 .nome-e-titulo h2 { 
+    font-family: 'Inter', sans-serif;
+    font-size: 1.3em;
+    font-weight: 400;
+    color: #444;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
 
 /* Conteúdo Principal (Colunas) */
 .template-modelo2 .conteudo-principal {
     display: flex;
-    gap: 10mm;
-    padding: 10mm var(--page-padding-mm);
+    gap: 15mm;
+    /* Mantém o padding lateral e ajusta o superior/inferior para 10mm */
+    padding: var(--page-padding-mm) 20mm; 
 }
 .template-modelo2 .coluna-esquerda {
     width: 30%;
@@ -346,31 +389,33 @@ button:hover {
 }
 .template-modelo2 .coluna-direita {
     width: 70%;
+    line-height: 1.5;
 }
 
 /* Estilos de Seção */
 .template-modelo2 .secao-box {
-    margin-bottom: 20px;
+    margin-bottom: var(--espacamento-vertical); 
 }
 .template-modelo2 .secao-box h3 {
-    font-size: 1.2em;
+    font-size: 1.25em;
     color: var(--primary-color);
-    border-bottom: 1px solid var(--cor-linha);
+    border-bottom: 3px solid var(--cor-destaque-linha);
     padding-bottom: 5px;
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     text-transform: uppercase;
     font-family: 'Inter', sans-serif;
-    font-weight: 700;
+    font-weight: 800;
 }
-/* Coluna Esquerda: Informações (contato, endereço, skills, etc.) */
+/* Coluna Esquerda: Informações */
 .template-modelo2 .coluna-esquerda .contact-info p {
     font-size: 0.9em;
-    margin: 5px 0;
+    margin: 6px 0; 
 }
 .template-modelo2 .coluna-esquerda .contact-info i {
     margin-right: 8px;
     color: var(--primary-color);
+    font-size: 1.1em;
 }
 .template-modelo2 .coluna-esquerda .contact-info a {
     color: var(--cor-texto-escuro);
@@ -384,50 +429,60 @@ button:hover {
 }
 .template-modelo2 .coluna-esquerda li {
     font-size: 0.9em;
-    padding: 3px 0;
-    word-break: break-word; /* CORREÇÃO QUEBRA DE LINHA */
-    overflow-wrap: break-word; /* CORREÇÃO QUEBRA DE LINHA */
+    padding: 5px 0; 
+    border-bottom: 1px dotted var(--cor-linha-sutil); 
+    word-break: break-word; 
+    overflow-wrap: break-word; 
 }
 
-/* Coluna Direita: Conteúdo (Resumo, Experiência, Formação, etc.) */
+/* Estilo para a nova seção de Endereço na Coluna Esquerda */
+.template-modelo2 .secao-endereco {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+/* Coluna Direita: Conteúdo - Manter espaçamento */
 .template-modelo2 .coluna-direita .experience-entry,
 .template-modelo2 .coluna-direita .education-entry,
 .template-modelo2 .coluna-direita .certification-entry {
-    margin-bottom: 15px;
+    margin-bottom: calc(var(--espacamento-vertical) * 0.9);
     line-height: 1.4;
+    border-left: 3px solid var(--cor-linha-sutil); 
+    padding-left: 8px; 
 }
 .template-modelo2 .coluna-direita .experience-entry h4,
 .template-modelo2 .coluna-direita .education-entry h4,
 .template-modelo2 .coluna-direita .certification-entry h4 {
-    font-size: 1.05em;
-    margin: 0;
-    color: #333;
+    font-size: 1.1em; 
+    margin-top: 0; 
+    margin-bottom: 3px;
+    color: var(--cor-texto-escuro); 
     font-weight: 700;
 }
 .template-modelo2 .coluna-direita .experience-entry p,
 .template-modelo2 .coluna-direita .education-entry p,
 .template-modelo2 .coluna-direita .certification-entry p {
-    font-size: 0.9em;
+    font-size: 0.95em;
     margin: 2px 0;
-    color: #666;
+    color: #444; 
 }
 .template-modelo2 .coluna-direita .experience-entry ul {
-    margin-top: 5px;
+    margin-top: 8px; 
     padding-left: 20px;
-    font-size: 0.9em;
-    word-break: break-word; /* CORREÇÃO QUEBRA DE LINHA */
-    overflow-wrap: break-word; /* CORREÇÃO QUEBRA DE LINHA */
+    font-size: 0.95em;
+    word-break: break-word; 
+    overflow-wrap: break-word; 
 }
 .template-modelo2 .coluna-direita .experience-entry li {
     margin-bottom: 5px;
-    word-break: break-word; /* CORREÇÃO QUEBRA DE LINHA */
-    overflow-wrap: break-word; /* CORREÇÃO QUEBRA DE LINHA */
+    word-break: break-word; 
+    overflow-wrap: break-word; 
 }
 
 /* Regra para Resumo: garante que o texto quebre corretamente (APLICA CLIPPING) */
-.template-modelo2 .summary-section p { /* Aplica Clipping SOMENTE ao Resumo no Modelo 2 */
-    font-size: 0.95em;
-    line-height: 1.5;
+.template-modelo2 .summary-section p { 
+    font-size: 1em; 
+    line-height: 1.6;
     margin: 0;
     max-height: 260px;
     overflow: hidden;
@@ -438,14 +493,16 @@ button:hover {
     -webkit-box-orient: vertical;
     word-break: break-word;
     overflow-wrap: break-word;
-    white-space: pre-wrap; /* Garante quebra de linha do resumo */
+    white-space: pre-wrap; 
+    /* --- MELHORIA DE DESIGN --- */
+    margin-bottom: var(--espacamento-vertical); 
 }
 
 /* ----------------------------------------------------------- */
 /* CORREÇÃO DEFINITIVA: Quebra de Linha em Atividades (TODOS OS MODELOS) */
 /* ----------------------------------------------------------- */
 .activities-section p {
-    white-space: pre-wrap !important; /* Força a quebra de linha do textarea */
+    white-space: pre-wrap !important; 
     word-break: break-word;
     overflow-wrap: break-word;
     
@@ -457,13 +514,6 @@ button:hover {
     -webkit-line-clamp: unset !important;
     line-clamp: unset !important;
     -webkit-box-orient: unset !important;
-}
-
-
-/* Estilo para a nova seção de Endereço na Coluna Esquerda */
-.template-modelo2 .secao-endereco {
-    margin-bottom: 20px;
-    padding-bottom: 10px;
 }
 
 
@@ -489,24 +539,25 @@ button:hover {
         border: none;
         margin: 0 auto;
         width: 210mm;
-        height: 297mm;
-        /* Garante que o conteúdo ocupe o espaço */
-        padding: 0;
+        height: auto; 
+        min-height: 297mm;
+        padding: 5mm; 
     }
     /* Estilos de impressão para o Modelo 1 */
     .template-modelo1 .resume-content-wrapper {
-        height: auto; /* Permite quebrar páginas se o conteúdo for longo */
-        page-break-after: always;
+        height: auto; 
+        min-height: 287mm; 
+        page-break-after: auto;
     }
     /* Estilos de impressão para o Modelo 2 */
     .template-modelo2 .conteudo-principal {
-        page-break-after: always;
+        page-break-after: auto;
         height: auto;
     }
 }
 
 
-/* -------------------- Estilos do Assistente IA -------------------- */
+/* -------------------- Estilos do Assistente IA (Manter) -------------------- */
 #ai-assistant {
     position: fixed;
     bottom: 20px;
