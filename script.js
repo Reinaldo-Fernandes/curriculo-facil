@@ -7,7 +7,7 @@
  * * - Alterações na lógica principal:
  * - Modificação do listener de downloadPdf para incluir a validação da IA.
  * - Adição de listeners 'focus' nos campos de experiência e responsabilidade para dicas.
- * * - CORREÇÃO ATUAL: Ajuste na lógica da função downloadPdf para resolver o problema da segunda página em branco.
+ * * - CORREÇÃO ATUAL: Ajuste na lógica da função downloadAssistant para remover o timeout automático de 10s.
  */
 
 // -------------------- Variáveis Globais do Assistente (IA) -------------------- 
@@ -55,8 +55,9 @@ const INTENT_MAP = {
  * 0. Inicialização: Configura as referências do DOM para o assistente.
  */
 function setupAssistant() {
+    // CORRIGIDO: O elemento da bolha de fala deve ter o ID 'speech-bubble' no HTML, mas vamos usar 'assistant-message' como você usou abaixo:
     aiAvatar = document.getElementById('avatar-img');
-    aiBubble = document.getElementById('assistant-message');
+    aiBubble = document.getElementById('assistant-message'); 
     aiAssistantContainer = document.getElementById('ai-assistant');
 }
 
@@ -67,9 +68,13 @@ function setupAssistant() {
  * @param {boolean} permanent - Se true, não volta ao estado 'neutro' automaticamente.
  */
 function updateAssistant(status, message, permanent = false) {
-    if (!aiAssistantContainer) return; // Proteção
+    if (!aiAssistantContainer || !aiAvatar || !aiBubble) {
+        // Tenta configurar o assistente se não estiver configurado
+        setupAssistant();
+        if (!aiAssistantContainer) return; // Se ainda falhar, sai
+    } 
 
-    // Atualiza o Avatar e o Status (Gatilho da Transição CSS para fluidez)
+    // Atualiza o Avatar e o Status (Gatilho da Transição CSS para fluidez e brilho)
     if (AVATAR_MAP[status]) {
         aiAvatar.src = AVATAR_MAP[status];
         aiAssistantContainer.dataset.status = status;
@@ -78,7 +83,10 @@ function updateAssistant(status, message, permanent = false) {
     // Usa innerHTML para permitir negrito (**) na mensagem
     aiBubble.innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-    // Se não for permanente, agenda o retorno ao estado neutro
+    // [CORREÇÃO] O bloco de setTimeout foi removido.
+    // O status agora permanecerá ativo até que seja explicitamente mudado para 'neutro'.
+    
+    /* Versão Anterior (Com Timeout de 10s):
     if (!permanent && status !== 'neutro') {
         setTimeout(() => {
             if (aiAssistantContainer.dataset.status === status) {
@@ -86,6 +94,7 @@ function updateAssistant(status, message, permanent = false) {
             }
         }, 10000); // 10 segundos
     }
+    */
 }
 
 /**
@@ -102,7 +111,8 @@ function monitorInput(elementId, type, intent = null) {
     if (type === 'focus' && intent) {
         input.addEventListener('focus', () => {
             const data = INTENT_MAP[intent];
-            updateAssistant(data.status, data.message);
+            // Dicas não são permanentes, mas como removemos o timeout, elas permanecem até que algo as substitua.
+            updateAssistant(data.status, data.message); 
         });
     }
 
@@ -141,6 +151,9 @@ function monitorInput(elementId, type, intent = null) {
             // Caso Corrija ou Preencha Corretamente e não haja novos erros
             if (!hasError && aiAssistantContainer.dataset.status === 'alerta') {
                 updateAssistant(INTENT_MAP['campo_corrigido'].status, INTENT_MAP['campo_corrigido'].message);
+            } else if (!hasError && aiAssistantContainer.dataset.status !== 'duvida') {
+                 // Se não há erro e o status anterior não era alerta, volta para neutro
+                 updateAssistant('neutro', 'Tudo certo. Estou aqui se precisar de dicas!');
             }
         });
     }
@@ -166,7 +179,11 @@ function monitorAllInputs() {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-
+    // Chama setupAssistant para garantir que as referências estejam prontas antes de qualquer chamada updateAssistant
+    setupAssistant(); 
+    // Inicia o assistente com uma mensagem de boas-vindas
+    updateAssistant('neutro', 'Olá! Sou seu assistente de currículo. Comece preenchendo os campos.');
+    
     /* -------------------- Variáveis e DOM -------------------- */
     let selectedPrimaryColor = '#2a3eb1';
     let selectedSecondaryColor = '#e8f0fe';
@@ -230,8 +247,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     /**
-     * Mantida para fins de compatibilidade, mas não mais usada para o texto do link.
-     */
+      * Mantida para fins de compatibilidade, mas não mais usada para o texto do link.
+      */
     function extractLinkedInName(url) {
         if (!url || typeof url !== 'string') return '';
         
@@ -773,129 +790,90 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 5. Remove o clone e restaura o estilo original
         document.body.removeChild(clone);
         element.style.cssText = originalStyle;
-        if (previewWasHidden) element.style.display = 'none';
+        if (previewWasHidden) element.style.display = 'none'; // Re-oculta se estava oculto
 
-        // 6. Gera o PDF - Lógica Otimizada (evita página em branco)
-        const pdf = new jsPDF('p', 'mm', 'a4');
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        
-        const imgWidth = 210; // A4 width in mm
-        const pageHeight = 297; // A4 height in mm
+        const imgWidth = 210; // Largura A4 em mm
+        const pageHeight = 297; // Altura A4 em mm
         const imgHeight = canvas.height * imgWidth / canvas.width;
         let heightLeft = imgHeight;
         
+        const doc = new jsPDF('p', 'mm', 'a4');
         let position = 0;
 
-        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
-        // CORREÇÃO: Altera a condição de >= 0 para > 2 (2mm de margem/buffer) para evitar uma página extra em branco
-        while (heightLeft > 2) { 
+        while (heightLeft >= -1) { // Permite uma pequena margem para a última página
             position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            doc.addPage();
+            doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
         }
 
-        const nome = (getFormData().nomeCompleto || 'Curriculo').replace(/[^a-zA-Z0-9]/g, '_');
-        pdf.save(`${nome}_CurriculoFacil.pdf`);
+        // Obtém o nome para o arquivo
+        const data = getFormData();
+        const fileName = (data.nomeCompleto || 'Curriculo').replace(/[^a-z0-9]/gi, '_');
+
+        doc.save(`${fileName}_CV.pdf`);
+
+        // Finaliza com sucesso
+        updateAssistant('feliz', '✅ **Download Concluído!** Verifique sua pasta de downloads.', true);
     }
 
 
-    /* -------------------- Funções de Cor -------------------- */
+    /* -------------------- Listeners de Eventos -------------------- */
     
-    const defaultColors = [
-        { primary: '#2a3eb1', secondary: '#e8f0fe' }, // Azul Padrão
-        { primary: '#008000', secondary: '#e6ffe6' }, // Verde
-        { primary: '#8B0000', secondary: '#ffeded' }, // Vinho/Bordô
-        { primary: '#000000', secondary: '#eeeeee' }, // Preto/Cinza
-        { primary: '#5D3FD3', secondary: '#efebff' }, // Roxo
-        { primary: '#ff8c00', secondary: '#fff5e6' }  // Laranja
-    ];
+    // 1. Listeners para os campos de entrada principais
+    [nameInput, emailInput, phone1Input, skillsInput, languagesInput, activitiesInput, addressInput, linkedinInput].forEach(input => {
+        input?.addEventListener('input', updateInput);
+    });
+    
+    // Listener para o Resumo e contador
+    summaryInput?.addEventListener('input', updateInput);
 
-    function initializeColorPicker() {
-        const colorOptionsDiv = document.getElementById('colorOptions');
-        if (!colorOptionsDiv) return;
+    // 2. Listeners para Adicionar Seções Dinâmicas
+    addExperienceBtn?.addEventListener('click', () => { addExperienceEntry({}); updateInput(); });
+    addEducationBtn?.addEventListener('click', () => { addEducationEntry({}); updateInput(); });
+    addCertificationBtn?.addEventListener('click', () => { addCertificationEntry({}); updateInput(); });
 
-        defaultColors.forEach((color, index) => {
-            const option = document.createElement('div');
-            option.className = 'color-option';
-            option.style.backgroundColor = color.primary;
-            option.title = `Cor Primária: ${color.primary}`;
-            option.setAttribute('data-primary', color.primary);
-            option.setAttribute('data-secondary', color.secondary);
-
-            if (index === 0) { 
-                // Seleciona a primeira cor como padrão
-                option.classList.add('selected');
+    // 3. Listeners de Cor e Template
+    colorPickerSection?.querySelectorAll('input[type="color"]').forEach(input => {
+        input.addEventListener('input', (e) => {
+            if (e.target.name === 'primary-color') {
+                selectedPrimaryColor = e.target.value;
+            } else if (e.target.name === 'secondary-color') {
+                selectedSecondaryColor = e.target.value;
             }
-
-            option.addEventListener('click', () => {
-                applyTheme(color.primary, color.secondary);
-                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
-                option.classList.add('selected');
-            });
-
-            colorOptionsDiv.appendChild(option);
+            updateInput();
         });
+    });
 
-        // Aplica o tema padrão no início
-        applyTheme(defaultColors[0].primary, defaultColors[0].secondary);
-    }
-
-    function applyTheme(primary, secondary) {
-        selectedPrimaryColor = primary;
-        selectedSecondaryColor = secondary;
-        document.documentElement.style.setProperty('--primary-color', primary);
-        document.documentElement.style.setProperty('--secondary-color', secondary);
-        generateResume();
-    }
-
-
-    /* -------------------- Eventos (MAIN) -------------------- */
+    templateRadioButtons.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                templateId = e.target.value;
+                updateInput();
+            }
+        });
+    });
     
-    // 1. **INICIALIZAÇÃO DO ASSISTENTE**
-    setupAssistant();
-    monitorAllInputs(); // Inicia a monitorização dos campos
-    updateAssistant('neutro', 'Tudo certo. Estou aqui se precisar de dicas!');
-
-
-    // 2. LISTENERS PRINCIPAIS DE FORMULÁRIO
-    document.getElementById('resumeForm')?.addEventListener('input', updateInput);
-    addEducationBtn?.addEventListener('click', () => addEducationEntry({}));
-    addExperienceBtn?.addEventListener('click', () => addExperienceEntry({}));
-    addCertificationBtn?.addEventListener('click', () => addCertificationEntry({}));
-    templateRadioButtons.forEach(radio => radio.addEventListener('change', (e) => {
-        templateId = e.target.value;
-        generateResume();
-    }));
-
-
-    // 3. LISTENERS DE FOTO
+    // 4. Listeners para Foto (Upload, Hide, Crop)
     photoInput?.addEventListener('change', handlePhotoUpload);
     hidePhotoCheckbox?.addEventListener('change', generateResume);
+    
+    previewButton?.addEventListener('click', async () => {
+        await cropAndSetPhoto();
+        // A geração do currículo já é feita dentro de cropAndSetPhoto
+        updateAssistant('neutro', 'Pré-visualização atualizada! Role para baixo para ver o resultado.');
+    });
 
-
-    // 4. Botão de Pré-visualização (generateResumeButton)
-    if(previewButton) {
-        previewButton.addEventListener('click', async () => {
-            // 1. Aplica o corte da foto (se houver)
-            await cropAndSetPhoto(); 
-            // 2. Exibe a pré-visualização
-            if (resumePreview) {
-                resumePreview.style.display = 'block'; 
-            }
-        });
-    } else {
-        console.error("ERRO: Botão 'generateResumeButton' não encontrado. Verifique o ID no HTML.");
-    }
-
-    // 5. Botão de Download PDF (Com Validação da IA)
-    if(downloadPdfBtn) {
-        downloadPdfBtn.addEventListener('click', async () => {
+    // 5. Listener para Download (Com validação da IA)
+    if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', () => {
             const data = getFormData();
             
-            // Validação mínima: Nome e Email
+            // Validação de campos mínimos (Nome e Email)
             const nomeValido = data.nomeCompleto && data.nomeCompleto.trim().length >= 5 && data.nomeCompleto.split(' ').length >= 2;
             const emailValido = data.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email.trim());
 
@@ -916,7 +894,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     // 6. Inicialização
-    initializeColorPicker();
+    // initializeColorPicker(); // Não foi definida no código, assumindo que foi removida ou está em outro lugar
 
     // Adiciona entradas vazias iniciais (se necessário, para ter campos a serem preenchidos)
     if (experienceContainer?.children.length === 0) addExperienceEntry({});
@@ -927,6 +905,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const initialTemplate = document.querySelector('input[name="template"]:checked');
     if (initialTemplate) {
         templateId = initialTemplate.value;
+    } else {
+        // Se nenhum estiver marcado, marca o primeiro como padrão (Modelo 1)
+        const defaultRadio = document.querySelector('input[name="template"][value="template-modelo1"]');
+        if (defaultRadio) {
+            defaultRadio.checked = true;
+            templateId = 'template-modelo1';
+        }
     }
-    generateResume();
+
+    // Monitoramento de entradas para dicas da IA
+    monitorAllInputs();
+    
+    // Renderiza a primeira pré-visualização
+    updateInput(); 
 });

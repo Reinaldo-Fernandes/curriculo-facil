@@ -556,7 +556,6 @@ button:hover {
     }
 }
 
-
 /* -------------------- Estilos do Assistente IA (Manter) -------------------- */
 #ai-assistant {
     position: fixed;
@@ -566,13 +565,37 @@ button:hover {
 }
 
 #avatar-img {
-    width: 60px;
-    height: 60px;
+    /* Tamanho aumentado */
+    width: 80px; 
+    height: 80px; 
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid var(--primary-color);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer; 
+    /* Adicionado para transição suave do brilho */
+    transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+/* 1. Brilho VERMELHO para ALERTA/ERRO (Status 'alerta' usado no JS) */
+#ai-assistant[data-status="alerta"] #avatar-img {
+    box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.7),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: red; 
+}
+
+/* 2. Brilho VERDE para SUCESSO/BAIXO (Status 'feliz' usado no JS) */
+#ai-assistant[data-status="feliz"] #avatar-img {
+    box-shadow: 0 0 15px 5px rgba(0, 255, 0, 0.7),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: green;
+}
+
+/* 3. Brilho AMARELO para DÚVIDA/ATENÇÃO (Status 'duvida' usado no JS para dicas) */
+#ai-assistant[data-status="duvida"] #avatar-img {
+    box-shadow: 0 0 15px 5px rgba(255, 255, 0, 0.8),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: yellow;
 }
 
 #speech-bubble {
@@ -583,14 +606,16 @@ button:hover {
     max-width: 250px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     position: absolute;
-    bottom: 70px; /* Acima do avatar */
+    /* Posição ajustada */
+    bottom: 90px; 
     right: 0;
     opacity: 0;
     transform: translateY(20px) scale(0.95);
     visibility: hidden;
     /* Essa transição é a chave para a fluidez */
     transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
-    font-size: 0.9em;
+    /* Fonte aumentada */
+    font-size: 1.1em; 
     line-height: 1.4;
 }
 

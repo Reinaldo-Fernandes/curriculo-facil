@@ -1,11 +1,11 @@
 /* ----------------------------------------------------------- */
-/* style-mobile.css: Estilos Otimizados para Dispositivos Móveis */
+/* mobile.css: Estilos Otimizados para Dispositivos Móveis (COMPRESSÃO MÁXIMA) */
 /* ----------------------------------------------------------- */
 
 /* Usamos uma media query para aplicar regras apenas em telas menores (até 768px de largura) */
 @media (max-width: 768px) {
     
-    /* 1. LAYOUT PRINCIPAL E FORMULÁRIO (SEM MUDANÇAS) */
+    /* 1. LAYOUT PRINCIPAL E FORMULÁRIO */
     body {
         padding: 0;
         overflow-x: hidden; 
@@ -72,7 +72,7 @@
     }
 
 
-    /* -------------------- 2. PRÉ-VISUALIZAÇÃO DO CURRÍCULO (ESCALADA) -------------------- */
+    /* -------------------- 2. PRÉ-VISUALIZAÇÃO DO CURRÍCULO (COMPACTAÇÃO EXTREMA) -------------------- */
     
     #resumePreview {
         max-width: 100%;
@@ -91,9 +91,9 @@
         width: 210mm; 
         min-height: 297mm; 
 
-        /* ESCALA FINAL: 45% */
+        /* ESCALA FINAL E SEGURA: 40% (máxima compressão visual) */
         transform-origin: top center;
-        transform: scale(0.45); 
+        transform: scale(0.4); 
         
         margin-left: 0; 
         margin-right: 0;
@@ -107,11 +107,16 @@
         overflow-wrap: break-word;
         
         /* Redução em todos os elementos de texto internos */
-        h1, h2, h3, h4, p, li, span, a, label {
-            font-size: 0.7em !important; 
-            line-height: 1.3 !important; /* Maior espaçamento vertical para evitar sobreposição */
+        h1, h2, h3, h4, p, li, span, a, label, div {
+            /* Aplica a regra de compressão de espaçamento em todos os containers de texto */
             margin: 0 !important;
             padding: 0 !important;
+        }
+
+        /* Ajuste fino de fontes, mantendo a proporção */
+        h1, h2, h3, h4, p, li, span, a, label {
+            font-size: 0.7em !important; 
+            line-height: 1.3 !important; 
         }
         
         /* Sobrescreve especificamente o nome/título principal (H1) */
@@ -138,39 +143,36 @@
 
         /* Redefine as larguras das colunas do Modelo 1 para dar mais espaço ao conteúdo principal */
         .template-modelo1 .resume-left {
-            width: 25% !important; /* Sidebar mais estreita */
-            padding: 3mm 1mm !important; /* Padding lateral mínimo */
+            width: 25% !important; 
+            padding: 2mm 1mm !important; /* Padding lateral mínimo */
         }
         .template-modelo1 .resume-right {
-            width: 75% !important; /* Mais espaço para o conteúdo principal */
-            padding: 3mm 3mm !important;
+            width: 75% !important; 
+            padding: 2mm 2mm !important; /* Padding lateral mínimo */
         }
         
-        /* Ajuste dos títulos e espaçamento na barra lateral (Modelo 1) */
+        /* Ajuste do espaçamento dos itens na coluna lateral (Modelo 1) */
         .template-modelo1 .resume-left h3 {
              font-size: 1.0em !important; 
-             margin-top: 5px !important;
-             margin-bottom: 2px !important;
-        }
-        .template-modelo1 .contact-info div {
-             line-height: 1.2 !important;
-             margin-bottom: 0px !important;
+             margin-top: 4px !important;
+             margin-bottom: 1px !important;
         }
         
         /* Ajusta o tamanho da foto no Modelo 1, se houver */
         .template-modelo1 .photo-container img {
             width: 90% !important;
             height: auto !important;
+            margin: 0 !important;
         }
 
         /* --- AJUSTES DO MODELO 2 --- */
 
         /* Ajuste do padding do container principal do Modelo 2 */
         .template-modelo2 .cabecalho {
-             padding: 4mm 4mm !important;
+             padding: 3mm 3mm !important;
         }
         .template-modelo2 .conteudo-principal {
-             padding: 4mm 4mm !important;
+             padding: 3mm 3mm !important;
         }
 
         /* --- GARANTIAS GERAIS --- */
@@ -187,6 +189,12 @@
         ul li {
             margin-bottom: 0px !important;
             padding-bottom: 0px !important;
+        }
+        /* Limpa margem de rodapé/break */
+        .page-break {
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 0 !important;
         }
     }
 
