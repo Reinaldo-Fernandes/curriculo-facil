@@ -175,19 +175,19 @@ button:hover {
 /* ========================================================= */
 .template-modelo1 .resume-content-wrapper {
     display: flex;
+    min-height: 297mm;
     height: 297mm;
     font-family: 'Roboto', sans-serif;
     color: var(--cor-texto-escuro);
-    min-height: 297mm;
 }
 
 /* Coluna Esquerda (Sidebar) */
 .template-modelo1 .resume-left {
     width: 35%;
     background: var(--secondary-color);
-    /* Usa a nova variável e mantém o ajuste lateral de 12mm */
     padding: var(--page-padding-mm) 12mm; 
     flex-shrink: 0;
+    align-self: stretch;
 }
 .template-modelo1 .resume-photo {
     width: 100px;
@@ -244,7 +244,7 @@ button:hover {
 /* Coluna Direita (Main Content) */
 .template-modelo1 .resume-right {
     width: 65%;
-    /* Usa a nova variável de padding superior/inferior */
+    flex: 1 1 auto;
     padding: var(--page-padding-mm) 5mm;
     line-height: 1.5;
 }
@@ -380,8 +380,9 @@ button:hover {
 .template-modelo2 .conteudo-principal {
     display: flex;
     gap: 15mm;
-    /* Mantém o padding lateral e ajusta o superior/inferior para 10mm */
-    padding: var(--page-padding-mm) 20mm; 
+    padding: var(--page-padding-mm) 20mm;
+    min-height: calc(297mm - 80px); /* desconta o cabeçalho */
+    align-items: stretch;
 }
 .template-modelo2 .coluna-esquerda {
     width: 30%;
@@ -565,7 +566,6 @@ button:hover {
 }
 
 #avatar-img {
-    /* Tamanho aumentado */
     width: 80px; 
     height: 80px; 
     border-radius: 50%;
@@ -573,7 +573,6 @@ button:hover {
     border: 3px solid var(--primary-color);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer; 
-    /* Adicionado para transição suave do brilho */
     transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
 
@@ -606,15 +605,12 @@ button:hover {
     max-width: 250px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     position: absolute;
-    /* Posição ajustada */
     bottom: 90px; 
     right: 0;
     opacity: 0;
     transform: translateY(20px) scale(0.95);
     visibility: hidden;
-    /* Essa transição é a chave para a fluidez */
     transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
-    /* Fonte aumentada */
     font-size: 1.1em; 
     line-height: 1.4;
 }
