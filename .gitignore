@@ -1,0 +1,50 @@
+# Arquivos de Dependências do Node.js
+# ***********************************
+# A pasta 'node_modules' contém todas as dependências do Express e outras bibliotecas.
+# Ela é gerada ao rodar 'npm install' e não deve ser versionada.
+/node_modules
+
+# Arquivos de Bloqueio do NPM
+package-lock.json
+npm-debug.log
+yarn-error.log
+.npm
+
+# ***********************************
+# Arquivos do Sistema Operacional e Editores
+# ***********************************
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Visual Studio Code / JetBrains / Outros Editores Comuns
+.vscode/
+.idea/
+
+# ***********************************
+# Arquivos de Logs e Temporários
+# ***********************************
+*.log
+*.tmp
+*.temp
+
+# ***********************************
+# Arquivos Gerados (Se você gerar PDFs, imagens ou outros outputs)
+# ***********************************
+# Se o seu script de download gerar PDFs, você não deve versioná-los.
+# Exemplo, se o nome do PDF for 'curriculo.pdf'
+# *.pdf
+
+# ***********************************
+# Arquivos de Teste Local (Específico para o seu setup de teste Node.js)
+# ***********************************
+# Você deve versionar o server.js, pois ele contém a lógica do seu 404.
+# Se você tiver algum arquivo de configuração de ambiente (senhas, etc.), adicione aqui,
+# mas para este projeto simples, não é necessário.
+
+# Exemplo de arquivo de configuração de ambiente (apenas se for usar no futuro)
+# .env
+# .env.local

@@ -1,0 +1,628 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Playfair+Display:wght@400&family=Inter:wght@400;700;800;900&display=swap');
+
+/* Variáveis de tema */
+:root {
+    --primary-color: #2a3eb1;
+    --secondary-color: #e8f0fe;
+    --cor-texto-escuro: #000000;
+    --cor-linha: #dddddd;
+    --cor-linha-sutil: #eeeeee;
+    /* --- AJUSTE PARA DIMINUIR CABEÇALHOS (De 15mm para 10mm) --- */
+    --page-padding-mm: 10mm; 
+    --cor-destaque-linha: var(--primary-color);
+    --espacamento-vertical: 25px; 
+    --padding-entrada-vertical: 12px;
+}
+
+/* Reset/Global */
+* {
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layout do app - Manter */
+header {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-family: 'Playfair Display', cursive;
+    font-weight: 400;
+}
+
+main {
+    width: 90%;
+    max-width: 1000px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form controls (Manter) */
+form section {
+    margin-bottom: 20px;
+}
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+textarea {
+    resize: vertical;
+}
+.summary-section textarea {
+    min-height: 100px;
+}
+#summaryCounter {
+    text-align: right;
+    font-size: 0.8em;
+    color: #666;
+    margin-top: -5px;
+}
+
+/* Boxes (Manter) */
+.experience-entry,
+.education-entry,
+.certification-entry {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 4px;
+    background: #f9f9f9;
+    position: relative; 
+}
+
+button {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.25s;
+    font-weight: 700;
+}
+button:hover {
+    background-color: var(--primary-color);
+    opacity: 0.9;
+}
+
+.remove-button {
+    background: #dc3545;
+    float: right;
+    padding: 5px 10px;
+    margin-top: 5px;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.remove-button:hover {
+    background: #c82333;
+}
+.add-responsibility-btn {
+    background: #6c757d;
+    padding: 5px 10px;
+    font-size: 0.9em;
+}
+.add-responsibility-btn:hover {
+    background: #5a6268;
+}
+
+
+/* Thumbnails / color options (Manter) */
+.color-option {
+    border: 2px solid transparent !important;
+    transition: border-color 0.2s;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
+}
+.color-option.selected {
+    border-color: #000 !important;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+}
+.template-thumbnail {
+    width: 150px;
+    height: 212px;
+    border: 3px solid #ddd;
+    padding: 5px;
+    background: #fff;
+    margin-top: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    transition: border-color 0.25s;
+}
+
+
+/* Preview (A4) */
+#resumePreview {
+    margin-top: 30px;
+    padding: 0;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    max-width: 210mm;
+    min-height: 297mm;
+    background: #fff;
+}
+
+/* ========================================================= */
+/* ESTILOS DO MODELO 1: BARRA LATERAL (Padrão) */
+/* ========================================================= */
+.template-modelo1 .resume-content-wrapper {
+    display: flex;
+    min-height: 297mm;
+    height: 297mm;
+    font-family: 'Roboto', sans-serif;
+    color: var(--cor-texto-escuro);
+}
+
+/* Coluna Esquerda (Sidebar) */
+.template-modelo1 .resume-left {
+    width: 35%;
+    background: var(--secondary-color);
+    padding: var(--page-padding-mm) 12mm; 
+    flex-shrink: 0;
+    align-self: stretch;
+}
+.template-modelo1 .resume-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    /* --- AJUSTE: Reduzindo o margin-bottom para subir a foto --- */
+    margin: 0 auto 15px; 
+    border: 4px solid var(--primary-color); 
+    box-shadow: 0 0 10px rgba(42, 62, 177, 0.3);
+    background-color: #fff;
+}
+.template-modelo1 .resume-left h3 {
+    font-size: 1.15em;
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--cor-destaque-linha);
+    padding-bottom: 5px;
+    margin-top: var(--espacamento-vertical); 
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+.template-modelo1 .contact-info p {
+    font-size: 0.9em;
+    margin: 6px 0; 
+}
+.template-modelo1 .contact-info i {
+    margin-right: 8px;
+    color: var(--primary-color);
+    font-size: 1.1em;
+}
+.template-modelo1 .contact-info a {
+    color: var(--cor-texto-escuro);
+    text-decoration: none;
+    word-break: break-word; 
+    overflow-wrap: break-word; 
+}
+.template-modelo1 .skills-section ul,
+.template-modelo1 .languages-section ul {
+    list-style: none;
+    padding: 0;
+}
+.template-modelo1 .skills-section li,
+.template-modelo1 .languages-section li {
+    font-size: 0.9em;
+    padding: 5px 0; 
+    border-bottom: 1px solid var(--cor-linha-sutil); 
+    word-break: break-word; 
+    overflow-wrap: break-word; 
+}
+
+
+/* Coluna Direita (Main Content) */
+.template-modelo1 .resume-right {
+    width: 65%;
+    flex: 1 1 auto;
+    padding: var(--page-padding-mm) 5mm;
+    line-height: 1.5;
+}
+.template-modelo1 .resume-right h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.2em;
+    color: var(--cor-texto-escuro);
+    font-weight: 900;
+    /* --- AJUSTE: Reduzindo o margin-bottom para subir o nome --- */
+    margin-bottom: 5px; 
+    border-bottom: 5px solid var(--cor-destaque-linha);
+    padding-bottom: 8px;
+    word-break: break-word; 
+    overflow-wrap: break-word;
+}
+/* --- MELHORIA DE DESIGN --- */
+.template-modelo1 .resume-right h2.title { 
+    font-family: 'Inter', sans-serif;
+    font-size: 1.3em;
+    font-weight: 400;
+    color: #444;
+    margin-top: 0; /* Remove o margin-top negativo */
+    margin-bottom: 15px; /* Reduz de 20px para 15px */
+}
+.template-modelo1 .resume-right h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.3em; 
+    color: var(--primary-color);
+    margin-top: var(--espacamento-vertical); 
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--cor-linha); 
+    padding-bottom: 5px;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+.template-modelo1 .summary-section p {
+    font-size: 1em;
+    line-height: 1.6; 
+    margin-top: 0;
+    margin-bottom: var(--espacamento-vertical);
+    white-space: pre-wrap; 
+    word-break: break-word; 
+    overflow-wrap: break-word; 
+}
+
+/* Estilos de Experiência/Formação/Certificações - Manter espaçamento */
+.template-modelo1 .experience-entry,
+.template-modelo1 .education-entry,
+.template-modelo1 .certification-entry {
+    margin-bottom: calc(var(--espacamento-vertical) * 0.8); 
+    line-height: 1.4;
+    padding-left: 0;
+    padding-top: var(--padding-entrada-vertical); 
+    padding-bottom: var(--padding-entrada-vertical);
+    border-left: 3px solid var(--cor-linha-sutil); 
+}
+.template-modelo1 .experience-entry h4,
+.template-modelo1 .education-entry h4,
+.template-modelo1 .certification-entry h4 {
+    font-size: 1.05em; 
+    margin: 0;
+    color: var(--cor-texto-escuro); 
+    font-weight: 700;
+}
+.template-modelo1 .experience-entry p,
+.template-modelo1 .education-entry p,
+.template-modelo1 .certification-entry p {
+    font-size: 0.95em;
+    margin: 2px 0;
+    color: #444;
+}
+.template-modelo1 .experience-entry ul {
+    margin-top: 8px; 
+    padding-left: 20px;
+    font-size: 0.95em;
+    word-break: break-word; 
+    overflow-wrap: break-word; 
+}
+.template-modelo1 .experience-entry li {
+    margin-bottom: 5px;
+    word-break: break-word; 
+    overflow-wrap: break-word; 
+}
+
+
+/* ========================================================= */
+/* ESTILOS DO MODELO 2: CLÁSSICO (Duas Colunas) */
+/* ========================================================= */
+
+.template-modelo2 .cabecalho {
+    background-color: var(--secondary-color);
+    /* Usa a nova variável para diminuir o padding do cabeçalho */
+    padding: var(--page-padding-mm); 
+    border-bottom: 7px solid var(--primary-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.template-modelo2 .perfil {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+}
+.template-modelo2 .resume-photo-modelo2 {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 0 10px rgba(42, 62, 177, 0.3);
+    background-color: #fff;
+}
+.template-modelo2 .nome-e-titulo h1 {
+    font-size: 2.1rem; 
+    /* --- AJUSTE: Subindo o nome --- */
+    margin: 0; 
+    font-weight: 900; 
+    color: #000000;
+    line-height: 1.1;
+    font-family: 'Inter', sans-serif;
+}
+/* --- MELHORIA DE DESIGN --- */
+.template-modelo2 .nome-e-titulo h2 { 
+    font-family: 'Inter', sans-serif;
+    font-size: 1.3em;
+    font-weight: 400;
+    color: #444;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+
+/* Conteúdo Principal (Colunas) */
+.template-modelo2 .conteudo-principal {
+    display: flex;
+    gap: 15mm;
+    padding: var(--page-padding-mm) 20mm;
+    min-height: calc(297mm - 80px); /* desconta o cabeçalho */
+    align-items: stretch;
+}
+.template-modelo2 .coluna-esquerda {
+    width: 30%;
+    flex-shrink: 0;
+}
+.template-modelo2 .coluna-direita {
+    width: 70%;
+    line-height: 1.5;
+}
+
+/* Estilos de Seção */
+.template-modelo2 .secao-box {
+    margin-bottom: var(--espacamento-vertical); 
+}
+.template-modelo2 .secao-box h3 {
+    font-size: 1.25em;
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--cor-destaque-linha);
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+}
+/* Coluna Esquerda: Informações */
+.template-modelo2 .coluna-esquerda .contact-info p {
+    font-size: 0.9em;
+    margin: 6px 0; 
+}
+.template-modelo2 .coluna-esquerda .contact-info i {
+    margin-right: 8px;
+    color: var(--primary-color);
+    font-size: 1.1em;
+}
+.template-modelo2 .coluna-esquerda .contact-info a {
+    color: var(--cor-texto-escuro);
+    text-decoration: none;
+    word-break: break-all;
+}
+.template-modelo2 .coluna-esquerda ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.template-modelo2 .coluna-esquerda li {
+    font-size: 0.9em;
+    padding: 5px 0; 
+    border-bottom: 1px dotted var(--cor-linha-sutil); 
+    word-break: break-word; 
+    overflow-wrap: break-word; 
+}
+
+/* Estilo para a nova seção de Endereço na Coluna Esquerda */
+.template-modelo2 .secao-endereco {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+/* Coluna Direita: Conteúdo - Manter espaçamento */
+.template-modelo2 .coluna-direita .experience-entry,
+.template-modelo2 .coluna-direita .education-entry,
+.template-modelo2 .coluna-direita .certification-entry {
+    margin-bottom: calc(var(--espacamento-vertical) * 0.9);
+    line-height: 1.4;
+    border-left: 3px solid var(--cor-linha-sutil); 
+    padding-left: 8px; 
+}
+.template-modelo2 .coluna-direita .experience-entry h4,
+.template-modelo2 .coluna-direita .education-entry h4,
+.template-modelo2 .coluna-direita .certification-entry h4 {
+    font-size: 1.1em; 
+    margin-top: 0; 
+    margin-bottom: 3px;
+    color: var(--cor-texto-escuro); 
+    font-weight: 700;
+}
+.template-modelo2 .coluna-direita .experience-entry p,
+.template-modelo2 .coluna-direita .education-entry p,
+.template-modelo2 .coluna-direita .certification-entry p {
+    font-size: 0.95em;
+    margin: 2px 0;
+    color: #444; 
+}
+.template-modelo2 .coluna-direita .experience-entry ul {
+    margin-top: 8px; 
+    padding-left: 20px;
+    font-size: 0.95em;
+    word-break: break-word; 
+    overflow-wrap: break-word; 
+}
+.template-modelo2 .coluna-direita .experience-entry li {
+    margin-bottom: 5px;
+    word-break: break-word; 
+    overflow-wrap: break-word; 
+}
+
+/* Regra para Resumo: garante que o texto quebre corretamente (APLICA CLIPPING) */
+.template-modelo2 .summary-section p { 
+    font-size: 1em; 
+    line-height: 1.6;
+    margin: 0;
+    max-height: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 12;
+    line-clamp: 12;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap; 
+    /* --- MELHORIA DE DESIGN --- */
+    margin-bottom: var(--espacamento-vertical); 
+}
+
+/* ----------------------------------------------------------- */
+/* CORREÇÃO DEFINITIVA: Quebra de Linha em Atividades (TODOS OS MODELOS) */
+/* ----------------------------------------------------------- */
+.activities-section p {
+    white-space: pre-wrap !important; 
+    word-break: break-word;
+    overflow-wrap: break-word;
+    
+    /* Zera qualquer regra de clipping que possa estar afetando (RESOLVE O PROBLEMA NO MODELO 2) */
+    max-height: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    display: block !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    -webkit-box-orient: unset !important;
+}
+
+
+/* Impressão: Oculta a interface de edição e prepara o preview para o A4 */
+@media print {
+    body > header,
+    body > main > form,
+    body > .seo-intro-text,
+    #ai-assistant {
+        display: none !important;
+    }
+    body {
+        background: none;
+    }
+    main {
+        box-shadow: none;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    #resumePreview {
+        box-shadow: none;
+        border: none;
+        margin: 0 auto;
+        width: 210mm;
+        height: auto; 
+        min-height: 297mm;
+        padding: 5mm; 
+    }
+    /* Estilos de impressão para o Modelo 1 */
+    .template-modelo1 .resume-content-wrapper {
+        height: auto; 
+        min-height: 287mm; 
+        page-break-after: auto;
+    }
+    /* Estilos de impressão para o Modelo 2 */
+    .template-modelo2 .conteudo-principal {
+        page-break-after: auto;
+        height: auto;
+    }
+}
+
+/* -------------------- Estilos do Assistente IA (Manter) -------------------- */
+#ai-assistant {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#avatar-img {
+    width: 80px; 
+    height: 80px; 
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer; 
+    transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+/* 1. Brilho VERMELHO para ALERTA/ERRO (Status 'alerta' usado no JS) */
+#ai-assistant[data-status="alerta"] #avatar-img {
+    box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.7),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: red; 
+}
+
+/* 2. Brilho VERDE para SUCESSO/BAIXO (Status 'feliz' usado no JS) */
+#ai-assistant[data-status="feliz"] #avatar-img {
+    box-shadow: 0 0 15px 5px rgba(0, 255, 0, 0.7),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: green;
+}
+
+/* 3. Brilho AMARELO para DÚVIDA/ATENÇÃO (Status 'duvida' usado no JS para dicas) */
+#ai-assistant[data-status="duvida"] #avatar-img {
+    box-shadow: 0 0 15px 5px rgba(255, 255, 0, 0.8),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: yellow;
+}
+
+#speech-bubble {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 15px 15px 0 15px; 
+    padding: 12px;
+    max-width: 250px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    position: absolute;
+    bottom: 90px; 
+    right: 0;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    visibility: hidden;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
+    font-size: 1.1em; 
+    line-height: 1.4;
+}
+
+/* Estado Ativo: O balão aparece suavemente */
+#ai-assistant[data-status]:not([data-status="neutro"]) #speech-bubble {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    visibility: visible;
+}
+
+/* Ajustes de cor/ícone na bolha */
+#speech-bubble strong {
+    color: var(--primary-color);
+}

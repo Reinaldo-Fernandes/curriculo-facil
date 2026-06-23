@@ -1,0 +1,24 @@
+{
+  "name": "curriculo-facil",
+  "version": "1.0.0",
+  "description": "- **Edição Completa**: Adicione e organize informações como experiência profissional, formação acadêmica, habilidades, certificações e muito mais.\r - **Upload de Foto**: Customize ainda mais seu currículo com uma foto profissional.\r - **Pré-visualização em Tempo Real**: Veja como seu currículo está ficando antes de fazer o download.\r - **Download em PDF**: Baixe seu currículo prontinho para impressão em PDF, com formato de página A4.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Reinaldo-Fernandes/curriculo-facil.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Reinaldo-Fernandes/curriculo-facil/issues"
+  },
+  "homepage": "https://github.com/Reinaldo-Fernandes/curriculo-facil#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
