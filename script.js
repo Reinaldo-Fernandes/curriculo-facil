@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const activitiesInput = document.getElementById('activities');
     const addressInput = document.getElementById('address');
     const linkedinInput = document.getElementById('linkedin');
-
+ 
     const educationContainer = document.getElementById('educationContainer');
     const addEducationBtn = document.getElementById('addEducationBtn');
     const experienceContainer = document.getElementById('experienceContainer');
@@ -150,6 +150,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const templateRadioButtons = document.querySelectorAll('input[name="template"]'); 
     const hidePhotoCheckbox = document.getElementById('hidePhoto');
 
+ 
+    
+    
     let templateId = 'template-modelo1';
     let croppieInstance;
     let photoDataURL = null;
@@ -961,3 +964,17 @@ resumePreview?.addEventListener('click', () => {
         openResumeModal();
     }
 });
+
+
+/*--- Balão sumir*/
+const speechBubble = document.getElementById("speech-bubble");
+
+function mostrarBalao() {
+    speechBubble.classList.add("show");
+
+    clearTimeout(speechBubble.timer);
+
+    speechBubble.timer = setTimeout(() => {
+        speechBubble.classList.remove("show");
+    }, 15000); // desaparece após 15 segundos
+}

@@ -19,6 +19,8 @@
         padding: 12px;
         box-shadow: none;
         box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
     }
 
     header h1 {
@@ -91,32 +93,42 @@
     ────────────────────────────────────────── */
 
     #resumePreview {
-        width: 100%;
-        max-width: 480px;
-        margin: 24px auto 60px;
-        padding: 0;
-        border: none;
-        box-shadow: none;
-        display: block;
-        box-sizing: border-box;
-    }
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    margin: 30px auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
 
     /* Remove completamente o "look A4" no mobile */
     #resumePreview > div[class*="template-"] {
-        width: 100% !important;
-        min-height: auto !important;
-        height: auto !important;
-        transform: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        font-size: 14px !important;
-        line-height: 1.55 !important;
-        box-sizing: border-box !important;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10) !important;
-        border-radius: 16px !important;
-        overflow: hidden !important;
-        background: #fff !important;
-    }
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    height: auto !important;
+
+    min-height: auto !important;
+
+    transform: none !important;
+
+    margin: 0 auto !important;
+
+    padding: 0 !important;
+
+    overflow: hidden !important;
+
+    border-radius: 18px !important;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,.12) !important;
+
+    background: #fff !important;
+
+    position: relative !important;
+
+}
 
 
     /* ─── MODELO 1: Moderno (Barra Lateral) ─── */
@@ -244,7 +256,6 @@
         border-bottom: 2px solid var(--primary-color, #2a3eb1) !important;
     }
 
-
     /* ─── SEÇÕES DE CONTEÚDO (ambos os modelos) ─── */
 
     #resumePreview .secao-box {
@@ -347,18 +358,20 @@
     }
 
     #resumePreview .contact-info p {
-        display: flex !important;
-        align-items: center !important;
-        gap: 6px !important;
-        font-size: 0.85rem !important;
-        margin: 0 !important;
-        word-break: break-all;
-    }
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 0.85rem !important;
+    margin: 0 !important;
+    word-break: normal;
+    overflow-wrap: anywhere;
+}
 
-    #resumePreview .contact-info a {
-        color: var(--primary-color, #2a3eb1) !important;
-        word-break: break-all;
-    }
+#resumePreview .contact-info a {
+    color: var(--primary-color, #2a3eb1) !important;
+    word-break: normal;
+    overflow-wrap: anywhere;
+}
 
     /* Texto de resumo profissional */
     #resumePreview .summary-section p {
@@ -382,16 +395,36 @@
        3. ASSISTENTE IA
     ────────────────────────────────────────── */
 
-    #ai-assistant {
-        right: 10px;
-        bottom: 10px;
-    }
+  #ai-assistant {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    z-index: 9999;
+}
 
-    #speech-bubble {
-        max-width: 90%;
-        left: 10px;
-        right: auto;
-        bottom: 70px;
-        border-radius: 15px 15px 15px 0;
-    }
+#speech-bubble {
+    position: fixed;
+    left: 5%;
+    transform: translateX(-50%);
+    bottom: 90px;
+
+    width: calc(100% - 30px);
+    max-width: 380px;
+
+    padding: 16px 16px;
+
+    border-radius: 16px;
+
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+
+    line-height: 1.5;
+    font-size: 0.9rem;
+
+    max-height: 180px;
+    overflow-y: auto;
+
+    z-index: 9998;
+}
 }
