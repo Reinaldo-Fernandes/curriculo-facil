@@ -1,8 +1,3 @@
-/* ============================================================
-   mobile.css — Layout Mobile do Currículo Fácil
-   Design: card moderno, leitura natural, sem folha A4 encolhida
-   ============================================================ */
-
 @media (max-width: 768px) {
 
     /* ──────────────────────────────────────────
@@ -43,15 +38,23 @@
         gap: 12px !important;
     }
 
-    .template-label {
+  .template-label {
         width: 100%;
         padding: 10px;
+        display: flex;         
+        flex-direction: column; 
+        align-items: center;
+        box-sizing: border-box;
     }
 
     .template-thumbnail {
         width: 90px;
         height: 126px;
-        margin: 5px 0 0 8px;
+        margin: 8px auto 0 auto; 
+        display: block;
+        position: relative;      
+        z-index: 2;              
+        object-fit: cover;       
     }
 
     #colorOptions {
