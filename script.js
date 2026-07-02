@@ -976,5 +976,5 @@ function mostrarBalao() {
 
     speechBubble.timer = setTimeout(() => {
         speechBubble.classList.remove("show");
-    }, 15000); // desaparece após 15 segundos
+    }, 5000); // desaparece após 15 segundos
 }
