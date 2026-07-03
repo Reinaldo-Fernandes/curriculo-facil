@@ -1,3 +1,37 @@
+/* ============================================================
+   mobile.css — Layout Mobile do Currículo Fácil
+   ============================================================
+   Duas estratégias diferentes, de propósito:
+
+   1) @media (max-width: 768px)  -> layout geral da PÁGINA
+      (formulário, header, assistente). Isso deve reagir ao
+      tamanho da TELA do usuário, então @media está correto aqui.
+
+   2) @container resume-preview (max-width: 768px) -> estilo do
+      CARTÃO de pré-visualização do currículo. Isso reage ao
+      tamanho do PRÓPRIO ELEMENTO (#resumePreview), não da tela.
+
+      Por quê: no download do PDF (script.js), clonamos o
+      #resumePreview e forçamos a largura para 210mm (A4), fora
+      da tela. Antes, como essas regras estavam em @media, elas
+      continuavam ativas em celulares (a tela continua <768px)
+      e "vazavam" para dentro do clone do PDF — resultando em um
+      PDF com fontes menores e layout empilhado, diferente do PDF
+      gerado no desktop. Com @container, essas regras só disparam
+      quando o próprio elemento é estreito; o clone off-screen,
+      que não fica dentro de um .resume-preview-container, nunca
+      recebe esse contexto — logo ignora as regras mobile e
+      sempre gera o PDF no estilo "desktop", com qualidade máxima,
+      seja qual for o dispositivo que clicou em baixar.
+   ============================================================ */
+
+/* Habilita a consulta de contêiner no wrapper que envolve
+   #resumePreview (ver index.html: .resume-preview-container) */
+.resume-preview-container {
+    container-type: inline-size;
+    container-name: resume-preview;
+}
+
 @media (max-width: 768px) {
 
     /* ──────────────────────────────────────────
@@ -38,11 +72,11 @@
         gap: 12px !important;
     }
 
-  .template-label {
+    .template-label {
         width: 100%;
         padding: 10px;
-        display: flex;         
-        flex-direction: column; 
+        display: flex;
+        flex-direction: column;
         align-items: center;
         box-sizing: border-box;
     }
@@ -50,11 +84,11 @@
     .template-thumbnail {
         width: 90px;
         height: 126px;
-        margin: 8px auto 0 auto; 
+        margin: 8px auto 0 auto;
         display: block;
-        position: relative;      
-        z-index: 2;              
-        object-fit: cover;       
+        position: relative;
+        z-index: 2;
+        object-fit: cover;
     }
 
     #colorOptions {
@@ -90,48 +124,77 @@
 
 
     /* ──────────────────────────────────────────
-       2. PRÉ-VISUALIZAÇÃO: CARD MOBILE BONITO
-       A folha A4 é substituída por um card com
-       layout natural de leitura em coluna única.
+       3. ASSISTENTE IA
     ────────────────────────────────────────── */
 
-    #resumePreview {
-    position: relative;
-    width: 100%;
-    max-width: 480px;
-    margin: 30px auto;
-    padding: 0 10px;
-    box-sizing: border-box;
+    #ai-assistant {
+        position: fixed;
+        right: 15px;
+        bottom: 15px;
+        z-index: 9999;
+    }
+
+    #speech-bubble {
+        position: fixed;
+        left: 5%;
+        transform: translateX(-50%);
+        bottom: 90px;
+
+        width: calc(100% - 30px);
+        max-width: 380px;
+
+        padding: 16px 16px;
+
+        border-radius: 16px;
+
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+
+        line-height: 1.5;
+        font-size: 0.9rem;
+
+        max-height: 180px;
+        overflow-y: auto;
+
+        z-index: 9998;
+    }
 }
+
+
+/* ============================================================
+   2. PRÉ-VISUALIZAÇÃO: CARD MOBILE BONITO
+   Reage ao tamanho do próprio #resumePreview via @container,
+   não à largura da tela. Isso é o que garante que o PDF gerado
+   (clone off-screen, sempre forçado a 210mm) SEMPRE saia no
+   estilo desktop/A4, com a mesma qualidade em qualquer aparelho.
+   ============================================================ */
+@container resume-preview (max-width: 768px) {
+
+    #resumePreview {
+        position: relative;
+        width: 100%;
+        max-width: 480px;
+        margin: 30px auto;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
 
     /* Remove completamente o "look A4" no mobile */
     #resumePreview > div[class*="template-"] {
-
-    width: 100% !important;
-
-    max-width: 100% !important;
-
-    height: auto !important;
-
-    min-height: auto !important;
-
-    transform: none !important;
-
-    margin: 0 auto !important;
-
-    padding: 0 !important;
-
-    overflow: hidden !important;
-
-    border-radius: 18px !important;
-
-    box-shadow: 0 10px 30px rgba(0,0,0,.12) !important;
-
-    background: #fff !important;
-
-    position: relative !important;
-
-}
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        transform: none !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        border-radius: 18px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,.12) !important;
+        background: #fff !important;
+        position: relative !important;
+    }
 
 
     /* ─── MODELO 1: Moderno (Barra Lateral) ─── */
@@ -142,7 +205,6 @@
         height: auto !important;
     }
 
-    /* Cabeçalho colorido com nome + foto */
     .template-modelo1 .resume-right {
         order: 1;
         width: 100% !important;
@@ -157,7 +219,6 @@
         word-break: break-word;
     }
 
-    /* Seção lateral (contato, skills etc.) vira faixa horizontal abaixo */
     .template-modelo1 .resume-left {
         order: 2;
         width: 100% !important;
@@ -166,7 +227,6 @@
         background-color: var(--secondary-color, #e8f0fe) !important;
     }
 
-    /* Foto centralizada no topo da sidebar */
     .template-modelo1 .resume-photo,
     .template-modelo1 .photo-container img {
         display: block !important;
@@ -179,7 +239,6 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.15) !important;
     }
 
-    /* Títulos das seções na sidebar */
     .template-modelo1 .resume-left h3 {
         font-size: 0.78rem !important;
         font-weight: 700 !important;
@@ -232,7 +291,6 @@
         padding: 0 !important;
     }
 
-    /* Conteúdo principal primeiro, coluna de contatos abaixo */
     .template-modelo2 .coluna-direita {
         order: 1;
         width: 100% !important;
@@ -258,6 +316,7 @@
         padding-bottom: 4px !important;
         border-bottom: 2px solid var(--primary-color, #2a3eb1) !important;
     }
+
 
     /* ─── SEÇÕES DE CONTEÚDO (ambos os modelos) ─── */
 
@@ -361,20 +420,20 @@
     }
 
     #resumePreview .contact-info p {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    font-size: 0.85rem !important;
-    margin: 0 !important;
-    word-break: normal;
-    overflow-wrap: anywhere;
-}
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-size: 0.85rem !important;
+        margin: 0 !important;
+        word-break: normal;
+        overflow-wrap: anywhere;
+    }
 
-#resumePreview .contact-info a {
-    color: var(--primary-color, #2a3eb1) !important;
-    word-break: normal;
-    overflow-wrap: anywhere;
-}
+    #resumePreview .contact-info a {
+        color: var(--primary-color, #2a3eb1) !important;
+        word-break: normal;
+        overflow-wrap: anywhere;
+    }
 
     /* Texto de resumo profissional */
     #resumePreview .summary-section p {
@@ -392,42 +451,4 @@
     .page-break {
         display: none !important;
     }
-
-
-    /* ──────────────────────────────────────────
-       3. ASSISTENTE IA
-    ────────────────────────────────────────── */
-
-  #ai-assistant {
-    position: fixed;
-    right: 15px;
-    bottom: 15px;
-    z-index: 9999;
-}
-
-#speech-bubble {
-    position: fixed;
-    left: 5%;
-    transform: translateX(-50%);
-    bottom: 90px;
-
-    width: calc(100% - 30px);
-    max-width: 380px;
-
-    padding: 16px 16px;
-
-    border-radius: 16px;
-
-    white-space: normal;
-    word-break: normal;
-    overflow-wrap: break-word;
-
-    line-height: 1.5;
-    font-size: 0.9rem;
-
-    max-height: 180px;
-    overflow-y: auto;
-
-    z-index: 9998;
-}
 }
